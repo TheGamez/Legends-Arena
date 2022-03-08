@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Metadata -->
+    <meta charset="UTF-8">
+    <title>Multiplayer Game</title>
+
+    <!-- css files -->
+    <link rel="stylesheet" href="stylesheet.css">
+
+    <!-- js files -->
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+    <script src="js/index.js" type="module" defer></script>
+  </head>
+  <body>
+
+    <button id="get-html-1" type="button">Get HTML1</button>
+    <button id="get-html-2" type="button">Get HTML2</button>
+    <button id="get-html-3" type="button">Get HTML3</button>
+    <button id="get-html-4" type="button">Get HTML4</button>
+    <button id="get-html-5" type="button">Get HTML5</button>
+
+    <!-- Here is where we insert our screens -->
+    <h1>Room code: <span id="room-code"></span></h1>
+    <div id="root-screen"></div>
+  </body>
+</html>
