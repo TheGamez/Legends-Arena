@@ -1,0 +1,26 @@
+{
+  "name": "cmpt-276-group-project-setup",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "connect-pg-simple": "^7.0.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "pg": "^8.7.3",
+    "socket.io": "^4.4.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "jest --coverage"
+  },
+  "author": "Hussein Fawaz",
+  "license": "ISC",
+  "description": "CMPT 276 Group Project Setup"
+}
