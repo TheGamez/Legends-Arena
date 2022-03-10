@@ -38,15 +38,15 @@
   gap: 40px;
 }
 
-#help-reset-password,
-#help-sign-up {
+#sign-in-help-1,
+#sign-in-help-2 {
   width: 200px;
   height: 35px;
   background: none;
   font-size: 14px;
 }
 
-#help-reset-password:hover,
-#help-sign-up:hover {
+#sign-in-help-1:hover,
+#sign-in-help-2:hover {
   text-decoration: underline;
 }

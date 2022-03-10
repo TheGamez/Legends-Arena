@@ -65,14 +65,14 @@ const renderLoginScreen = async () => {
     await renderGameMenuScreen();
   });
 
-  const helpResetPasswordElement = document.querySelector('#help-reset-password');
-  helpResetPasswordElement.addEventListener('click', async (event) => {
+  const signInHelp1 = document.querySelector('#sign-in-help-1');
+  signInHelp1.addEventListener('click', async (event) => {
     event.preventDefault();
     await renderResetPasswordScreen();
   });
 
-  const helpSignUpElement = document.querySelector('#help-sign-up');
-  helpSignUpElement.addEventListener('click', async (event) => {
+  const signInHelp2 = document.querySelector('#sign-in-help-2');
+  signInHelp2.addEventListener('click', async (event) => {
     event.preventDefault();
     await renderSignUpScreen();
   });
@@ -95,8 +95,8 @@ const renderSignUpScreen = async () => {
     await renderGameMenuScreen();
   });
 
-  const helpLogIn = document.querySelector('#help-log-in');
-  helpLogIn.addEventListener('click', async (event) => {
+  const signUpHelp = document.querySelector('#sign-up-help');
+  signUpHelp.addEventListener('click', async (event) => {
     event.preventDefault();
     await renderLoginScreen();
   });
@@ -112,6 +112,12 @@ const renderResetPasswordScreen = async () => {
 
   const resetPasswordButton = document.querySelector('#reset-password-button');
   resetPasswordButton.addEventListener('click', AUTH_EVENTS.resetPasswordEvent);
+
+  const closeResetPasswordButtonElement = document.querySelector('#close-reset-password');
+  closeResetPasswordButtonElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderGameMenuScreen();
+  });
 }
 
 const renderSignOutScreen = async () => {
