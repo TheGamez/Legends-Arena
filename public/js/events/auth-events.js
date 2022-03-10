@@ -5,6 +5,25 @@ import GLOBAL_STATE from '../global.js';
 
 /* FUNCTIONS */
 
+const authenticateUserEvent = async () => {
+  try {
+    const endpoint = '/users/user';
+    const options = {
+      method: 'GET',
+      credentials: 'include',
+    }
+
+    const response = await fetch(endpoint, options);
+    const data = await response.json();
+
+    GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
+
+    await RENDER_EVENTS.renderGameMenuScreenEvent();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const createAccountEvent = async (event) => {
   event.preventDefault();
 
@@ -105,6 +124,7 @@ const signOutEvent = async (event) => {
 }
 
 export {
+  authenticateUserEvent,
   createAccountEvent,
   signInEvent,
   resetPasswordEvent,

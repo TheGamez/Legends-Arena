@@ -4,7 +4,7 @@
 const isAuthenticated = (req, res, next) => {
   const isAuthenticated = req.session && req.session.user;
 
-  if (!isAuthenticated) return res.json({ message: 'Unauthorized. Need to be authenticated.' });
+  if (!isAuthenticated) return res.json({ isAuthenticated: false });
 
   next();
 }
