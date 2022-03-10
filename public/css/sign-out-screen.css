@@ -1,4 +1,9 @@
 
+#setting-icon{
+    height: 35px;
+    width: 35px;
+    float:right;
+}
 
 #sign-out-button{
     background: black;
@@ -8,10 +13,8 @@
     padding: 0.5em 0.75em;
     border-radius: 0.25em;
     cursor: pointer;
+    float:right;
 
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
   }
 
   
