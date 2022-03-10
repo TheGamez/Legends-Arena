@@ -3,6 +3,9 @@
 import * as RENDER_EVENTS from './render-events.js';
 import GLOBAL_STATE from '../global.js';
 
+/* VARIABLES */
+const DEBUG = true;
+
 /* FUNCTIONS */
 
 const authenticateUserEvent = async () => {
@@ -15,6 +18,8 @@ const authenticateUserEvent = async () => {
 
     const response = await fetch(endpoint, options);
     const data = await response.json();
+
+    if (DEBUG) console.log(data);
 
     GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
 
@@ -42,6 +47,8 @@ const createAccountEvent = async (event) => {
     const response = await fetch(endpoint, options);
     const data = await response.json();
 
+    if (DEBUG) console.log(data);
+
     GLOBAL_STATE.isAccountCreated = data.isAccountCreated;
 
     await RENDER_EVENTS.renderLoginScreenEvent();
@@ -67,6 +74,8 @@ const signInEvent = async (event) => {
 
     const response = await fetch(endpoint, options);
     const data = await response.json();
+
+    if (DEBUG) console.log(data);
 
     GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
 
@@ -94,6 +103,8 @@ const resetPasswordEvent = async (event) => {
     const response = await fetch(endpoint, options);
     const data = await response.json();
 
+    if (DEBUG) console.log(data);
+
     GLOBAL_STATE.isPasswordReset = data.isPasswordReset;
 
     await RENDER_EVENTS.renderGameMenuScreenEvent();
@@ -114,6 +125,8 @@ const signOutEvent = async (event) => {
 
     const response = await fetch(endpoint, options);
     const data = await response.json();
+
+    if (DEBUG) console.log(data);
 
     GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
 

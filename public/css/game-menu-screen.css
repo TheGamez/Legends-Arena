@@ -34,7 +34,8 @@
 }
 
 #log-in-button:hover,
-#sign-up-button:hover {
+#sign-up-button:hover,
+#sign-out-button:hover {
   background: var(--color-grey-2);
   border: 1px solid var(--color-grey-2);
 }
