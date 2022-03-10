@@ -1,41 +1,62 @@
-<div id="sign-in-screen">
-  <h1>Sign In</h1>
+<!DOCTYPE html>
+<html lang>
+<head>
+  <link rel="stylesheet" href="css/sign-in-screen.css">
+</head>
 
-  <form id="sign-in-form">
-    <div>
-      <label for="email">Email</label>
+<body>
+
+<div id="sign-in-screen" class="box">
+  <div class="popup">
+
+    <a class="close" href="#">&times;</a>
+    <h1>Sign In</h1>
+
+    <form id="sign-in-form">
+      <div>
+        <input
+          id="sign-in-email"
+          type="email"
+          placeholder="Email"
+          autocomplete="off"
+        />
+      </div>
+
+      <div>
+        <input
+          id="sign-in-password"
+          type="password"
+          placeholder="Password"
+          autocomplete="off"
+        />
+      </div>
+
+      <div>
+        <input
+          id="confirm-password"
+          type="password"
+          placeholder="Confirm Password"
+          autocomplete="off"
+        />
+      </div>
+
+      <br>
       <input
-        id="sign-in-email"
-        type="email"
-        placeholder="Email"
-        autocomplete="off"
+        id="sign-in-button"
+        type="submit"
+        value="Submit"
+        form="sign-in-form"
       />
-    </div>
-
+    </form>
+    <br>
     <div>
-      <label for="password">Password</label>
-      <input
-        id="sign-in-password"
-        type="password"
-        placeholder="Password"
-        autocomplete="off"
-      />
-    </div>
-
-    <input
-      id="sign-in-button"
-      type="submit"
-      value="Submit"
-      form="sign-in-form"
-    />
-  </form>
-
-  <div>
-    <div>
-      <a href="">Can't sign in?</a>
-    </div>
-    <div>
-      <a href="">Create Account</a>
+      <div>
+        <a href="">Can't sign in?</a>
+      </div>
+      <div>
+        <a href="">Create Account</a>
+      </div>
     </div>
   </div>
 </div>
+</body>
