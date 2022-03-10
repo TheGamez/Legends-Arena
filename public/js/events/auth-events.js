@@ -1,8 +1,33 @@
 /* MODULES */
 
+import * as RENDER_EVENTS from './render-events.js';
 import GLOBAL_STATE from '../global.js';
 
+/* VARIABLES */
+const DEBUG = true;
+
 /* FUNCTIONS */
+
+const authenticateUserEvent = async () => {
+  try {
+    const endpoint = '/users/user';
+    const options = {
+      method: 'GET',
+      credentials: 'include',
+    }
+
+    const response = await fetch(endpoint, options);
+    const data = await response.json();
+
+    if (DEBUG) console.log(data);
+
+    GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
+
+    await RENDER_EVENTS.renderGameMenuScreenEvent();
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const createAccountEvent = async (event) => {
   event.preventDefault();
@@ -22,9 +47,11 @@ const createAccountEvent = async (event) => {
     const response = await fetch(endpoint, options);
     const data = await response.json();
 
-    console.log('[DATA]:', data);
+    if (DEBUG) console.log(data);
 
     GLOBAL_STATE.isAccountCreated = data.isAccountCreated;
+
+    await RENDER_EVENTS.renderLoginScreenEvent();
   } catch (error) {
     console.log(error);
   }
@@ -48,9 +75,11 @@ const signInEvent = async (event) => {
     const response = await fetch(endpoint, options);
     const data = await response.json();
 
-    console.log('[DATA]:', data);
+    if (DEBUG) console.log(data);
 
     GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
+
+    await RENDER_EVENTS.renderGameMenuScreenEvent();
   } catch (error) {
     console.log(error);
   }
@@ -74,9 +103,11 @@ const resetPasswordEvent = async (event) => {
     const response = await fetch(endpoint, options);
     const data = await response.json();
 
-    console.log('[DATA]:', data);
+    if (DEBUG) console.log(data);
 
     GLOBAL_STATE.isPasswordReset = data.isPasswordReset;
+
+    await RENDER_EVENTS.renderGameMenuScreenEvent();
   } catch (error) {
     console.log(error);
   }
@@ -95,15 +126,18 @@ const signOutEvent = async (event) => {
     const response = await fetch(endpoint, options);
     const data = await response.json();
 
-    console.log('[DATA]:', data);
+    if (DEBUG) console.log(data);
 
     GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
+
+    await RENDER_EVENTS.renderGameMenuScreenEvent();
   } catch (error) {
     console.log(error);
   }
 }
 
 export {
+  authenticateUserEvent,
   createAccountEvent,
   signInEvent,
   resetPasswordEvent,

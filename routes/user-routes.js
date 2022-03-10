@@ -14,6 +14,7 @@ const userController = require('../controllers/user-controller');
 
 const router = express.Router();
 
+router.get('/user', authentication.isAuthenticated, userController.authenticateUser);
 router.all('*', userController.user404NotFound);
 
 module.exports = router;

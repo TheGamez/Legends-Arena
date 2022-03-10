@@ -42,7 +42,7 @@ app.use(expressSession({
 
 // app - routes
 app.use('/authentication', authenticationRoutes);
-app.use('/user', userRoutes);
+app.use('/users', userRoutes);
 
 // app - server
 server.listen(PORT, () => console.log(`[SERVER] http://localhost:${PORT}`));

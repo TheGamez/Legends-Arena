@@ -1,0 +1,50 @@
+:root {
+  --color-white: white;
+  --color-black: black;
+}
+
+.sign-up-popup {
+  width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+
+  background: var(--color-white);
+  border: 3px solid var(--color-black);
+  border-radius: 15px;
+
+  box-shadow: 1px 3px 3px 1px rgba(63, 63, 63, 0.322);
+}
+
+.sign-up-popup h1 {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#create-account-button{
+  background: var(--color-black);
+  color: var(--color-white);
+  width: 400px;
+  height: 35px;
+  border-radius: 15px;
+}
+
+#create-account-button:hover,
+#create-account-button:focus {
+  background: hsl(0, 0%, 50%);
+}
+
+.sign-up-help-container {
+  display: flex;
+  justify-content: center;
+}
+
+#sign-up-help {
+  width: 200px;
+  height: 35px;
+  background: none;
+  font-size: 14px;
+}
+
+#sign-up-help:hover {
+  text-decoration: underline;
+}
