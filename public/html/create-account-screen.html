@@ -1,8 +1,17 @@
+<!DOCTYPE html>
+<html lang>
+<head>
+  <link rel="stylesheet" href="css/reset-password-screen.css">
+</head>
+
+<body>
 <div id="create-account-screen">
+  <div class="popup">
+  
   <h1>Create Account</h1>
+  <a class="close" href="#">&times;</a>
   <form id="create-account-form">
     <div>
-      <label for="email">Email</label>
       <input
         id="create-account-email"
         type="email"
@@ -11,8 +20,7 @@
       />
     </div>
 
-    <div>
-      <label for="password">Password</label>
+    <div id="password">
       <input
         id="create-account-password"
         type="password"
@@ -22,6 +30,7 @@
     </div>
 
     <input
+      class="buttons"
       id="create-account-button"
       type="submit"
       value="Submit"
@@ -31,4 +40,7 @@
   <div>
     <a href="">Already have an account?</a>
   </div>
+
 </div>
+</div>
+</body>
