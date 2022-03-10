@@ -1,7 +1,14 @@
-html { 
-  background: url(images/menu-screen-sketch.jpg) no-repeat center center fixed; 
+body { 
+  background: url(assets/images/menu-screen-sketch.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  float: right;
 }

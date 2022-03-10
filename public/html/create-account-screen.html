@@ -3,44 +3,50 @@
 <head>
   <link rel="stylesheet" href="css/reset-password-screen.css">
 </head>
-
 <body>
-<div id="create-account-screen">
-  <div class="popup">
-  
-  <h1>Create Account</h1>
-  <a class="close" href="#">&times;</a>
-  <form id="create-account-form">
-    <div>
-      <input
-        id="create-account-email"
-        type="email"
-        placeholder="Email"
-        autocomplete="off"
-      />
-    </div>
+  <div id="create-account-screen">
+    <div class="popup">
+      <div id="close-sign-up" class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
 
-    <div id="password">
-      <input
-        id="create-account-password"
-        type="password"
-        placeholder="Password"
-        autocomplete="off"
-      />
-    </div>
+      <h1>Sign Up</h1>
 
-    <input
-      class="buttons"
-      id="create-account-button"
-      type="submit"
-      value="Submit"
-      form="create-account-form"
-    />
-  </form>
-  <div>
-    <a href="">Already have an account?</a>
+      <form id="create-account-form">
+        <div>
+          <input
+            id="create-account-email"
+            type="email"
+            placeholder="Email"
+            autocomplete="off"
+          />
+        </div>
+
+        <div id="password">
+          <input
+            id="create-account-password"
+            type="password"
+            placeholder="Password"
+            autocomplete="off"
+          />
+        </div>
+
+        <input
+          class="buttons"
+          id="create-account-button"
+          type="submit"
+          value="Confirm"
+          form="create-account-form"
+        />
+      </form>
+
+      <br />
+
+      <div>
+        <button type="button" id="help-log-in">Already have an account?</button>
+      </div>
+    </div>
   </div>
-
-</div>
-</div>
 </body>

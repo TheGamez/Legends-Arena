@@ -6,74 +6,103 @@ import GLOBAL_STATE from './global.js';
 
 /* ELEMENTS */
 
-const getHTMLButton1 = document.querySelector('#get-html-1');
-const getHTMLButton2 = document.querySelector('#get-html-2');
-const getHTMLButton3 = document.querySelector('#get-html-3');
-const getHTMLButton4 = document.querySelector('#get-html-4');
-const getHTMLButton5 = document.querySelector('#get-html-5');
-
 const rootScreenElement = document.querySelector('#root-screen');
+const playOnlineButtonElement = document.querySelector('#play-online-button');
+const playLocalButtonElement = document.querySelector('#play-local-button');
 
 /* FUNCTIONS */
 
-/* 
-  How do each of these functions work?
-    1. we clear anything from the page we don't want to show
-    2. we grab the new html content we want to show
-    3. we insert the new html into the DOM
-    4. we attach the required event listeners needed for the page to function
-
-    Note: the order of these operations matters
-*/
-
-const renderCreateAccountScreen = async () => {
-  // Clear HTML
+const renderGameMenuScreen = async () => {
   rootScreenElement.innerHTML = '';
 
-  // Fetch HTML
-  const response = await fetch('./html/create-account-screen.html');
+  const response = await fetch('./html/game-menu-screen.html');
   const html = await response.text();
 
-  // Instert HTML into DOM
   rootScreenElement.innerHTML = html;
 
-  // Add event listeners
-  const createAccountButton = document.querySelector('#create-account-button');
+  const logInButtonElement = document.querySelector('#log-in-button');
+  logInButtonElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderLoginScreen();
+  });
+  
+  const signUpButtonElement = document.querySelector('#sign-up-button');
+  signUpButtonElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderSignUpScreen();
+  });
 
-  createAccountButton.addEventListener('click', AUTH_EVENTS.createAccountEvent);
+  /* future implementation */
+  // const newGameButton = document.querySelector('#new-game-button');
+  // newGameButton.addEventListener('click', GAME_EVENTS.newGameEvent);
+
+  // const joinGameButton = document.querySelector('#join-game-button');
+  // joinGameButton.addEventListener('click', GAME_EVENTS.joinGameEvent);
 }
 
-const renderSignInScreen = async () => {
-  // Clear HTML
+const renderLoginScreen = async () => {
   rootScreenElement.innerHTML = '';
 
-  // Fetch HTML
   const response = await fetch('./html/sign-in-screen.html');
   const html = await response.text();
 
-  // Insert HTML into DOM
   rootScreenElement.innerHTML = html;
 
-  // Add event listeners
-  const signInButton = document.querySelector('#sign-in-button');
+  const signInButtonElement = document.querySelector('#sign-in-button');
+  signInButtonElement.addEventListener('click', AUTH_EVENTS.signInEvent);
 
-  signInButton.addEventListener('click', AUTH_EVENTS.signInEvent);
+  const closeLogInButtonElement = document.querySelector('#close-log-in');
+  closeLogInButtonElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderGameMenuScreen();
+  });
+
+  const helpResetPasswordElement = document.querySelector('#help-reset-password');
+  helpResetPasswordElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderResetPasswordScreen();
+  });
+
+  const helpSignUpElement = document.querySelector('#help-sign-up');
+  helpSignUpElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderSignUpScreen();
+  });
+}
+
+const renderSignUpScreen = async () => {
+  rootScreenElement.innerHTML = '';
+
+  const response = await fetch('./html/create-account-screen.html');
+  const html = await response.text();
+
+  rootScreenElement.innerHTML = html;
+
+  const createAccountButtonElement = document.querySelector('#create-account-button');
+  createAccountButtonElement.addEventListener('click', AUTH_EVENTS.createAccountEvent);
+
+  const closeSignUpButtonElement = document.querySelector('#close-sign-up');
+  closeSignUpButtonElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderGameMenuScreen();
+  });
+
+  const helpLogIn = document.querySelector('#help-log-in');
+  helpLogIn.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderLoginScreen();
+  });
 }
 
 const renderResetPasswordScreen = async () => {
-  // Clear HTML
   rootScreenElement.innerHTML = '';
 
-  // Fetch HTML
   const response = await fetch('./html/reset-password-screen.html');
   const html = await response.text();
 
-  // Insert HTML into DOM
   rootScreenElement.innerHTML = html;
 
-  // Add event listeners
   const resetPasswordButton = document.querySelector('#reset-password-button');
-
   resetPasswordButton.addEventListener('click', AUTH_EVENTS.resetPasswordEvent);
 }
 
@@ -90,55 +119,8 @@ const renderSignOutScreen = async () => {
 
   // set up event listeners
   const signOutButton = document.querySelector('#sign-out-button');
-
   signOutButton.addEventListener('click', AUTH_EVENTS.signOutEvent);
 }
-
-const renderGameMenuScreen = async () => {
-  // Clear HTML
-  rootScreenElement.innerHTML = '';
-
-  // Fetch HTML
-  const response = await fetch('./html/game-menu-screen.html');
-  const html = await response.text();
-
-  // Insert HTML into DOM
-  rootScreenElement.innerHTML = html;
-
-  // Add event listeners
-  const newGameButton = document.querySelector('#new-game-button');
-  const joinGameButton = document.querySelector('#join-game-button');
-
-  newGameButton.addEventListener('click', GAME_EVENTS.newGameEvent);
-  joinGameButton.addEventListener('click', GAME_EVENTS.joinGameEvent);
-}
-
-/* EVENTS */
-
-getHTMLButton1.addEventListener('click', async (event) => {
-  event.preventDefault();
-  await renderCreateAccountScreen();
-});
-
-getHTMLButton2.addEventListener('click', async (event) => {
-  event.preventDefault();
-  await renderSignInScreen();
-});
-
-getHTMLButton3.addEventListener('click', async (event) => {
-  event.preventDefault();
-  await renderResetPasswordScreen();
-});
-
-getHTMLButton4.addEventListener('click', async (event) => {
-  event.preventDefault();
-  await renderSignOutScreen();
-});
-
-getHTMLButton5.addEventListener('click', async (event) => {
-  event.preventDefault();
-  await renderGameMenuScreen();
-});
 
 /* SOCKET EVENTS */
 
@@ -148,3 +130,5 @@ GLOBAL_STATE.socket.on('gameState', GAME_EVENTS.setGameStateEvent);
 GLOBAL_STATE.socket.on('gameOver', GAME_EVENTS.gameOverEvent);
 GLOBAL_STATE.socket.on('unknownGame', GAME_EVENTS.resetGameEvent);
 GLOBAL_STATE.socket.on('tooManyPlayers', GAME_EVENTS.resetGameEvent);
+
+renderGameMenuScreen();
