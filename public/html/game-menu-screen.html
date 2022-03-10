@@ -1,29 +1,50 @@
-<div id="game-menu-screen">
-  <h1>Multiplayer Game</h1>
-  
-  <form id="new-game-form">
-    <input
-      type="submit"
-      id="new-game-button"
-      form="new-game-form"
-      value="Create New Game"
-    />
-  </form>
-  
-  <br />
-  <br />
+<!DOCTYPE html>
+<html lang>
+<head>
+  <link rel="stylesheet" href="css/game-menu-screen.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Rowdies' rel='stylesheet'>
+</head>
 
-  <form id="join-game-form">
-    <input
-      type="text"
-      placeholder="Enter Room Code"
-      id="room-code-input"
-    />
-    <input
-      type="submit"
-      id="join-game-button"
-      form="join-game-form"
-      value="Join Game"
-    />
+<body>
+
+
+<div id="game-menu-screen" class="box">
+  <div id="login-signup-space">
+  <form class="login-form">
+    <input type="submit" id="login-button" form="login-form" value="Log In">
+  </form>
+
+  <form class="signup-form">
+    <input type="submit" id="signup-button" form="signup-form" value="Sign Up">
+  </form>
+
+  <form id="settings-form">
+    <a type="submit" id="settings-button" form="settings-form"><i class="fa fa-gear"></i></a>
+  </form>
+  </div>
+
+  <h1 id="legends-arena-title">Legends Arena</h1>
+
+  <div id="simple-stats">
+    Stats:
+  </div>
+
+
+
+
+
+
+<div id="local-online-buttons-space">
+  <form class="play-online-form">
+    <input type="submit" id="play-online-button" form="play-online-form" value="Play Online">
+  </form>
+
+  <form class="play-local-form">
+    <input type="submit" id="play-local-button" form="play-local-form" value="Play Local">
   </form>
 </div>
+
+
+</div>
+</body>
