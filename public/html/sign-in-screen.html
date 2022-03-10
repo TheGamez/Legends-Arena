@@ -5,7 +5,7 @@
 </head>
 <body>
   <div id="sign-in-screen" class="box">
-    <div class="popup">
+    <div class="log-in-popup">
 
       <div id="close-log-in" class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -13,8 +13,14 @@
         </svg>
       </div>
 
-      <h1>Log In</h1>
+      <br />
+      <br />
 
+      <h1 class="game-font">Log In</h1>
+      
+      <br />
+      <br />
+      
       <form id="sign-in-form">
         <div>
           <input
@@ -25,6 +31,9 @@
           />
         </div>
 
+        <br />
+        <br />
+
         <div>
           <input
             id="sign-in-password"
@@ -34,33 +43,19 @@
           />
         </div>
 
-        <!-- future implementation -->
-        <!-- <div>
-          <input
-            id="confirm-password"
-            type="password"
-            placeholder="Confirm Password"
-            autocomplete="off"
-          />
-        </div> -->
-
-        <br>
+        <br />
+        <br />
         
-        <input
-          id="sign-in-button"
-          type="submit"
-          value="Confirm"
-          form="sign-in-form"
-        />
+        <button id="sign-in-button" type="button">Confirm</button>
       </form>
+  
+      <br />
+      <br />
 
-      <br>
-      
-      <div>
+      <div class="sign-in-help-container">
         <button type="button" id="help-reset-password">Can't log in?</button>
         <button type="button" id="help-sign-up">Create account</button>
       </div>
-
     </div>
   </div>
 </body>

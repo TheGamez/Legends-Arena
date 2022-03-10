@@ -20,17 +20,25 @@ const renderGameMenuScreen = async () => {
 
   rootScreenElement.innerHTML = html;
 
-  const logInButtonElement = document.querySelector('#log-in-button');
-  logInButtonElement.addEventListener('click', async (event) => {
-    event.preventDefault();
-    await renderLoginScreen();
-  });
-  
-  const signUpButtonElement = document.querySelector('#sign-up-button');
-  signUpButtonElement.addEventListener('click', async (event) => {
-    event.preventDefault();
-    await renderSignUpScreen();
-  });
+  if (GLOBAL_STATE.isAuthenticated) {
+    const gameMenuScreenAuthenticatedOptionsElement = document.querySelector('#game-menu-screen-authenticated-options');
+    gameMenuScreenAuthenticatedOptionsElement.style.display = 'block'; 
+  } else {
+    const gameMenuScreenUnauthenticatedOptionsElement = document.querySelector('#game-menu-screen-unauthenticated-options');
+    gameMenuScreenUnauthenticatedOptionsElement.style.display = 'block'; 
+
+    const logInButtonElement = document.querySelector('#log-in-button');
+    logInButtonElement.addEventListener('click', async (event) => {
+      event.preventDefault();
+      await renderLoginScreen();
+    });
+    
+    const signUpButtonElement = document.querySelector('#sign-up-button');
+    signUpButtonElement.addEventListener('click', async (event) => {
+      event.preventDefault();
+      await renderSignUpScreen();
+    });
+  }
 
   /* future implementation */
   // const newGameButton = document.querySelector('#new-game-button');
