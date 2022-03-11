@@ -48,3 +48,8 @@
 #sign-up-help:hover {
   text-decoration: underline;
 }
+
+#create-account-message {
+  text-align: center;
+  font-size: 18px;
+}
