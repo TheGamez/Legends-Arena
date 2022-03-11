@@ -33,14 +33,16 @@ const createAccountEvent = async (event) => {
   event.preventDefault();
 
   const email = document.querySelector('#create-account-email').value;
+  const username = document.querySelector('#create-account-username').value;
   const password = document.querySelector('#create-account-password').value;
+  const confirmPassword = document.querySelector('#create-account-confirm-password').value;
 
   try {
     const endpoint = '/authentication/create-account';
     const options = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, username, password, confirmPassword }),
       credentials: 'include',
     }
 
@@ -89,14 +91,15 @@ const resetPasswordEvent = async (event) => {
   event.preventDefault();
 
   const email = document.querySelector('#reset-password-email').value;
-  const password = document.querySelector('#reset-password-new-password').value;
+  const newPassword = document.querySelector('#reset-password-new-password').value;
+  const confirmNewPassword = document.querySelector('#reset-password-confirm-new-password').value;
 
   try {
     const endpoint = '/authentication/reset-password';
     const options = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, newPassword, confirmNewPassword }),
       credentials: 'include',
     }
 
