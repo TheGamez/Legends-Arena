@@ -50,3 +50,8 @@
 #sign-in-help-2:hover {
   text-decoration: underline;
 }
+
+#sign-in-message {
+  text-align: center;
+  font-size: 18px;
+}
