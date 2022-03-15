@@ -1,27 +1,29 @@
 {
-  "name": "cmpt-276-group-project-setup",
-  "version": "1.0.0",
-  "main": "index.js",
-  "dependencies": {
-    "connect-pg-simple": "^7.0.0",
-    "dotenv": "^16.0.0",
-    "express": "^4.17.3",
-    "express-session": "^1.17.2",
-    "pg": "^8.7.3",
-    "socket.io": "^4.4.1",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "jest": "^27.5.1",
-    "nodemon": "^2.0.15",
-    "supertest": "^6.2.2"
-  },
+  "repository": "#",
+  "license": "UNLICENSED",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "test": "jest --coverage"
+    "build": "webpack --config ./bundler/webpack.prod.js",
+    "dev": "webpack serve --config ./bundler/webpack.dev.js"
   },
-  "author": "Hussein Fawaz",
-  "license": "ISC",
-  "description": "CMPT 276 Group Project Setup"
+  "dependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "babel-loader": "^8.2.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^9.0.1",
+    "css-loader": "^6.5.0",
+    "file-loader": "^6.2.0",
+    "html-loader": "^3.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "lil-gui": "^0.11.0",
+    "mini-css-extract-plugin": "^2.4.3",
+    "portfinder-sync": "0.0.2",
+    "raw-loader": "^4.0.2",
+    "style-loader": "^3.3.1",
+    "three": "^0.134.0",
+    "webpack": "^5.60.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.4.0",
+    "webpack-merge": "^5.8.0"
+  }
 }
