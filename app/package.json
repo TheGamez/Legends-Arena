@@ -1,0 +1,13 @@
+{
+  "name": "legends-arena-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io-client": "^4.4.1",
+    "three": "^0.138.3"
+  }
+}

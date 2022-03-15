@@ -25,7 +25,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 // app - client
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/app/build')));
 
 // app - middleware
 app.use(express.json());

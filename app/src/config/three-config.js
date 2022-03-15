@@ -1,6 +1,7 @@
 /* MODULES */
 
-import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.5-HJEdoVYPhjkiJWkt6XIa/mode=imports/optimized/three.js';
+// import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.137.5-HJEdoVYPhjkiJWkt6XIa/mode=imports/optimized/three.js';
+import * as THREE from 'three';
 import GLOBAL_STATE from '../global.js';
 
 /* VARIABLES */
