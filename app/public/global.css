@@ -26,6 +26,11 @@ body {
   display: block;
 }
 
+.icon:hover {
+  background: var(--color-grey-1);
+  border-radius: 30px;
+}
+
 .game-font {
   font-family: 'Rowdies';
   font-weight: lighter;
@@ -50,42 +55,10 @@ input[type=text] {
   box-sizing: border-box;
 }
 
-
-
-
-
-
-
-
-
-.sign-up-popup {
-  width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-
-  background: var(--color-white);
-  border: 3px solid var(--color-black);
-  border-radius: 15px;
-
-  box-shadow: 1px 3px 3px 1px rgba(63, 63, 63, 0.322);
-}
-
-.sign-up-popup h1 {
-  margin-top: 20px;
-  text-align: center;
-}
-
-#create-account-button{
-  background: var(--color-black);
-  color: var(--color-white);
-  width: 400px;
-  height: 35px;
-  border-radius: 15px;
-}
-
-#create-account-button:hover,
-#create-account-button:focus {
-  background: hsl(0, 0%, 50%);
+.game-menu-screen-header,
+.game-menu-screen-body {
+  display: flex;
+  margin: 50px;
 }
 
 .sign-up-help-container {
@@ -93,30 +66,35 @@ input[type=text] {
   justify-content: center;
 }
 
-#sign-up-help {
+.sign-in-help-container {
+  display: flex;
+  gap: 40px;
+}
+
+#sign-up-help,
+#sign-in-help-1,
+#sign-in-help-2 {
   width: 200px;
   height: 35px;
   background: none;
   font-size: 14px;
 }
 
-#sign-up-help:hover {
+#sign-up-help:hover,
+#sign-in-help-1:hover,
+#sign-in-help-2:hover {
   text-decoration: underline;
 }
 
-#create-account-message {
+#sign-in-message,
+#create-account-message,
+#reset-password-message {
   text-align: center;
   font-size: 18px;
 }
 
-
-
-
-
-
-
-
-
+.sign-up-popup,
+.log-in-popup,
 .reset-password-popup {
   width: 400px;
   margin: 50px auto;
@@ -129,186 +107,108 @@ input[type=text] {
   box-shadow: 1px 3px 3px 1px rgba(63, 63, 63, 0.322);
 }
 
+.sign-up-popup h1,
+.log-in-popup h1,
 .reset-password-popup h1 {
   margin-top: 20px;
   text-align: center;
 }
 
-#reset-password-button{
-  background: var(--color-black);
-  color: var(--color-white);
-  width: 400px;
-  height: 35px;
-  border-radius: 15px;
-}
+#sign-in-button,
+#create-account-button,
+#reset-password-button {
+  background: var(--color-grey-1);
 
-#reset-password-button:hover,
-#reset-password-button:focus {
-  background: hsl(0, 0%, 50%);
-}
+  width: 100%;
 
-.sign-up-help-container {
-  display: flex;
-  justify-content: center;
-}
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
 
-#reset-password-message {
-  text-align: center;
-  font-size: 18px;
-}
-
-
-
-
-
-
-
-
-
-.log-in-popup {
-  width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-
-  background: var(--color-white);
-  border: 3px solid var(--color-black);
-  border-radius: 15px;
-
-  box-shadow: 1px 3px 3px 1px rgba(63, 63, 63, 0.322);
-}
-
-.log-in-popup h1 {
-  margin-top: 20px;
-  text-align: center;
-}
-
-#sign-in-button{
-  background: var(--color-black);
-  color: var(--color-white);
-  width: 400px;
-  height: 35px;
-  border-radius: 15px;
+  border-radius: 30px;
 }
 
 #sign-in-button:hover,
-#sign-in-button:focus {
-  background: hsl(0, 0%, 50%);
+#sign-in-button:focus,
+#create-account-button:hover,
+#create-account-button:focus,
+#reset-password-button:hover,
+#reset-password-button:focus {
+  background: var(--color-grey-2);
 }
 
-.sign-in-help-container {
+#auth-options {
   display: flex;
-  gap: 40px;
-}
+  flex-direction: row;
+  gap: 20px;
 
-#sign-in-help-1,
-#sign-in-help-2 {
-  width: 200px;
-  height: 35px;
-  background: none;
-  font-size: 14px;
-}
-
-#sign-in-help-1:hover,
-#sign-in-help-2:hover {
-  text-decoration: underline;
-}
-
-#sign-in-message {
-  text-align: center;
-  font-size: 18px;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#game-menu-screen-unauthenticated-options,
-#game-menu-screen-authenticated-options {
-  display: none;
-}
-
-.game-menu-screen-header {
-  display: flex;
-  margin: 50px;
-}
-
-#log-in-sign-up-space {
   margin-left: auto;
 }
 
 #log-in-button,
 #sign-up-button,
 #sign-out-button {
-  border: 1px solid var(--color-grey-1);
+  display: none;
+}
+
+#log-in-button,
+#sign-up-button,
+#sign-out-button {
+  font-size: var(--font-size);
   background-color: var(--color-grey-1);
+
+  border: none;
   border-radius: 30px;
 
-  font-size: var(--font-size);
-
-  width: 100px;
-  height: 35px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 #log-in-button:hover,
 #sign-up-button:hover,
 #sign-out-button:hover {
   background: var(--color-grey-2);
-  border: 1px solid var(--color-grey-2);
-}
-
-.game-menu-screen-body {
-  display: flex;
-  margin: 50px;
-}
-
-#local-online-buttons-space {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-left: auto;
-  margin-top: auto;
-}
-
-#play-online-button,
-#play-local-button {
-  font-size: var(--font-size);
-
-  width: 135px;
-  height: 35px;
-
-  background: var(--color-grey-1);
-  border: 1px solid var(--color-grey-1);
-  border-radius: 30px;
-}
-
-#play-online-button:hover,
-#play-local-button:hover {
-  background: var(--color-grey-2);
-  border: 1px solid var(--color-grey-2);
 }
 
 #simple-stats {
-  border: 1px solid var(--color-grey-1);
+  font-size: var(--font-size);
   background-color: var(--color-grey-1);
 
   width: 300px;
   height: 100px;
-
   padding: 20px;
-  
-  font-size: var(--font-size);
+
+  border: 1px solid var(--color-grey-1);
   border-radius: 15px;
+}
+
+#play-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  margin-left: auto;
+  margin-top: auto;
+}
+
+#play-public-match,
+#play-private-match  {
+  font-size: var(--font-size);
+  background: var(--color-grey-1);
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  border: none;
+  border-radius: 30px;
+}
+
+#play-public-match:hover,
+#play-private-match:hover {
+  background: var(--color-grey-2);
 }

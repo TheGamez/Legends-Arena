@@ -19,15 +19,10 @@ const renderGameMenuScreenEvent = async () => {
       <div class="game-menu-screen-header">
         <h1 class="game-font">Legends Arena</h1>
 
-        <div id="log-in-sign-up-space">
-          <div id="game-menu-screen-unauthenticated-options">
-            <button type="button" id="log-in-button" class="game-font">Log In</button>
-            <button type="button" id="sign-up-button" class="game-font">Sign Up</button>
-          </div>
-          
-          <div id="game-menu-screen-authenticated-options">
-            <button type="button" id="sign-out-button" class="game-font">Sign Out</button>
-          </div>
+        <div id="auth-options">
+          <button type="button" id="log-in-button" class="game-font">Log In</button>
+          <button type="button" id="sign-up-button" class="game-font">Sign Up</button>
+          <button type="button" id="sign-out-button" class="game-font">Sign Out</button>
         </div>
       </div>
       
@@ -36,9 +31,9 @@ const renderGameMenuScreenEvent = async () => {
           Stats:
         </div>
 
-        <div id="local-online-buttons-space">
-          <button type="button" id="play-online-button" class="game-font">Play Online</button>
-          <button type="button" id="play-local-button" class="game-font">Play Local</button>
+        <div id="play-container">
+          <button type="button" id="play-public-match" class="game-font">Play Public Match</button>
+          <button type="button" id="play-private-match" class="game-font">Play Private Match</button>
         </div>
       </div>
     </div>
@@ -47,22 +42,19 @@ const renderGameMenuScreenEvent = async () => {
   rootScreenElement.innerHTML = html;
 
   if (GLOBAL_STATE.isAuthenticated) {
-    const gameMenuScreenAuthenticatedOptionsElement = document.querySelector('#game-menu-screen-authenticated-options');
-    gameMenuScreenAuthenticatedOptionsElement.style.display = 'block';
-
     const signOutButtonElement = document.querySelector('#sign-out-button');
+    signOutButtonElement.style.display = 'block';
     signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);    
   } else {
-    const gameMenuScreenUnauthenticatedOptionsElement = document.querySelector('#game-menu-screen-unauthenticated-options');
-    gameMenuScreenUnauthenticatedOptionsElement.style.display = 'block'; 
-
     const logInButtonElement = document.querySelector('#log-in-button');
+    logInButtonElement.style.display = 'block';
     logInButtonElement.addEventListener('click', async (event) => {
       event.preventDefault();
       await renderLoginScreenEvent();
     });
     
     const signUpButtonElement = document.querySelector('#sign-up-button');
+    signUpButtonElement.style.display = 'block';
     signUpButtonElement.addEventListener('click', async (event) => {
       event.preventDefault();
       await renderSignUpScreenEvent();
@@ -75,6 +67,16 @@ const renderGameMenuScreenEvent = async () => {
 
   // const joinGameButton = document.querySelector('#join-game-button');
   // joinGameButton.addEventListener('click', GAME_EVENTS.joinGameEvent);
+
+  const playPublicMatchElement = document.querySelector('#play-public-match');
+  playPublicMatchElement.addEventListener('click', (event) => {
+    console.log('Play Public Match');
+  });
+
+  const playPrivateMatchElement = document.querySelector('#play-private-match');
+  playPrivateMatchElement.addEventListener('click', (event) => {
+    console.log('Play Private Match');
+  });
 }
 
 const renderLoginScreenEvent = async () => {
@@ -128,7 +130,7 @@ const renderLoginScreenEvent = async () => {
           <br />
           <br />
           
-          <button id="sign-in-button" type="button">Confirm</button>
+          <button id="sign-in-button" class="game-font" type="button">Confirm</button>
         </form>
     
         <br />
@@ -241,7 +243,7 @@ const renderSignUpScreenEvent = async () => {
           <br />
           <br />
 
-          <button id="create-account-button" type="button">Confirm</button>
+          <button id="create-account-button" class="game-font" type="button">Confirm</button>
         </form>
 
         <br />
@@ -336,7 +338,7 @@ const renderResetPasswordScreenEvent = async () => {
           <br />
           <br />
 
-          <button id="reset-password-button" type="button">Confirm</button>
+          <button id="reset-password-button" class="game-font" type="button">Confirm</button>
         </form>
       </div>
     </div>
