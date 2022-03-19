@@ -76,10 +76,15 @@ const renderGameMenuScreenEvent = async () => {
 const renderGameLobbyScreenEvent = () => {
   rootScreenElement.innerHTML = '';
 
-  console.log('GAME LOBBY');
+}
 
+const renderJoinPublicMatchScreenEvent = () => {
+  rootScreenElement.innerHTML = '';
+  
+}
 
-
+const renderJoinPrivateMatchScreenEvent = () => {
+  rootScreenElement.innerHTML = '';
 
 }
 
@@ -363,6 +368,8 @@ const renderResetPasswordScreenEvent = async () => {
 export {
   renderGameMenuScreenEvent,
   renderGameLobbyScreenEvent,
+  renderJoinPublicMatchScreenEvent,
+  renderJoinPrivateMatchScreenEvent,
   renderLoginScreenEvent,
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,

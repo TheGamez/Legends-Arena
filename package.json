@@ -1,5 +1,5 @@
 {
-  "name": "legends-arena-backend",
+  "name": "legends-arena",
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
@@ -30,7 +30,7 @@
     "build": "webpack --config webpack.config.js",
     "test": "jest --coverage"
   },
-  "author": "Hussein Fawaz",
+  "author": "CMPT 276 Group 2 - Legends Arena",
   "license": "ISC",
-  "description": "CMPT 276 Group Project Setup"
+  "description": "Legends Arena"
 }
