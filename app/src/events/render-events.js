@@ -1,13 +1,12 @@
 /* MODULES */
 
+import * as GAME_EVENTS from './game-events.js';
 import * as AUTH_EVENTS from './auth-events.js';
 import GLOBAL_STATE from '../global.js';
 
 /* ELEMENTS */
 
 const rootScreenElement = document.querySelector('#root-screen');
-const playOnlineButtonElement = document.querySelector('#play-online-button');
-const playLocalButtonElement = document.querySelector('#play-local-button');
 
 /* FUNCTIONS */
 
@@ -32,8 +31,10 @@ const renderGameMenuScreenEvent = async () => {
         </div>
 
         <div id="play-container">
-          <button type="button" id="play-public-match" class="game-font">Play Public Match</button>
-          <button type="button" id="play-private-match" class="game-font">Play Private Match</button>
+          <button type="button" id="create-public-match" class="game-font">Create Public Match</button>
+          <button type="button" id="join-public-match" class="game-font">Join Public Match</button>
+          <button type="button" id="create-private-match" class="game-font">Create Private Match</button>
+          <button type="button" id="join-private-match" class="game-font">Join Private Match</button>
         </div>
       </div>
     </div>
@@ -61,22 +62,25 @@ const renderGameMenuScreenEvent = async () => {
     });
   }
 
-  /* future implementation */
-  // const newGameButton = document.querySelector('#new-game-button');
-  // newGameButton.addEventListener('click', GAME_EVENTS.newGameEvent);
+  const createPublicMatchElement = document.querySelector('#create-public-match');
+  const createPrivateMatchElement = document.querySelector('#create-private-match');
+  const joinPublicMatchElement = document.querySelector('#join-public-match');
+  const joinPrivateMatchElement = document.querySelector('#join-private-match');
 
-  // const joinGameButton = document.querySelector('#join-game-button');
-  // joinGameButton.addEventListener('click', GAME_EVENTS.joinGameEvent);
+  createPublicMatchElement.addEventListener('click', GAME_EVENTS.createPublicMatchEvent);
+  joinPublicMatchElement.addEventListener('click', GAME_EVENTS.joinPublicMatchEvent);
+  createPrivateMatchElement.addEventListener('click', GAME_EVENTS.createPrivateMatchEvent);
+  joinPrivateMatchElement.addEventListener('click', GAME_EVENTS.joinPrivateMatchEvent);
+}
 
-  const playPublicMatchElement = document.querySelector('#play-public-match');
-  playPublicMatchElement.addEventListener('click', (event) => {
-    console.log('Play Public Match');
-  });
+const renderGameLobbyScreenEvent = () => {
+  rootScreenElement.innerHTML = '';
 
-  const playPrivateMatchElement = document.querySelector('#play-private-match');
-  playPrivateMatchElement.addEventListener('click', (event) => {
-    console.log('Play Private Match');
-  });
+  console.log('GAME LOBBY');
+
+
+
+
 }
 
 const renderLoginScreenEvent = async () => {
@@ -358,6 +362,7 @@ const renderResetPasswordScreenEvent = async () => {
 
 export {
   renderGameMenuScreenEvent,
+  renderGameLobbyScreenEvent,
   renderLoginScreenEvent,
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,

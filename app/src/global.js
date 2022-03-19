@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 
 /* GLOBAL STATE */
 
-const DEBUG = true;
+const DEBUG = false;
 
 const GLOBAL_STATE = {
   socket: io(),

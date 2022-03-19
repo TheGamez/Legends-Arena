@@ -115,7 +115,7 @@ function emitGameOver(io, roomCode, winner) {
 }
 
 const keyDownEvent = (socket, keyInputCode) => {
-  const roomCode = GLOBAL_STATE.gameRooms[socket.id];
+  const roomCode = GLOBAL_STATE.gameRooms[socket.id]; // change this so that it searches public and private matches, and then get rid of this variable
   
   if (!roomCode) return;
 
@@ -128,62 +128,132 @@ const keyDownEvent = (socket, keyInputCode) => {
   }
 }
 
-const newGameEvent = (socket) => {
-  let roomCode = uuidv4();
-  GLOBAL_STATE.gameRooms[socket.id] = roomCode;
-  socket.emit('gameCode', roomCode);
+// const joinGameEvent = (socket, io, roomCode) => {
+//   const room = io.sockets.adapter.rooms.get(roomCode);
+//   const roomValue = room.values().next().value;
 
-  // initialize the game
-  const gameState = {
-    players: [
-      {
-        pos: { x: -1, y: -1 },
-        vel: { x: 0, y: 0 },
-        size: { w: 1, h: 1 },
-      },
-      {
-        pos: { x: 1, y: 1 },
-        vel: { x: 0, y: 0 },
-        size: { w: 1, h: 1 },
-      },
-    ],
-    food: {},
-  };
-  GLOBAL_STATE.liveGames[roomCode] = gameState;
-  randomFood(gameState);
+//   let numClients;
+//   if (roomValue) {
+//     const roomSize = room.size;
+//     numClients = roomSize;
+//   }
+
+//   if (numClients === 0) { // no players
+//     socket.emit('unknownGame', 'Room Empty.');
+//     return;
+//   } else if (numClients > 1) { // 2 players (max for this game) reached
+//     socket.emit('tooManyPlayers', 'Room Full.');
+//     return;
+//   }
+
+//   // exactly 1 player is waiting in the room
+//   GLOBAL_STATE.gameRooms[socket.id] = roomCode;
+
+//   socket.join(roomCode);
+//   socket.number = 2; // player 2
+//   socket.emit('init', 2);
+  
+//   // start game once max players have joined
+//   startGameInterval(io, roomCode);
+// }
+
+// const newGameEvent = (socket) => {
+//   let roomCode = uuidv4();
+//   GLOBAL_STATE.gameRooms[socket.id] = roomCode;
+//   socket.emit('gameCode', roomCode);
+
+//   // initialize the game
+//   const gameState = {
+//     players: [
+//       {
+//         pos: { x: -1, y: -1 },
+//         vel: { x: 0, y: 0 },
+//         size: { w: 1, h: 1 },
+//       },
+//       {
+//         pos: { x: 1, y: 1 },
+//         vel: { x: 0, y: 0 },
+//         size: { w: 1, h: 1 },
+//       },
+//     ],
+//     food: {},
+//   };
+//   GLOBAL_STATE.liveGames[roomCode] = gameState;
+//   randomFood(gameState);
+
+//   socket.join(roomCode);
+//   socket.number = 1; // player one
+//   socket.emit('init', 1);
+// }
+
+const createPublicMatchEvent = (socket) => {
+  const roomCode = uuidv4();
+
+  GLOBAL_STATE.publicMatches[socket.id] = roomCode;
+  
+  socket.emit('roomCode', roomCode);
+  socket.emit('publicMatches',  GLOBAL_STATE.publicMatches);
 
   socket.join(roomCode);
-  socket.number = 1; // player one
-  socket.emit('init', 1);
+  socket.number = 1;
+  socket.emit('player', socket.number);
 }
 
-const joinGameEvent = (socket, io, roomCode) => {
+const createPrivateMatchEvent = (socket) => {
+  const roomCode = uuidv4();
+
+  GLOBAL_STATE.privateMatches[socket.id] = roomCode;
+
+  socket.emit('roomCode', roomCode);
+  socket.emit('privateMatches', GLOBAL_STATE.privateMatches);
+
+  socket.join(roomCode);
+  socket.number = 1;
+  socket.emit('player', socket.number);
+}
+
+const joinPublicMatchEvent = (io, socket, roomCode) => {
   const room = io.sockets.adapter.rooms.get(roomCode);
   const roomValue = room.values().next().value;
 
-  let numClients;
-  if (roomValue) {
-    const roomSize = room.size;
-    numClients = roomSize;
-  }
+  let clientsCount;
+  if (roomValue) clientsCount = room.size;
 
-  if (numClients === 0) { // no players
-    socket.emit('unknownGame', 'Room Empty.');
+  if (clientsCount === 0) {
+    socket.emit('roomEmpty', 'Room Empty.');
     return;
-  } else if (numClients > 1) { // 2 players (max for this game) reached
-    socket.emit('tooManyPlayers', 'Room Full.');
+  } else if (clientsCount > GLOBAL_STATE.MAX_PLAYERS - 1) {
+    socket.emit('roomFull', 'Room Full.');
     return;
   }
 
-  // exactly 1 player is waiting in the room
-  GLOBAL_STATE.gameRooms[socket.id] = roomCode;
+  GLOBAL_STATE.publicMatches[socket.id] = roomCode;
 
   socket.join(roomCode);
-  socket.number = 2; // player 2
-  socket.emit('init', 2);
-  
-  // start game once max players have joined
-  startGameInterval(io, roomCode);
+  socket.number = clientsCount + 1;
+  socket.emit('player', clientsCount + 1);
+}
+
+const joinPrivateMatchEvent = (io, socket, roomCode) => {
+  const room = io.sockets.adapter.rooms.get(roomCode);
+  const roomValue = room.values().next().value;
+
+  let clientsCount;
+  if (roomValue) clientsCount = room.size;
+
+  if (clientsCount === 0) {
+    socket.emit('roomEmpty', 'Room Empty.');
+    return;
+  } else if (clientsCount > GLOBAL_STATE.MAX_PLAYERS - 1) {
+    socket.emit('roomFull', 'Room Full.');
+    return;
+  }
+
+  GLOBAL_STATE.privateMatches[socket.id] = roomCode;
+
+  socket.join(roomCode);
+  socket.number = clientsCount + 1;
+  socket.emit('player', clientsCount + 1);
 }
 
 /* EVENTS */
@@ -191,8 +261,10 @@ const joinGameEvent = (socket, io, roomCode) => {
 const connectToGame = (io) => {
   io.on('connect', (socket) => {
     socket.on('keydown', (keyInputCode) => keyDownEvent(socket, keyInputCode));
-    socket.on('newGame', () => newGameEvent(socket));
-    socket.on('joinGame', async (roomCode) => joinGameEvent(socket, io, roomCode));
+    socket.on('createPublicMatch', () => createPublicMatchEvent(socket));
+    socket.on('createPrivateMatch', () => createPrivateMatchEvent(socket));
+    socket.on('joinPublicMatchEvent', (roomCode) => joinPublicMatchEvent(io, socket, roomCode));
+    socket.on('joinPrivateMatchEvent', (roomCode) => joinPrivateMatchEvent(io, socket, roomCode));
   });
 }
 
