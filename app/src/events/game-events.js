@@ -23,13 +23,17 @@ const createPrivateMatchEvent = (event) => {
   // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
 }
 
-const joinPublicMatchEvent = (event) => {
+const joinPublicMatchEvent = (event, roomCode) => {
   event.preventDefault();
 
-  const roomCodeInputElement = document.querySelector('#public-room-code-input');
-  const roomCode = roomCodeInputElement.value;
+  let _roomCode = roomCode;
 
-  GLOBAL_STATE.socket.emit('joinPublicMatchEvent', roomCode);
+  if (!_roomCode) {
+    const roomCodeInputElement = document.querySelector('#public-room-code-input');
+    _roomCode = roomCodeInputElement.value;
+  }
+
+  GLOBAL_STATE.socket.emit('joinPublicMatch', _roomCode);
 
   // THREE_CONFIG.initializeGame();
   // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
@@ -41,7 +45,7 @@ const joinPrivateMatchEvent = (event) => {
   const roomCodeInputElement = document.querySelector('#private-room-code-input');
   const roomCode = roomCodeInputElement.value;
 
-  GLOBAL_STATE.socket.emit('joinPrivateMatchEvent', roomCode);
+  GLOBAL_STATE.socket.emit('joinPrivateMatch', roomCode);
 
   // THREE_CONFIG.initializeGame();
   // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
@@ -84,6 +88,53 @@ const roomFullEvent = (message) => {
   // roomCodeInputElement.value = '';
   // roomCodeElement.innerText = '';
   alert(message);
+}
+
+const roomNotFoundEvent = (message) => {
+  const joinMatchMessageElement = document.querySelector('#join-match-message');
+  joinMatchMessageElement.innerText = message;
+}
+
+const getAvailablePublicMatchesEvent = () => {
+  GLOBAL_STATE.socket.emit('getAvailablePublicMatches');
+}
+
+const setAvailablePublicMatchesEvent = (availablePublicMatches) => {
+  const availablePublicMatchesElement = document.querySelector('#available-public-matches');
+  
+  const matches = Object.entries(availablePublicMatches);
+
+  matches.forEach(match => {
+    const roomCode = match[0];
+    const playerCount = match[1].playerCount;
+    const maxPlayerCount = match[1].maxPlayerCount;
+
+    const divElement = document.createElement('div');
+    divElement.className = 'join-available-public-match-container';
+
+    const pElement1 = document.createElement('p');
+    pElement1.innerText = 'Free For All';
+    pElement1.className = 'game-font';
+
+    const pElement2 = document.createElement('p');
+    pElement2.innerText = `Players [${playerCount} / ${maxPlayerCount}]`;
+    pElement2.className = 'game-font';
+
+    const buttonElement = document.createElement('button');
+    buttonElement.innerText = 'Join';
+    buttonElement.type = 'button';
+    buttonElement.id = 'join-available-public-match';
+    buttonElement.className = 'join-available-public-match game-font';
+    buttonElement.addEventListener('click', (event) => joinPublicMatchEvent(event, roomCode));
+
+    divElement.append(
+      pElement1,
+      pElement2,
+      buttonElement,
+    );
+
+    availablePublicMatchesElement.append(divElement);
+  });
 }
 
 // const resetGameEvent = (message) => {
@@ -130,4 +181,7 @@ export {
   setPlayerEvent,
   roomEmptyEvent,
   roomFullEvent,
+  roomNotFoundEvent,
+  getAvailablePublicMatchesEvent,
+  setAvailablePublicMatchesEvent,
 };

@@ -196,7 +196,10 @@ const createPublicMatchEvent = (socket) => {
 
   socket.join(roomCode);
   socket.number = 1;
-  socket.emit('player', socket.number);
+
+  GLOBAL_STATE.publicRooms[roomCode] = { playerCount: 1, maxPlayerCount: GLOBAL_STATE.MAX_PLAYERS };
+  
+  socket.emit('player', 1);
 }
 
 const createPrivateMatchEvent = (socket) => {
@@ -209,11 +212,14 @@ const createPrivateMatchEvent = (socket) => {
 
   socket.join(roomCode);
   socket.number = 1;
-  socket.emit('player', socket.number);
+  socket.emit('player', 1);
 }
 
 const joinPublicMatchEvent = (io, socket, roomCode) => {
   const room = io.sockets.adapter.rooms.get(roomCode);
+
+  if (!room) return socket.emit('roomNotFound', 'No matches found with the given room code.');
+  
   const roomValue = room.values().next().value;
 
   let clientsCount;
@@ -231,11 +237,17 @@ const joinPublicMatchEvent = (io, socket, roomCode) => {
 
   socket.join(roomCode);
   socket.number = clientsCount + 1;
+
+  GLOBAL_STATE.publicRooms[roomCode] = { playerCount: clientsCount + 1, maxPlayerCount: GLOBAL_STATE.MAX_PLAYERS };
+  
   socket.emit('player', clientsCount + 1);
 }
 
 const joinPrivateMatchEvent = (io, socket, roomCode) => {
   const room = io.sockets.adapter.rooms.get(roomCode);
+
+  if (!room) return socket.emit('roomNotFound', 'No matches found with the given room code.');
+
   const roomValue = room.values().next().value;
 
   let clientsCount;
@@ -256,6 +268,31 @@ const joinPrivateMatchEvent = (io, socket, roomCode) => {
   socket.emit('player', clientsCount + 1);
 }
 
+const getAvailablePublicMatchesEvent = (io, socket) => {
+  const availablePublicMatches = GLOBAL_STATE.publicRooms;
+
+  // FILTER OUT FULL ROOMS ???
+
+  // const availablePublicMatches = {};
+  
+  // Object.values(allPublicMatches).forEach(roomCode => {
+  //   const room = io.sockets.adapter.rooms.get(roomCode);
+    
+  //   if (room) {
+  //     const roomValue = room.values().next().value;
+
+  //     let clientsCount;
+  //     if (roomValue) clientsCount = room.size;
+
+  //     if (clientsCount < GLOBAL_STATE.MAX_PLAYERS) {
+  //       availablePublicMatches
+  //     }
+  //   }
+  // });
+
+  socket.emit('setAvailablePublicMatches', availablePublicMatches);
+} 
+
 /* EVENTS */
 
 const connectToGame = (io) => {
@@ -263,8 +300,9 @@ const connectToGame = (io) => {
     socket.on('keydown', (keyInputCode) => keyDownEvent(socket, keyInputCode));
     socket.on('createPublicMatch', () => createPublicMatchEvent(socket));
     socket.on('createPrivateMatch', () => createPrivateMatchEvent(socket));
-    socket.on('joinPublicMatchEvent', (roomCode) => joinPublicMatchEvent(io, socket, roomCode));
-    socket.on('joinPrivateMatchEvent', (roomCode) => joinPrivateMatchEvent(io, socket, roomCode));
+    socket.on('joinPublicMatch', (roomCode) => joinPublicMatchEvent(io, socket, roomCode));
+    socket.on('joinPrivateMatch', (roomCode) => joinPrivateMatchEvent(io, socket, roomCode));
+    socket.on('getAvailablePublicMatches', () => getAvailablePublicMatchesEvent(io, socket));
   });
 }
 
