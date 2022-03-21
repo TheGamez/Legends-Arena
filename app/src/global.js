@@ -13,6 +13,7 @@ const GLOBAL_STATE = {
   isAuthenticated: false,
   isAccountCreated: false,
   isPasswordReset: false,
+  maxPlayerCount: 4,
 };
 
 if (DEBUG) console.log('[GLOBAL_STATE]', GLOBAL_STATE);

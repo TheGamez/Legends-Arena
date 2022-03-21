@@ -99,17 +99,18 @@ const getAvailablePublicMatchesEvent = () => {
   GLOBAL_STATE.socket.emit('getAvailablePublicMatches');
 }
 
-const setAvailablePublicMatchesEvent = (availablePublicMatches) => {
+const setAvailablePublicMatchesEvent = (availablePublicRooms) => {
   const availablePublicMatchesElement = document.querySelector('#join-public-match-form-container-2');
   
-  const matches = Object.entries(availablePublicMatches);
+  const matches = Object.entries(availablePublicRooms);
+  
+  console.log(matches);
 
-  if (matches.length === 0) availablePublicMatchesElement.innerHTML = `<div class="text-center">No lobbies found.</div>`;
+  if (matches.length === 0) availablePublicMatchesElement.innerHTML = `<div class="text-center">No matches found.</div>`;
 
   matches.forEach(match => {
     const roomCode = match[0];
-    const playerCount = match[1].playerCount;
-    const maxPlayerCount = match[1].maxPlayerCount;
+    const playerCount = Object.values(match[1].sockets).length;
 
     const divElement = document.createElement('div');
     divElement.className = 'join-public-match-wrapper';
@@ -118,7 +119,7 @@ const setAvailablePublicMatchesEvent = (availablePublicMatches) => {
     pElement1.innerText = 'Free For All';
 
     const pElement2 = document.createElement('p');
-    pElement2.innerText = `Players [${playerCount} / ${maxPlayerCount}]`;
+    pElement2.innerText = `Players [${playerCount} / ${GLOBAL_STATE.maxPlayerCount}]`;
 
     const buttonElement = document.createElement('button');
     buttonElement.type = 'button';

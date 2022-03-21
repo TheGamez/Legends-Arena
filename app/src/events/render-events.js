@@ -94,7 +94,7 @@ const renderJoinPublicMatchScreenEvent = () => {
         <input
           id="public-room-code-input"
           type="text"
-          placeholder="Enter room code"
+          placeholder="Enter Room Code"
           autocomplete="off"
         />
         
@@ -141,7 +141,7 @@ const renderJoinPrivateMatchScreenEvent = () => {
         <input
           id="private-room-code-input"
           type="text"
-          placeholder="Enter room code"
+          placeholder="Enter Room Code"
           autocomplete="off"
         />
         

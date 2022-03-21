@@ -189,27 +189,30 @@ const keyDownEvent = (socket, keyInputCode) => {
 const createPublicMatchEvent = (socket) => {
   const roomCode = uuidv4();
 
-  GLOBAL_STATE.publicMatches[socket.id] = roomCode;
+  const sockets = {};
+  sockets[socket.id] = roomCode;
+  GLOBAL_STATE.rooms[roomCode] = { isPrivate: false, sockets };
+
+  const publicRooms = Object.values(GLOBAL_STATE.rooms).filter(room => room.isPrivate === false);
   
   socket.emit('roomCode', roomCode);
-  socket.emit('publicMatches',  GLOBAL_STATE.publicMatches);
-
+  socket.emit('publicMatches', publicRooms);
   socket.join(roomCode);
   socket.number = 1;
-
-  GLOBAL_STATE.publicRooms[roomCode] = { playerCount: 1, maxPlayerCount: GLOBAL_STATE.MAX_PLAYERS };
-  
   socket.emit('player', 1);
 }
 
 const createPrivateMatchEvent = (socket) => {
   const roomCode = uuidv4();
 
-  GLOBAL_STATE.privateMatches[socket.id] = roomCode;
+  const sockets = {};
+  sockets[socket.id] = roomCode;
+  GLOBAL_STATE.rooms[roomCode] = { isPrivate: true, sockets };
+
+  const privateRooms = Object.values(GLOBAL_STATE.rooms).filter(room => room.isPrivate === true);
 
   socket.emit('roomCode', roomCode);
-  socket.emit('privateMatches', GLOBAL_STATE.privateMatches);
-
+  socket.emit('privateMatches', privateRooms);
   socket.join(roomCode);
   socket.number = 1;
   socket.emit('player', 1);
@@ -233,13 +236,10 @@ const joinPublicMatchEvent = (io, socket, roomCode) => {
     return;
   }
 
-  GLOBAL_STATE.publicMatches[socket.id] = roomCode;
+  GLOBAL_STATE.rooms[roomCode].sockets[socket.id] = roomCode;
 
   socket.join(roomCode);
   socket.number = clientsCount + 1;
-
-  GLOBAL_STATE.publicRooms[roomCode] = { playerCount: clientsCount + 1, maxPlayerCount: GLOBAL_STATE.MAX_PLAYERS };
-  
   socket.emit('player', clientsCount + 1);
 }
 
@@ -261,48 +261,36 @@ const joinPrivateMatchEvent = (io, socket, roomCode) => {
     return;
   }
 
-  GLOBAL_STATE.privateMatches[socket.id] = roomCode;
+  GLOBAL_STATE.rooms[roomCode].sockets[socket.id] = roomCode;
 
   socket.join(roomCode);
   socket.number = clientsCount + 1;
   socket.emit('player', clientsCount + 1);
 }
 
-const getAvailablePublicMatchesEvent = (io, socket) => {
-  const availablePublicMatches = GLOBAL_STATE.publicRooms;
+const getAvailablePublicMatchesEvent = (socket) => {
+  const availablePublicRooms = Object.fromEntries(Object.entries(GLOBAL_STATE.rooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
 
-  // FILTER OUT FULL ROOMS ???
+  socket.emit('setAvailablePublicMatches', availablePublicRooms);
+}
 
-  // const availablePublicMatches = {};
-  
-  // Object.values(allPublicMatches).forEach(roomCode => {
-  //   const room = io.sockets.adapter.rooms.get(roomCode);
-    
-  //   if (room) {
-  //     const roomValue = room.values().next().value;
-
-  //     let clientsCount;
-  //     if (roomValue) clientsCount = room.size;
-
-  //     if (clientsCount < GLOBAL_STATE.MAX_PLAYERS) {
-  //       availablePublicMatches
-  //     }
-  //   }
-  // });
-
-  socket.emit('setAvailablePublicMatches', availablePublicMatches);
-} 
+const disconnectionEvent = (socket) => {
+  // GLOBAL_STATE.rooms[roomCode].sockets[socket.id] = roomCode;
+  console.log('DISCONNECTED:', socket.id);
+}
 
 /* EVENTS */
 
 const connectToGame = (io) => {
   io.on('connect', (socket) => {
+    socket.on('disconnect', () => disconnectionEvent(socket));
+
     socket.on('keydown', (keyInputCode) => keyDownEvent(socket, keyInputCode));
     socket.on('createPublicMatch', () => createPublicMatchEvent(socket));
     socket.on('createPrivateMatch', () => createPrivateMatchEvent(socket));
     socket.on('joinPublicMatch', (roomCode) => joinPublicMatchEvent(io, socket, roomCode));
     socket.on('joinPrivateMatch', (roomCode) => joinPrivateMatchEvent(io, socket, roomCode));
-    socket.on('getAvailablePublicMatches', () => getAvailablePublicMatchesEvent(io, socket));
+    socket.on('getAvailablePublicMatches', () => getAvailablePublicMatchesEvent(socket));
   });
 }
 
