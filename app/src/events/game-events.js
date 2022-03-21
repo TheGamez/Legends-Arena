@@ -100,9 +100,11 @@ const getAvailablePublicMatchesEvent = () => {
 }
 
 const setAvailablePublicMatchesEvent = (availablePublicMatches) => {
-  const availablePublicMatchesElement = document.querySelector('#available-public-matches');
+  const availablePublicMatchesElement = document.querySelector('#join-public-match-form-container-2');
   
   const matches = Object.entries(availablePublicMatches);
+
+  if (matches.length === 0) availablePublicMatchesElement.innerHTML = `<div class="text-center">No lobbies found.</div>`;
 
   matches.forEach(match => {
     const roomCode = match[0];
@@ -110,21 +112,17 @@ const setAvailablePublicMatchesEvent = (availablePublicMatches) => {
     const maxPlayerCount = match[1].maxPlayerCount;
 
     const divElement = document.createElement('div');
-    divElement.className = 'join-available-public-match-container';
+    divElement.className = 'join-public-match-wrapper';
 
     const pElement1 = document.createElement('p');
     pElement1.innerText = 'Free For All';
-    pElement1.className = 'game-font';
 
     const pElement2 = document.createElement('p');
     pElement2.innerText = `Players [${playerCount} / ${maxPlayerCount}]`;
-    pElement2.className = 'game-font';
 
     const buttonElement = document.createElement('button');
-    buttonElement.innerText = 'Join';
     buttonElement.type = 'button';
-    buttonElement.id = 'join-available-public-match';
-    buttonElement.className = 'join-available-public-match game-font';
+    buttonElement.innerText = 'Join';
     buttonElement.addEventListener('click', (event) => joinPublicMatchEvent(event, roomCode));
 
     divElement.append(
