@@ -1,13 +1,12 @@
 /* MODULES */
 
+import * as GAME_EVENTS from './game-events.js';
 import * as AUTH_EVENTS from './auth-events.js';
 import GLOBAL_STATE from '../global.js';
 
 /* ELEMENTS */
 
 const rootScreenElement = document.querySelector('#root-screen');
-const playOnlineButtonElement = document.querySelector('#play-online-button');
-const playLocalButtonElement = document.querySelector('#play-local-button');
 
 /* FUNCTIONS */
 
@@ -15,31 +14,22 @@ const renderGameMenuScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div id="game-menu-screen">
-      <div class="game-menu-screen-header">
-        <h1 class="game-font">Legends Arena</h1>
+    <div id="main-menu-container">
+      <h1>Legends Arena</h1>
 
-        <div id="log-in-sign-up-space">
-          <div id="game-menu-screen-unauthenticated-options">
-            <button type="button" id="log-in-button" class="game-font">Log In</button>
-            <button type="button" id="sign-up-button" class="game-font">Sign Up</button>
-          </div>
-          
-          <div id="game-menu-screen-authenticated-options">
-            <button type="button" id="sign-out-button" class="game-font">Sign Out</button>
-          </div>
-        </div>
+      <div id="main-menu-play-container">
+        <button type="button" id="create-public-match">Create Public Match</button>
+        <button type="button" id="join-public-match">Join Public Match</button>
+        <button type="button" id="create-private-match">Create Private Match</button>
+        <button type="button" id="join-private-match">Join Private Match</button>
       </div>
-      
-      <div class="game-menu-screen-body">
-        <div id="simple-stats" class="game-font">
-          Stats:
-        </div>
 
-        <div id="local-online-buttons-space">
-          <button type="button" id="play-online-button" class="game-font">Play Online</button>
-          <button type="button" id="play-local-button" class="game-font">Play Local</button>
-        </div>
+      <div class="divider"></div>
+
+      <div id="main-menu-auth-container">
+        <button type="button" id="log-in-button">Log In</button>
+        <button type="button" id="sign-up-button">Sign Up</button>
+        <button type="button" id="sign-out-button">Sign Out</button>
       </div>
     </div>
   `;
@@ -47,97 +37,181 @@ const renderGameMenuScreenEvent = async () => {
   rootScreenElement.innerHTML = html;
 
   if (GLOBAL_STATE.isAuthenticated) {
-    const gameMenuScreenAuthenticatedOptionsElement = document.querySelector('#game-menu-screen-authenticated-options');
-    gameMenuScreenAuthenticatedOptionsElement.style.display = 'block';
-
     const signOutButtonElement = document.querySelector('#sign-out-button');
+    signOutButtonElement.style.display = 'block';
     signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);    
   } else {
-    const gameMenuScreenUnauthenticatedOptionsElement = document.querySelector('#game-menu-screen-unauthenticated-options');
-    gameMenuScreenUnauthenticatedOptionsElement.style.display = 'block'; 
-
     const logInButtonElement = document.querySelector('#log-in-button');
+    logInButtonElement.style.display = 'block';
     logInButtonElement.addEventListener('click', async (event) => {
       event.preventDefault();
       await renderLoginScreenEvent();
     });
     
     const signUpButtonElement = document.querySelector('#sign-up-button');
+    signUpButtonElement.style.display = 'block';
     signUpButtonElement.addEventListener('click', async (event) => {
       event.preventDefault();
       await renderSignUpScreenEvent();
     });
   }
 
-  /* future implementation */
-  // const newGameButton = document.querySelector('#new-game-button');
-  // newGameButton.addEventListener('click', GAME_EVENTS.newGameEvent);
+  const createPublicMatchElement = document.querySelector('#create-public-match');
+  const createPrivateMatchElement = document.querySelector('#create-private-match');
+  const joinPublicMatchElement = document.querySelector('#join-public-match');
+  const joinPrivateMatchElement = document.querySelector('#join-private-match');
 
-  // const joinGameButton = document.querySelector('#join-game-button');
-  // joinGameButton.addEventListener('click', GAME_EVENTS.joinGameEvent);
+  createPublicMatchElement.addEventListener('click', (event) => GAME_EVENTS.createRoomEvent(event, false));
+  joinPublicMatchElement.addEventListener('click', renderJoinPublicMatchScreenEvent);
+  createPrivateMatchElement.addEventListener('click', (event) => GAME_EVENTS.createRoomEvent(event, true));
+  joinPrivateMatchElement.addEventListener('click', renderJoinPrivateMatchScreenEvent);
+}
+
+const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer }) => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <div>
+      <h1>Game Room</h1>
+      <p id="room-code"></p>
+      <div id="room-players"></div>
+    </div>
+  `;
+
+  rootScreenElement.innerHTML = html;
+
+  const roomCodeElement = document.querySelector('#room-code');
+  roomCodeElement.innerText = roomCode;
+
+  const roomPlayersElement = document.querySelector('#room-players');
+  roomPlayersElement.append(`Player ${roomPlayer}`);
+}
+
+const renderJoinPublicMatchScreenEvent = () => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <div class="popup-container">
+      <div class="icon" id="close-join-public-match">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+
+      <div class="popup-head-container">
+        <h1>Join Public Match</h1>
+        <p id="join-match-message"></p>
+      </div>
+      
+      <form id="join-public-match-form-container-1">
+        <input
+          id="room-code-input"
+          type="text"
+          placeholder="Enter Room Code"
+          autocomplete="off"
+        />
+        
+        <button id="public-room-code-button" type="button">Join</button>
+      </form>
+
+      <div class="divider"></div>
+
+      <div id="join-public-match-form-container-2"></div>
+    </div>
+  `;
+
+  rootScreenElement.innerHTML = html;
+
+  const closeJoinPublicMatchElement = document.querySelector('#close-join-public-match');
+  closeJoinPublicMatchElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderGameMenuScreenEvent();
+  });
+
+  const publicRoomCodeButtonElement = document.querySelector('#public-room-code-button');
+  publicRoomCodeButtonElement.addEventListener('click', GAME_EVENTS.joinRoomEvent);
+
+  GAME_EVENTS.getOpenRoomsEvent();
+}
+
+const renderJoinPrivateMatchScreenEvent = () => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <div class="popup-container">
+      <div class="icon" id="close-join-private-match">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+
+      <div class="popup-head-container">
+        <h1>Join Private Match</h1>
+        <p id="join-match-message"></p>
+      </div>
+      
+      <form id="join-private-match-form-container">
+        <input
+          id="room-code-input"
+          type="text"
+          placeholder="Enter Room Code"
+          autocomplete="off"
+        />
+        
+        <button id="private-room-code-button" type="button">Join</button>
+      </form>
+    </div>
+  `;
+
+  rootScreenElement.innerHTML = html;
+
+  const closeJoinPrivateMatchElement = document.querySelector('#close-join-private-match');
+  closeJoinPrivateMatchElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderGameMenuScreenEvent();
+  });
+
+  const privateRoomCodeButtonElement = document.querySelector('#private-room-code-button');
+  privateRoomCodeButtonElement.addEventListener('click', GAME_EVENTS.joinRoomEvent);
 }
 
 const renderLoginScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div id="sign-in-screen" class="box">
-      <div class="log-in-popup">
+    <div class="popup-container">
+      <div class="icon" id="close-log-in">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
 
-        <div id="close-log-in" class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </div>
-
-        <br />
-        <br />
-
-        <h1 class="game-font">Log In</h1>
-        
-        <br />
-        <br />
-
+      <div class="popup-head-container">
+        <h1>Log In</h1>
         <p id="sign-in-message"></p>
+      </div>
+      
+      <form id="log-in-form-container-1">
+        <input
+          id="sign-in-email"
+          type="email"
+          placeholder="Email"
+          autocomplete="off"
+        />
+
+        <input
+          id="sign-in-password"
+          type="password"
+          placeholder="Password"
+          autocomplete="off"
+        />
         
-        <br />
-        <br />
-        
-        <form id="sign-in-form">
-          <div>
-            <input
-              id="sign-in-email"
-              type="email"
-              placeholder="Email"
-              autocomplete="off"
-            />
-          </div>
+        <button id="sign-in-button" type="button">Confirm</button>
+      </form>
 
-          <br />
-          <br />
-
-          <div>
-            <input
-              id="sign-in-password"
-              type="password"
-              placeholder="Password"
-              autocomplete="off"
-            />
-          </div>
-
-          <br />
-          <br />
-          
-          <button id="sign-in-button" type="button">Confirm</button>
-        </form>
-    
-        <br />
-        <br />
-
-        <div class="sign-in-help-container">
-          <button type="button" id="sign-in-help-1">Can't log in?</button>
-          <button type="button" id="sign-in-help-2">Create account</button>
-        </div>
+      <div id="log-in-form-container-2">
+        <button type="button" id="sign-in-help-1">Can't log in?</button>
+        <button type="button" id="sign-in-help-2">Create account</button>
       </div>
     </div>
   `;
@@ -170,90 +244,55 @@ const renderSignUpScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div id="create-account-screen">
-      <div class="sign-up-popup">
+    <div class="popup-container">
+      <div class="icon" id="close-sign-up">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
 
-        <div id="close-sign-up" class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </div>
-
-        <br />
-        <br />
-
+      <div class="popup-head-container">
         <h1 class="game-font">Sign Up</h1>
-
-        <br />
-        <br />
-
         <p id="create-account-message"></p>
-        
-        <br />
-        <br />
+      </div>
 
-        <form id="create-account-form">
-          <div>
-            <input
-              id="create-account-email"
-              type="email"
-              placeholder="Email"
-              autocomplete="off"
-            />
-          </div>
+      <form id="sign-up-form-container-1">
+        <input
+          id="create-account-email"
+          type="email"
+          placeholder="Email"
+          autocomplete="off"
+        />
 
-          <br />
-          <br />
+        <input
+          id="create-account-username"
+          type="text"
+          placeholder="Username"
+          autocomplete="off"
+        />
 
-          <div>
-            <input
-              id="create-account-username"
-              type="text"
-              placeholder="Username"
-              autocomplete="off"
-            />
-          </div>
+        <input
+          id="create-account-password"
+          type="password"
+          placeholder="Password"
+          autocomplete="off"
+        />
 
-          <br />
-          <br />
+        <input
+          id="create-account-confirm-password"
+          type="password"
+          placeholder="Confirm Password"
+          autocomplete="off"
+        />
 
-          <div id="password">
-            <input
-              id="create-account-password"
-              type="password"
-              placeholder="Password"
-              autocomplete="off"
-            />
-          </div>
+        <button id="create-account-button" type="button">Confirm</button>
+      </form>
 
-          <br />
-          <br />
-
-          <div id="password">
-            <input
-              id="create-account-confirm-password"
-              type="password"
-              placeholder="Confirm Password"
-              autocomplete="off"
-            />
-          </div>
-
-          <br />
-          <br />
-
-          <button id="create-account-button" type="button">Confirm</button>
-        </form>
-
-        <br />
-        <br />
-
-        <div class="sign-up-help-container">
-          <button type="button" id="sign-up-help">Already have an account?</button>
-        </div>
+      <div id="sign-up-form-container-2">
+        <button type="button" id="sign-up-help">Already have an account?</button>
       </div>
     </div>
   `;
-  
 
   rootScreenElement.innerHTML = html;
 
@@ -277,68 +316,42 @@ const renderResetPasswordScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div id="reset-password-screen" class="box">
-      <div class="reset-password-popup">
-      
-        <div id="close-reset-password" class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </div>
-
-        <br />
-        <br />
-
-        <h1 class="game-font">Reset Password</h1>
-        
-        <br />
-        <br />
-
-        <p id="reset-password-message"></p>
-        
-        <br />
-        <br />
-
-        <form id="reset-password-form">
-          <div>
-            <input
-              id="reset-password-email"
-              type="email"
-              placeholder="Email"
-              autocomplete="off"
-            />
-          </div>
-
-          <br />
-          <br />
-
-          <div id="new-password">
-            <input
-              id="reset-password-new-password"
-              type="password"
-              placeholder="New Password"
-              autocomplete="off"
-            />
-          </div>
-
-          <br />
-          <br />
-
-          <div id="new-password">
-            <input
-              id="reset-password-confirm-new-password"
-              type="password"
-              placeholder="Confirm New Password"
-              autocomplete="off"
-            />
-          </div>
-
-          <br />
-          <br />
-
-          <button id="reset-password-button" type="button">Confirm</button>
-        </form>
+    <div class="popup-container">
+      <div class="icon" id="close-reset-password">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </div>
+
+      <div class="popup-head-container">
+        <h1>Reset Password</h1>
+        <p id="reset-password-message"></p>
+      </div>
+
+      <form id="reset-password-form-container">
+        <input
+          id="reset-password-email"
+          type="email"
+          placeholder="Email"
+          autocomplete="off"
+        />
+
+        <input
+          id="reset-password-new-password"
+          type="password"
+          placeholder="New Password"
+          autocomplete="off"
+        />
+
+        <input
+          id="reset-password-confirm-new-password"
+          type="password"
+          placeholder="Confirm New Password"
+          autocomplete="off"
+        />
+
+        <button id="reset-password-button" type="button">Confirm</button>
+      </form>
     </div>
   `;
 
@@ -356,6 +369,9 @@ const renderResetPasswordScreenEvent = async () => {
 
 export {
   renderGameMenuScreenEvent,
+  renderGameLobbyScreenEvent,
+  renderJoinPublicMatchScreenEvent,
+  renderJoinPrivateMatchScreenEvent,
   renderLoginScreenEvent,
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,

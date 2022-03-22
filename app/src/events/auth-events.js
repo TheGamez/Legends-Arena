@@ -4,7 +4,8 @@ import * as RENDER_EVENTS from './render-events.js';
 import GLOBAL_STATE from '../global.js';
 
 /* VARIABLES */
-const DEBUG = true;
+
+const DEBUG = false;
 
 /* FUNCTIONS */
 
