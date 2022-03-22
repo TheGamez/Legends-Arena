@@ -52,6 +52,7 @@ const joinRoomEvent = (io, socket, roomCode) => {
 const leaveRoomEvent = (io, socket, roomCode, roomPlayer) => {
   socket.leave(roomCode);
   socket.emit('renderGameMenuScreen');
+  
   io.to(roomCode).emit('testing', `Player ${roomPlayer} left the room.`);
 
   delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
