@@ -20,7 +20,7 @@ const createRoomEvent = (socket, isPrivate) => {
   const roomPlayer =  1;
 
   socket.join(roomCode);
-  socket.emit('renderGameLobby', { roomCode, roomPlayer });
+  socket.emit('renderGameLobbyScreen', { roomCode, roomPlayer });
 
   const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
   socket.broadcast.emit('setOpenRooms', openRooms);
@@ -41,9 +41,24 @@ const joinRoomEvent = (io, socket, roomCode) => {
   const roomPlayer = roomSocketsCount + 1;
 
   socket.join(roomCode);
-  socket.emit('renderGameLobby', { roomCode, roomPlayer });
+  socket.emit('renderGameLobbyScreen', { roomCode, roomPlayer });
 
   io.to(roomCode).emit('testing', `Player ${roomPlayer} joined the room.`);
+
+  const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
+  socket.broadcast.emit('setOpenRooms', openRooms);
+}
+
+const leaveRoomEvent = (io, socket, roomCode, roomPlayer) => {
+  socket.leave(roomCode);
+  socket.emit('renderGameMenuScreen');
+  io.to(roomCode).emit('testing', `Player ${roomPlayer} left the room.`);
+
+  delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
+  GLOBAL_STATE._gameSockets[socket.id] = '';
+
+  const roomSocketsCount = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).length;
+  if (roomSocketsCount === 0) delete GLOBAL_STATE._gameRooms[roomCode];
 
   const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
   socket.broadcast.emit('setOpenRooms', openRooms);
@@ -253,5 +268,6 @@ module.exports = {
   disconnectionEvent,
   createRoomEvent,
   joinRoomEvent,
+  leaveRoomEvent,
   getOpenRoomsEvent,
 };

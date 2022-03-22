@@ -30,6 +30,12 @@ const joinRoomEvent = (event, roomCode) => {
   // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
 }
 
+const leaveRoomEvent = (event, roomCode, roomPlayer) => {
+  event.preventDefault();
+
+  GLOBAL_STATE.socket.emit('leaveRoom', { roomCode, roomPlayer });
+}
+
 const roomStatusEvent = (message) => {
   const joinMatchMessageElement = document.querySelector('#join-match-message');
   joinMatchMessageElement.innerText = message;
@@ -114,6 +120,7 @@ export {
   // setGameStateEvent,
   createRoomEvent,
   joinRoomEvent,
+  leaveRoomEvent,
   roomStatusEvent,
   getOpenRoomsEvent,
   setOpenRoomsEvent,

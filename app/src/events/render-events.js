@@ -75,6 +75,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer }) => {
       <h1>Game Room</h1>
       <p id="room-code"></p>
       <div id="room-players"></div>
+      <button type="button" id="leave-room-button">Leave</button>
     </div>
   `;
 
@@ -85,6 +86,9 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer }) => {
 
   const roomPlayersElement = document.querySelector('#room-players');
   roomPlayersElement.append(`Player ${roomPlayer}`);
+
+  const leaveRoomButton = document.querySelector('#leave-room-button');
+  leaveRoomButton.addEventListener('click', (event) => GAME_EVENTS.leaveRoomEvent(event, roomCode, roomPlayer));
 }
 
 const renderJoinPublicMatchScreenEvent = () => {
