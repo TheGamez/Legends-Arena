@@ -67,11 +67,24 @@ const renderGameMenuScreenEvent = async () => {
   joinPrivateMatchElement.addEventListener('click', renderJoinPrivateMatchScreenEvent);
 }
 
-const renderGameLobbyScreenEvent = () => {
+const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer }) => {
   rootScreenElement.innerHTML = '';
 
+  const html = `
+    <div>
+      <h1>Game Room</h1>
+      <p id="room-code"></p>
+      <div id="room-players"></div>
+    </div>
+  `;
 
+  rootScreenElement.innerHTML = html;
 
+  const roomCodeElement = document.querySelector('#room-code');
+  roomCodeElement.innerText = roomCode;
+
+  const roomPlayersElement = document.querySelector('#room-players');
+  roomPlayersElement.append(`Player ${roomPlayer}`);
 }
 
 const renderJoinPublicMatchScreenEvent = () => {

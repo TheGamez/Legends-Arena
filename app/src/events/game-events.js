@@ -78,17 +78,6 @@ const setOpenRoomsEvent = (openRooms) => {
   }
 }
 
-const setRoomCodeEvent = (roomCode) => {
-  console.log('roomCode:', roomCode);
-  const roomCodeElement = document.querySelector('#room-code');
-  roomCodeElement.innerText = roomCode;
-}
-
-const setPlayerEvent = (number) => {
-  console.log('player:', number);
-  // GLOBAL_STATE.player = number;
-}
-
 // const resetGameEvent = (message) => {
 //   const roomCodeInputElement = document.querySelector('#room-code-input');
 //   const roomCodeElement = document.querySelector('#room-code');
@@ -128,6 +117,4 @@ export {
   roomStatusEvent,
   getOpenRoomsEvent,
   setOpenRoomsEvent,
-  setRoomCodeEvent,
-  setPlayerEvent,
 };
