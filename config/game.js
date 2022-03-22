@@ -205,12 +205,12 @@ const createRoomEvent = (socket, isPrivate) => {
 const joinRoomEvent = (socket, roomCode) => {
   const room = GLOBAL_STATE._gameRooms[roomCode];
 
-  if (!room) return socket.emit('roomNotFound', 'No matches found with the given room code.');
+  if (!room) return socket.emit('roomNotFound', 'Room not found.');
 
   const roomSocketsCount = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).length;
 
-  if (roomSocketsCount === 0) return socket.emit('roomEmpty', 'Room Empty.');
-  if (roomSocketsCount === GLOBAL_STATE.MAX_PLAYERS) return socket.emit('roomFull', 'Room Full.');
+  if (roomSocketsCount === 0) return socket.emit('roomEmpty', 'Room is empty.');
+  if (roomSocketsCount === GLOBAL_STATE.MAX_PLAYERS) return socket.emit('roomFull', 'Room is full.');
 
   GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id] = roomCode;
   GLOBAL_STATE._gameSockets[socket.id] = roomCode;
