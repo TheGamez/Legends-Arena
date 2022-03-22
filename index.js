@@ -10,11 +10,13 @@ const { Server } = require('socket.io');
 
 // config
 const pool = require('./config/pg');
-const connectToGame = require('./config/game');
 
 // routes
 const authenticationRoutes = require('./routes/authentication-routes');
 const userRoutes = require('./routes/user-routes');
+
+// events
+const GAME_EVENTS = require('./events/game-events');
 
 // constants
 const PORT = process.env.PORT || 8000;
@@ -48,4 +50,10 @@ app.use('/users', userRoutes);
 server.listen(PORT, () => console.log(`[SERVER] http://localhost:${PORT}`));
 
 // app - game
-connectToGame(io);
+io.on('connect', (socket) => {
+  socket.on('disconnect', () => GAME_EVENTS.disconnectionEvent(socket));
+  socket.on('createRoom', (isPrivate) => GAME_EVENTS.createRoomEvent(socket, isPrivate));
+  socket.on('joinRoom', (roomCode) => GAME_EVENTS.joinRoomEvent(socket, roomCode));
+  socket.on('getOpenRooms', () => GAME_EVENTS.getOpenRoomsEvent(socket));
+  // socket.on('keydown', (keyInputCode) => keyDownEvent(socket, keyInputCode));
+});
