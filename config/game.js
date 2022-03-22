@@ -129,7 +129,7 @@ const keyDownEvent = (socket, keyInputCode) => {
 }
 
 // const joinGameEvent = (socket, io, roomCode) => {
-//   const room = io.sockets.adapter.rooms.get(roomCode);
+//   const room = io.sockets.adapter._gameRooms.get(roomCode);
 //   const roomValue = room.values().next().value;
 
 //   let numClients;
@@ -191,15 +191,17 @@ const createPublicMatchEvent = (socket) => {
 
   const sockets = {};
   sockets[socket.id] = roomCode;
-  GLOBAL_STATE.rooms[roomCode] = { isPrivate: false, sockets };
 
-  const publicRooms = Object.values(GLOBAL_STATE.rooms).filter(room => room.isPrivate === false);
-  
+  GLOBAL_STATE._gameRooms[roomCode] = { isPrivate: false, sockets };
+  GLOBAL_STATE._gameSockets[socket.id] = roomCode;
+
+  const publicRooms = Object.keys(GLOBAL_STATE._gameRooms).filter(room => room.isPrivate === false);
+  const player =  1;
+
   socket.emit('roomCode', roomCode);
   socket.emit('publicMatches', publicRooms);
   socket.join(roomCode);
-  socket.number = 1;
-  socket.emit('player', 1);
+  socket.emit('player', player);
 }
 
 const createPrivateMatchEvent = (socket) => {
@@ -207,76 +209,75 @@ const createPrivateMatchEvent = (socket) => {
 
   const sockets = {};
   sockets[socket.id] = roomCode;
-  GLOBAL_STATE.rooms[roomCode] = { isPrivate: true, sockets };
 
-  const privateRooms = Object.values(GLOBAL_STATE.rooms).filter(room => room.isPrivate === true);
+  GLOBAL_STATE._gameRooms[roomCode] = { isPrivate: true, sockets };
+  GLOBAL_STATE._gameSockets[socket.id] = roomCode;
+
+  const privateRooms = Object.keys(GLOBAL_STATE._gameRooms).filter(room => room.isPrivate === true);
+  const player =  1;
 
   socket.emit('roomCode', roomCode);
   socket.emit('privateMatches', privateRooms);
   socket.join(roomCode);
-  socket.number = 1;
-  socket.emit('player', 1);
+  socket.emit('player', player);
 }
 
-const joinPublicMatchEvent = (io, socket, roomCode) => {
-  const room = io.sockets.adapter.rooms.get(roomCode);
-
-  if (!room) return socket.emit('roomNotFound', 'No matches found with the given room code.');
-  
-  const roomValue = room.values().next().value;
-
-  let clientsCount;
-  if (roomValue) clientsCount = room.size;
-
-  if (clientsCount === 0) {
-    socket.emit('roomEmpty', 'Room Empty.');
-    return;
-  } else if (clientsCount > GLOBAL_STATE.MAX_PLAYERS - 1) {
-    socket.emit('roomFull', 'Room Full.');
-    return;
-  }
-
-  GLOBAL_STATE.rooms[roomCode].sockets[socket.id] = roomCode;
-
-  socket.join(roomCode);
-  socket.number = clientsCount + 1;
-  socket.emit('player', clientsCount + 1);
-}
-
-const joinPrivateMatchEvent = (io, socket, roomCode) => {
-  const room = io.sockets.adapter.rooms.get(roomCode);
+const joinPublicMatchEvent = (socket, roomCode) => {
+  const room = GLOBAL_STATE._gameRooms[roomCode];
 
   if (!room) return socket.emit('roomNotFound', 'No matches found with the given room code.');
 
-  const roomValue = room.values().next().value;
+  const roomSocketsCount = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).length;
 
-  let clientsCount;
-  if (roomValue) clientsCount = room.size;
+  if (roomSocketsCount === 0) return socket.emit('roomEmpty', 'Room Empty.');
+  if (roomSocketsCount === GLOBAL_STATE.MAX_PLAYERS) return socket.emit('roomFull', 'Room Full.');
 
-  if (clientsCount === 0) {
-    socket.emit('roomEmpty', 'Room Empty.');
-    return;
-  } else if (clientsCount > GLOBAL_STATE.MAX_PLAYERS - 1) {
-    socket.emit('roomFull', 'Room Full.');
-    return;
-  }
+  GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id] = roomCode;
+  GLOBAL_STATE._gameSockets[socket.id] = roomCode;
 
-  GLOBAL_STATE.rooms[roomCode].sockets[socket.id] = roomCode;
+  const player = roomSocketsCount + 1;
 
   socket.join(roomCode);
-  socket.number = clientsCount + 1;
-  socket.emit('player', clientsCount + 1);
+  socket.emit('player', player);
+}
+
+const joinPrivateMatchEvent = (socket, roomCode) => {
+  const room = GLOBAL_STATE._gameRooms[roomCode];
+
+  if (!room) return socket.emit('roomNotFound', 'No matches found with the given room code.');
+
+  const roomSocketsCount = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).length;
+
+  if (roomSocketsCount === 0) return socket.emit('roomEmpty', 'Room Empty.');
+  if (roomSocketsCount === GLOBAL_STATE.MAX_PLAYERS) return socket.emit('roomFull', 'Room Full.');
+
+  GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id] = roomCode;
+  GLOBAL_STATE._gameSockets[socket.id] = roomCode;
+
+  const player = roomSocketsCount + 1;
+
+  socket.join(roomCode);
+  socket.emit('player', player);
 }
 
 const getAvailablePublicMatchesEvent = (socket) => {
-  const availablePublicRooms = Object.fromEntries(Object.entries(GLOBAL_STATE.rooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
+  const availablePublicRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
 
   socket.emit('setAvailablePublicMatches', availablePublicRooms);
 }
 
 const disconnectionEvent = (socket) => {
-  // GLOBAL_STATE.rooms[roomCode].sockets[socket.id] = roomCode;
-  console.log('DISCONNECTED:', socket.id);
+  const roomCode = GLOBAL_STATE._gameSockets[socket.id];
+  
+  if (roomCode) delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
+
+  delete GLOBAL_STATE._gameSockets[socket.id];
+
+  if (roomCode) {
+    const roomSocketsCount = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).length;
+
+    if (roomSocketsCount === 0) delete GLOBAL_STATE._gameRooms[roomCode];
+  }
 }
 
 /* EVENTS */
@@ -284,12 +285,11 @@ const disconnectionEvent = (socket) => {
 const connectToGame = (io) => {
   io.on('connect', (socket) => {
     socket.on('disconnect', () => disconnectionEvent(socket));
-
     socket.on('keydown', (keyInputCode) => keyDownEvent(socket, keyInputCode));
     socket.on('createPublicMatch', () => createPublicMatchEvent(socket));
     socket.on('createPrivateMatch', () => createPrivateMatchEvent(socket));
-    socket.on('joinPublicMatch', (roomCode) => joinPublicMatchEvent(io, socket, roomCode));
-    socket.on('joinPrivateMatch', (roomCode) => joinPrivateMatchEvent(io, socket, roomCode));
+    socket.on('joinPublicMatch', (roomCode) => joinPublicMatchEvent(socket, roomCode));
+    socket.on('joinPrivateMatch', (roomCode) => joinPrivateMatchEvent(socket, roomCode));
     socket.on('getAvailablePublicMatches', () => getAvailablePublicMatchesEvent(socket));
   });
 }
