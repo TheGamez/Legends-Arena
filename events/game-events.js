@@ -26,7 +26,6 @@ const createRoomEvent = (socket, isPrivate) => {
 
 const joinRoomEvent = (socket, roomCode) => {
   const room = GLOBAL_STATE._gameRooms[roomCode];
-
   if (!room) return socket.emit('roomNotFound', 'Room not found.');
 
   const roomSocketsCount = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).length;
@@ -41,26 +40,29 @@ const joinRoomEvent = (socket, roomCode) => {
 
   socket.join(roomCode);
   socket.emit('player', player);
+
+  const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
+  socket.broadcast.emit('setOpenRooms', openRooms);
 }
 
 const getOpenRoomsEvent = (socket) => {
   const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
-
   socket.emit('setOpenRooms', openRooms);
 }
 
 const disconnectionEvent = (socket) => {
   const roomCode = GLOBAL_STATE._gameSockets[socket.id];
-  
   if (roomCode) delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
-
+  
   delete GLOBAL_STATE._gameSockets[socket.id];
 
   if (roomCode) {
     const roomSocketsCount = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).length;
-
     if (roomSocketsCount === 0) delete GLOBAL_STATE._gameRooms[roomCode];
   }
+
+  const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
+  socket.broadcast.emit('setOpenRooms', openRooms);
 }
 
 /* THIS CODE WILL BE REFACTORED AND USED IN ITERATION 3 */

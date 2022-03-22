@@ -41,37 +41,41 @@ const getOpenRoomsEvent = () => {
 
 const setOpenRoomsEvent = (openRooms) => {
   const openRoomsElement = document.querySelector('#join-public-match-form-container-2');
+
+  if (openRoomsElement) {
+    openRoomsElement.innerHTML = '';
+
+    const matches = Object.entries(openRooms);
   
-  const matches = Object.entries(openRooms);
-
-  if (matches.length === 0) openRoomsElement.innerHTML = `<div class="text-center">No matches found.</div>`;
-
-  matches.forEach(match => {
-    const roomCode = match[0];
-    const playerCount = Object.values(match[1].sockets).length;
-
-    const divElement = document.createElement('div');
-    divElement.className = 'join-public-match-wrapper';
-
-    const pElement1 = document.createElement('p');
-    pElement1.innerText = 'Free For All';
-
-    const pElement2 = document.createElement('p');
-    pElement2.innerText = `Players [${playerCount} / ${GLOBAL_STATE.maxPlayerCount}]`;
-
-    const buttonElement = document.createElement('button');
-    buttonElement.type = 'button';
-    buttonElement.innerText = 'Join';
-    buttonElement.addEventListener('click', (event) => joinRoomEvent(event, roomCode));
-
-    divElement.append(
-      pElement1,
-      pElement2,
-      buttonElement,
-    );
-
-    openRoomsElement.append(divElement);
-  });
+    if (matches.length === 0) openRoomsElement.innerHTML = `<div class="text-center">No matches found.</div>`;
+  
+    matches.forEach(match => {
+      const roomCode = match[0];
+      const playerCount = Object.values(match[1].sockets).length;
+  
+      const divElement = document.createElement('div');
+      divElement.className = 'join-public-match-wrapper';
+  
+      const pElement1 = document.createElement('p');
+      pElement1.innerText = 'Free For All';
+  
+      const pElement2 = document.createElement('p');
+      pElement2.innerText = `Players [${playerCount} / ${GLOBAL_STATE.maxPlayerCount}]`;
+  
+      const buttonElement = document.createElement('button');
+      buttonElement.type = 'button';
+      buttonElement.innerText = 'Join';
+      buttonElement.addEventListener('click', (event) => joinRoomEvent(event, roomCode));
+  
+      divElement.append(
+        pElement1,
+        pElement2,
+        buttonElement,
+      );
+  
+      openRoomsElement.append(divElement);
+    });
+  }
 }
 
 const setRoomCodeEvent = (roomCode) => {
