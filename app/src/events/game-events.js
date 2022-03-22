@@ -5,108 +5,46 @@ import GLOBAL_STATE from '../global.js';
 
 /* FUNCTIONS */
 
-const createPublicMatchEvent = (event) => {
+const createRoomEvent = (event, isPrivate) => {
   event.preventDefault();
 
-  GLOBAL_STATE.socket.emit('createPublicMatch');
+  GLOBAL_STATE.socket.emit('createRoom', isPrivate);
 
   // THREE_CONFIG.initializeGame();
   // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
 }
 
-const createPrivateMatchEvent = (event) => {
-  event.preventDefault();
-
-  GLOBAL_STATE.socket.emit('createPrivateMatch');
-
-  // THREE_CONFIG.initializeGame();
-  // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
-}
-
-const joinPublicMatchEvent = (event, roomCode) => {
+const joinRoomEvent = (event, roomCode) => {
   event.preventDefault();
 
   let _roomCode = roomCode;
 
   if (!_roomCode) {
-    const roomCodeInputElement = document.querySelector('#public-room-code-input');
+    const roomCodeInputElement = document.querySelector('#room-code-input');
     _roomCode = roomCodeInputElement.value;
   }
 
-  GLOBAL_STATE.socket.emit('joinPublicMatch', _roomCode);
+  GLOBAL_STATE.socket.emit('joinRoom', _roomCode);
 
   // THREE_CONFIG.initializeGame();
   // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
 }
 
-const joinPrivateMatchEvent = (event) => {
-  event.preventDefault();
-
-  const roomCodeInputElement = document.querySelector('#private-room-code-input');
-  const roomCode = roomCodeInputElement.value;
-
-  GLOBAL_STATE.socket.emit('joinPrivateMatch', roomCode);
-
-  // THREE_CONFIG.initializeGame();
-  // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
-}
-
-const setPublicMatchesEvent = (publicMatches) => {
-  console.log('publicMatches:', publicMatches);
-}
-
-const setPrivateMatchesEvent = (privateMatches) => {
-  console.log('privateMatches:', privateMatches);
-}
-
-const setRoomCodeEvent = (roomCode) => {
-  console.log('roomCode:', roomCode);
-  const roomCodeElement = document.querySelector('#room-code');
-  roomCodeElement.innerText = roomCode;
-}
-
-const setPlayerEvent = (number) => {
-  console.log('player:', number);
-  // GLOBAL_STATE.player = number;
-}
-
-const roomEmptyEvent = (message) => {
-  // const roomCodeInputElement = document.querySelector('#room-code-input');
-  // const roomCodeElement = document.querySelector('#room-code');
-
-  // GLOBAL_STATE.player = null;
-  // roomCodeInputElement.value = '';
-  // roomCodeElement.innerText = '';
-  alert(message);
-}
-
-const roomFullEvent = (message) => {
-  // const roomCodeInputElement = document.querySelector('#room-code-input');
-  // const roomCodeElement = document.querySelector('#room-code');
-
-  // GLOBAL_STATE.player = null;
-  // roomCodeInputElement.value = '';
-  // roomCodeElement.innerText = '';
-  alert(message);
-}
-
-const roomNotFoundEvent = (message) => {
+const roomStatusEvent = (message) => {
   const joinMatchMessageElement = document.querySelector('#join-match-message');
   joinMatchMessageElement.innerText = message;
 }
 
-const getAvailablePublicMatchesEvent = () => {
-  GLOBAL_STATE.socket.emit('getAvailablePublicMatches');
+const getOpenRoomsEvent = () => {
+  GLOBAL_STATE.socket.emit('getOpenRooms');
 }
 
-const setAvailablePublicMatchesEvent = (availablePublicRooms) => {
-  const availablePublicMatchesElement = document.querySelector('#join-public-match-form-container-2');
+const setOpenRoomsEvent = (openRooms) => {
+  const openRoomsElement = document.querySelector('#join-public-match-form-container-2');
   
-  const matches = Object.entries(availablePublicRooms);
-  
-  console.log(matches);
+  const matches = Object.entries(openRooms);
 
-  if (matches.length === 0) availablePublicMatchesElement.innerHTML = `<div class="text-center">No matches found.</div>`;
+  if (matches.length === 0) openRoomsElement.innerHTML = `<div class="text-center">No matches found.</div>`;
 
   matches.forEach(match => {
     const roomCode = match[0];
@@ -124,7 +62,7 @@ const setAvailablePublicMatchesEvent = (availablePublicRooms) => {
     const buttonElement = document.createElement('button');
     buttonElement.type = 'button';
     buttonElement.innerText = 'Join';
-    buttonElement.addEventListener('click', (event) => joinPublicMatchEvent(event, roomCode));
+    buttonElement.addEventListener('click', (event) => joinRoomEvent(event, roomCode));
 
     divElement.append(
       pElement1,
@@ -132,8 +70,19 @@ const setAvailablePublicMatchesEvent = (availablePublicRooms) => {
       buttonElement,
     );
 
-    availablePublicMatchesElement.append(divElement);
+    openRoomsElement.append(divElement);
   });
+}
+
+const setRoomCodeEvent = (roomCode) => {
+  console.log('roomCode:', roomCode);
+  const roomCodeElement = document.querySelector('#room-code');
+  roomCodeElement.innerText = roomCode;
+}
+
+const setPlayerEvent = (number) => {
+  console.log('player:', number);
+  // GLOBAL_STATE.player = number;
 }
 
 // const resetGameEvent = (message) => {
@@ -170,17 +119,11 @@ export {
   // resetGameEvent,
   // gameOverEvent,
   // setGameStateEvent,
-  createPublicMatchEvent,
-  createPrivateMatchEvent,
-  joinPublicMatchEvent,
-  joinPrivateMatchEvent,
-  setPublicMatchesEvent,
-  setPrivateMatchesEvent,
+  createRoomEvent,
+  joinRoomEvent,
+  roomStatusEvent,
+  getOpenRoomsEvent,
+  setOpenRoomsEvent,
   setRoomCodeEvent,
   setPlayerEvent,
-  roomEmptyEvent,
-  roomFullEvent,
-  roomNotFoundEvent,
-  getAvailablePublicMatchesEvent,
-  setAvailablePublicMatchesEvent,
 };

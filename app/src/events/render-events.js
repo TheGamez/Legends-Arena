@@ -61,9 +61,9 @@ const renderGameMenuScreenEvent = async () => {
   const joinPublicMatchElement = document.querySelector('#join-public-match');
   const joinPrivateMatchElement = document.querySelector('#join-private-match');
 
-  createPublicMatchElement.addEventListener('click', GAME_EVENTS.createPublicMatchEvent);
+  createPublicMatchElement.addEventListener('click', (event) => GAME_EVENTS.createRoomEvent(event, false));
   joinPublicMatchElement.addEventListener('click', renderJoinPublicMatchScreenEvent);
-  createPrivateMatchElement.addEventListener('click', GAME_EVENTS.createPrivateMatchEvent);
+  createPrivateMatchElement.addEventListener('click', (event) => GAME_EVENTS.createRoomEvent(event, true));
   joinPrivateMatchElement.addEventListener('click', renderJoinPrivateMatchScreenEvent);
 }
 
@@ -92,7 +92,7 @@ const renderJoinPublicMatchScreenEvent = () => {
       
       <form id="join-public-match-form-container-1">
         <input
-          id="public-room-code-input"
+          id="room-code-input"
           type="text"
           placeholder="Enter Room Code"
           autocomplete="off"
@@ -116,9 +116,9 @@ const renderJoinPublicMatchScreenEvent = () => {
   });
 
   const publicRoomCodeButtonElement = document.querySelector('#public-room-code-button');
-  publicRoomCodeButtonElement.addEventListener('click', GAME_EVENTS.joinPublicMatchEvent);
+  publicRoomCodeButtonElement.addEventListener('click', GAME_EVENTS.joinRoomEvent);
 
-  GAME_EVENTS.getAvailablePublicMatchesEvent();
+  GAME_EVENTS.getOpenRoomsEvent();
 }
 
 const renderJoinPrivateMatchScreenEvent = () => {
@@ -139,7 +139,7 @@ const renderJoinPrivateMatchScreenEvent = () => {
       
       <form id="join-private-match-form-container">
         <input
-          id="private-room-code-input"
+          id="room-code-input"
           type="text"
           placeholder="Enter Room Code"
           autocomplete="off"
@@ -159,7 +159,7 @@ const renderJoinPrivateMatchScreenEvent = () => {
   });
 
   const privateRoomCodeButtonElement = document.querySelector('#private-room-code-button');
-  privateRoomCodeButtonElement.addEventListener('click', GAME_EVENTS.joinPrivateMatchEvent);
+  privateRoomCodeButtonElement.addEventListener('click', GAME_EVENTS.joinRoomEvent);
 }
 
 const renderLoginScreenEvent = async () => {
