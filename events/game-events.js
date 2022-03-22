@@ -21,9 +21,12 @@ const createRoomEvent = (socket, isPrivate) => {
 
   socket.join(roomCode);
   socket.emit('renderGameLobby', { roomCode, roomPlayer });
+
+  const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
+  socket.broadcast.emit('setOpenRooms', openRooms);
 }
 
-const joinRoomEvent = (socket, roomCode) => {
+const joinRoomEvent = (io, socket, roomCode) => {
   const room = GLOBAL_STATE._gameRooms[roomCode];
   if (!room) return socket.emit('roomNotFound', 'Room not found.');
 
@@ -39,6 +42,8 @@ const joinRoomEvent = (socket, roomCode) => {
 
   socket.join(roomCode);
   socket.emit('renderGameLobby', { roomCode, roomPlayer });
+
+  io.to(roomCode).emit('testing', `Player ${roomPlayer} joined the room.`);
 
   const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
   socket.broadcast.emit('setOpenRooms', openRooms);
