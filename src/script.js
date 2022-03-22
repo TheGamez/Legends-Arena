@@ -45,7 +45,7 @@ const textureLoader = new THREE.TextureLoader(loadingManager)
 // --END: Texture ------------------------------------------------------------------------------
 
 // --BEGIN: Lights ------------------------------------------------------------------------------
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.6)
+const ambientLight = new THREE.AmbientLight(0xffffff, 3.0)
 scene.add(ambientLight)
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6)
@@ -71,8 +71,7 @@ const sizes = {
 
 // Camera
 const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.01, 10000)
-camera.position.set(48, 105, -101)
-//camera.position.set(5, 1, 10)
+camera.position.set(0, 105, -101)
 camera.rotation.set(-2.3, 0.32, 2.8)
 scene.add(camera)
 
@@ -93,13 +92,18 @@ const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
 
 
-var characterController;
+var characterController
+var mixer
+
 gltfLoader.load('/models/monster.glb', (gltf) => {
   let monster = gltf.scene
   monster = gltf.scene
   monster.position.x = 5
   monster.position.z = -10
   scene.add(monster)
+
+  mixer = new THREE.AnimationMixer(monster)
+  mixer.clipAction(gltf.animations[1]).play()
 
   characterController = new CharacterController(monster, camera, controls)
 })
@@ -201,6 +205,7 @@ const tick = () => {
   let deltaTime = clock.getDelta();
   if (characterController && isPressed) {
     characterController.update(deltaTime, key);
+    mixer.update(deltaTime);
   }
 
   // Update controls

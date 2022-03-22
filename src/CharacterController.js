@@ -13,7 +13,7 @@ export class CharacterController {
         this.rotateAngle = new THREE.Vector3(0, 1, 0)
         this.rotateQuarternion = new THREE.Quaternion()
         this.cameraTarget = new THREE.Vector3()
-        this.runVeclocity = 15
+        this.veclocity = 15
 
         this.updateCameraTarget(0,0)
 
@@ -39,8 +39,8 @@ export class CharacterController {
         var offest = this.move(key)
         this.walkDirection.applyAxisAngle(this.rotateAngle, offest)
 
-        const moveX = this.walkDirection.x * this.runVeclocity * tick
-        const moveZ = this.walkDirection.z * this.runVeclocity * tick
+        const moveX = this.walkDirection.x * this.veclocity * tick
+        const moveZ = this.walkDirection.z * this.veclocity * tick
         this.model.position.x += moveX
         this.model.position.z += moveZ
         this.updateCameraTarget(moveX, moveZ)
@@ -82,6 +82,7 @@ export class CharacterController {
             directionOffset = - Math.PI / 2
         }
 
+        this.model.rotation.y = directionOffset
         return directionOffset
     }
 
