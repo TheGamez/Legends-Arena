@@ -33,7 +33,8 @@ const renderGameMenuScreenEvent = async () => {
       
       <div class="game-menu-screen-body">
         <div id="simple-stats" class="game-font">
-          Stats:
+          Statistics
+          djdjjjjjjjjjjjjjjjjj
         </div>
 
         <div id="local-online-buttons-space">
@@ -354,9 +355,28 @@ const renderResetPasswordScreenEvent = async () => {
   });
 }
 
+const rendergameStatisticsEvent = async () => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <div id="game-statistics">
+      <h1>Statistics</h1>
+      <br>
+      <p>current level: </p>
+      <br>
+      <p>total losses:  </p>
+      <p>total wins:  </p>
+    </div>
+  `;
+
+  rootScreenElement.innerHTML = html;
+
+}
+
 export {
   renderGameMenuScreenEvent,
   renderLoginScreenEvent,
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,
+  rendergameStatisticsEvent,
 };
