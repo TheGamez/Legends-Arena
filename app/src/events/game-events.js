@@ -5,13 +5,10 @@ import GLOBAL_STATE from '../global.js';
 
 /* FUNCTIONS */
 
-const createRoomEvent = (event, isPrivate) => {
+const createRoomEvent = (event, isRoomPrivate) => {
   event.preventDefault();
 
-  GLOBAL_STATE.socket.emit('createRoom', isPrivate);
-
-  // THREE_CONFIG.initializeGame();
-  // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
+  GLOBAL_STATE.socket.emit('createRoom', { isRoomPrivate, user: GLOBAL_STATE.user });
 }
 
 const joinRoomEvent = (event, roomCode) => {
@@ -24,10 +21,7 @@ const joinRoomEvent = (event, roomCode) => {
     _roomCode = roomCodeInputElement.value;
   }
 
-  GLOBAL_STATE.socket.emit('joinRoom', _roomCode);
-
-  // THREE_CONFIG.initializeGame();
-  // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
+  GLOBAL_STATE.socket.emit('joinRoom', { roomCode: _roomCode, user: GLOBAL_STATE.user });
 }
 
 const leaveRoomEvent = (event, roomCode, roomPlayer) => {
@@ -84,6 +78,8 @@ const setOpenRoomsEvent = (openRooms) => {
   }
 }
 
+/* THIS CODE WILL BE REFACTORED AND USED IN ITERATION 3 */
+
 // const resetGameEvent = (message) => {
 //   const roomCodeInputElement = document.querySelector('#room-code-input');
 //   const roomCodeElement = document.querySelector('#room-code');
@@ -115,9 +111,6 @@ const setOpenRoomsEvent = (openRooms) => {
 // }
 
 export {
-  // resetGameEvent,
-  // gameOverEvent,
-  // setGameStateEvent,
   createRoomEvent,
   joinRoomEvent,
   leaveRoomEvent,
