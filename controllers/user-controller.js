@@ -2,7 +2,7 @@
 /* FUNCTIONS */
 
 const authenticateUser = (req, res) => {
-  res.json({ isAuthenticated: true });
+  res.json({ user: req.session.user });
 }
 
 const user404NotFound = (req, res) => {

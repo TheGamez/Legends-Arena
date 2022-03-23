@@ -36,7 +36,7 @@ const renderGameMenuScreenEvent = async () => {
 
   rootScreenElement.innerHTML = html;
 
-  if (GLOBAL_STATE.isAuthenticated) {
+  if (GLOBAL_STATE.user) {
     const signOutButtonElement = document.querySelector('#sign-out-button');
     signOutButtonElement.style.display = 'block';
     signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);    

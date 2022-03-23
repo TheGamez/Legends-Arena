@@ -4,16 +4,12 @@ import { io } from 'socket.io-client';
 
 /* GLOBAL STATE */
 
-const DEBUG = false;
+const DEBUG = true;
 
 const GLOBAL_STATE = {
+  MAX_PLAYERS: 4,
   socket: io(),
-  isGameActive: false,
-  player: undefined,
-  isAuthenticated: false,
-  isAccountCreated: false,
-  isPasswordReset: false,
-  maxPlayerCount: 4,
+  user: undefined,
 };
 
 if (DEBUG) console.log('[GLOBAL_STATE]', GLOBAL_STATE);

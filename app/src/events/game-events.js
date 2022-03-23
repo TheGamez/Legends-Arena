@@ -66,7 +66,7 @@ const setOpenRoomsEvent = (openRooms) => {
       pElement1.innerText = 'Free For All';
   
       const pElement2 = document.createElement('p');
-      pElement2.innerText = `Players [${playerCount} / ${GLOBAL_STATE.maxPlayerCount}]`;
+      pElement2.innerText = `Players [${playerCount} / ${GLOBAL_STATE.MAX_PLAYERS}]`;
   
       const buttonElement = document.createElement('button');
       buttonElement.type = 'button';
