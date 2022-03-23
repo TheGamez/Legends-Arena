@@ -70,23 +70,7 @@ const renderGameMenuScreenEvent = async () => {
 const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer }) => {
   rootScreenElement.innerHTML = '';
 
-  const html = `
-    <div>
-      <h1>Game Room</h1>
-      <p id="room-code"></p>
-      <div id="room-players"></div>
-      <br>
-        <div id="game-statistics">
-          <h1>Statistics</h1>
-          <p>current level: 0 lv</p>
-          <p>total losses: 1 </p>
-          <p>total wins: 5 </p>
-        </div>
-
-    </div>
-  `;
-
-  rootScreenElement.innerHTML = html;
+   rendergameStatisticsEvent();
 
   const roomCodeElement = document.querySelector('#room-code');
   roomCodeElement.innerText = roomCode;
@@ -376,17 +360,24 @@ const renderResetPasswordScreenEvent = async () => {
 }
 
 const rendergameStatisticsEvent = async () => {
+
   rootScreenElement.innerHTML = '';
 
   const html = `
+  <div>
+    <h1>Game Room</h1>
+    <p id="room-code"></p>
+    <div id="room-players"></div>
+    <br>
+  </div>
+
     <div id="game-statistics">
       <h1>Statistics</h1>
-      <p>current level: 0 lv</p>
-      <p>total losses: 1 </p>
-      <p>total wins: 5 </p>
+      <p id="current-level">current level: </p>
+      <p id="total-losses">total losses: </p>
+      <p id="total-wins">total wins: </p>
     </div>
   `;
-
   rootScreenElement.innerHTML = html;
 
 }
@@ -399,4 +390,5 @@ export {
   renderLoginScreenEvent,
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,
+  rendergameStatisticsEvent,
 };
