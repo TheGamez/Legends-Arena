@@ -274,3 +274,16 @@ input[type=text] {
   flex-direction: column;
   gap: 20px;
 }
+
+#game-statistics{
+  background-color: #E1B764;
+  border: solid 3px var(--color-black);
+  border-radius: 30px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  width: 400px;
+  padding: 20px;
+}

@@ -75,12 +75,10 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer }) => {
       <h1>Game Room</h1>
       <p id="room-code"></p>
       <div id="room-players"></div>
-      
+      <br>
         <div id="game-statistics">
           <h1>Statistics</h1>
-          <br>
           <p>current level: 0 lv</p>
-          <br>
           <p>total losses: 1 </p>
           <p>total wins: 5 </p>
         </div>
@@ -383,9 +381,7 @@ const rendergameStatisticsEvent = async () => {
   const html = `
     <div id="game-statistics">
       <h1>Statistics</h1>
-      <br>
       <p>current level: 0 lv</p>
-      <br>
       <p>total losses: 1 </p>
       <p>total wins: 5 </p>
     </div>
