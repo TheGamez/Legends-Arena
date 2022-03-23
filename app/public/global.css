@@ -278,7 +278,6 @@ input[type=text] {
 #game-statistics{
   background-color: #E1B764;
   border: solid 3px var(--color-black);
-  border-radius: 30px;
 
   display: flex;
   flex-direction: column;
