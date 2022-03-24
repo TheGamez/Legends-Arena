@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { Quaternion } from 'three'
 
 
 //class for character controller
@@ -13,7 +14,7 @@ export class CharacterController {
         this.rotateAngle = new THREE.Vector3(0, 1, 0)
         this.rotateQuarternion = new THREE.Quaternion()
         this.cameraTarget = new THREE.Vector3()
-        this.veclocity = 15
+        this.veclocity = 20
 
         this.updateCameraTarget(0,0)
 
@@ -29,14 +30,14 @@ export class CharacterController {
     }
 
     update(tick, key) {
+        var offest = this.move(key)
 
-        this.model.quaternion.copy(this.rotateQuarternion)
+        this.rotateQuarternion.setFromAxisAngle(this.rotateAngle, offest)
+        this.model.quaternion.rotateTowards(this.rotateQuarternion, 0.2) 
 
         this.camera.getWorldDirection(this.walkDirection)
         this.walkDirection.y = 0
         this.walkDirection.normalize()
-        
-        var offest = this.move(key)
         this.walkDirection.applyAxisAngle(this.rotateAngle, offest)
 
         const moveX = this.walkDirection.x * this.veclocity * tick
@@ -82,7 +83,6 @@ export class CharacterController {
             directionOffset = - Math.PI / 2
         }
 
-        this.model.rotation.y = directionOffset
         return directionOffset
     }
 

@@ -72,7 +72,7 @@ const sizes = {
 // Camera
 const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.01, 10000)
 camera.position.set(0, 105, -101)
-camera.rotation.set(-2.3, 0.32, 2.8)
+//camera.rotation.set(-2.3, 0.32, 2.8)
 scene.add(camera)
 
 // Controls
@@ -170,40 +170,59 @@ window.addEventListener('resize', () =>
 })
 
 var key = {};
-var isPressed = false
+var isPressedW = false
+var isPressedA = false
+var isPressedS = false
+var isPressedD = false
 window.addEventListener('keydown', (e) => {
   e.preventDefault();
   switch (e.keyCode) {
     case 87: // w
      key[e.keyCode] = true;
-     isPressed = true
+     isPressedW = true
       break;
     case 83: // s
       key[e.keyCode] = true;
-      isPressed = true
+      isPressedA = true
       break;
     case 65: // a
       key[e.keyCode] = true;
-      isPressed = true
+      isPressedS = true
       break;
     case 68: // d
       key[e.keyCode] = true;
-      isPressed = true
+      isPressedD = true
       break;
   }
 })
 
 document.addEventListener('keyup', (e) => {
   e.preventDefault();
-  key[e.keyCode] = false;
-  isPressed = false
+  switch (e.keyCode) {
+    case 87: // w
+     key[e.keyCode] = false;
+     isPressedW = false
+      break;
+    case 83: // s
+      key[e.keyCode] = false;
+      isPressedA = false
+      break;
+    case 65: // a
+      key[e.keyCode] = false;
+      isPressedS = false
+      break;
+    case 68: // d
+      key[e.keyCode] = false;
+      isPressedD = false
+      break;
+  }
 })
 
 const clock = new THREE.Clock();
 const tick = () => {
 
   let deltaTime = clock.getDelta();
-  if (characterController && isPressed) {
+  if (characterController && (isPressedW || isPressedA || isPressedS || isPressedD)) {
     characterController.update(deltaTime, key);
     mixer.update(deltaTime);
   }
