@@ -67,6 +67,7 @@ const renderGameMenuScreenEvent = async () => {
   joinPrivateMatchElement.addEventListener('click', renderJoinPrivateMatchScreenEvent);
 }
 
+// temporarely made the currentlevel, totallosses, and totalwins all set to 0
 const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer , CurrentLevel = 0, TotalLosses = 0, TotalWins = 0}) => {
   rootScreenElement.innerHTML = '';
 
