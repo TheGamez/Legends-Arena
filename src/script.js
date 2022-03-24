@@ -63,6 +63,9 @@ scene.add(directionalLight)
 
 
 // --BEGIN: Rendering ------------------------------------------------------------------------------
+var characterController
+var mixer
+
 // Sizes
 const sizes = {
     width: window.innerWidth,
@@ -72,7 +75,6 @@ const sizes = {
 // Camera
 const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.01, 10000)
 camera.position.set(0, 105, -101)
-//camera.rotation.set(-2.3, 0.32, 2.8)
 scene.add(camera)
 
 // Controls
@@ -82,7 +84,13 @@ controls.minDistance = 80
 controls.maxDistance = 180
 controls.enableZoom = true
 controls.enableRotate = false
-controls.enablePan = true
+controls.enablePan = false
+
+//must enable panning first
+// controls.addEventListener('change', function() {
+//   this.target.y = 0
+//   camera.position.y = 105
+// })
 
 // --BEGIN: Models ------------------------------------------------------------------------------
 const dracoLoader = new DRACOLoader()
@@ -90,10 +98,6 @@ dracoLoader.setDecoderPath('/draco/')
 
 const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader)
-
-
-var characterController
-var mixer
 
 gltfLoader.load('/models/monster.glb', (gltf) => {
   let monster = gltf.scene
@@ -174,6 +178,7 @@ var isPressedW = false
 var isPressedA = false
 var isPressedS = false
 var isPressedD = false
+
 window.addEventListener('keydown', (e) => {
   e.preventDefault();
   switch (e.keyCode) {

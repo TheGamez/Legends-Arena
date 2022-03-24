@@ -20,6 +20,12 @@ export class CharacterController {
 
     }
 
+    // setCameraRelativeToCharacter(cameraOffset) {
+    //     this.camera.position.x = this.model.position.x + cameraOffset.x
+    //     this.camera.position.y = this.model.position.y + cameraOffset.y
+    //     this.camera.position.z = this.model.position.z + cameraOffset.z
+    // }
+
     updateCameraTarget(x, z) {
         this.camera.position.x += x
         this.camera.position.z += z
@@ -30,9 +36,14 @@ export class CharacterController {
     }
 
     update(tick, key) {
+        var angleYCameraDirection = Math.atan2(
+            (this.camera.position.x - this.model.position.x) * -1, 
+            (this.camera.position.z - this.model.position.z) * -1
+        )
+
         var offest = this.move(key)
 
-        this.rotateQuarternion.setFromAxisAngle(this.rotateAngle, offest)
+        this.rotateQuarternion.setFromAxisAngle(this.rotateAngle, angleYCameraDirection + offest)
         this.model.quaternion.rotateTowards(this.rotateQuarternion, 0.2) 
 
         this.camera.getWorldDirection(this.walkDirection)
