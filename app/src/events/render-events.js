@@ -67,16 +67,25 @@ const renderGameMenuScreenEvent = async () => {
   joinPrivateMatchElement.addEventListener('click', renderJoinPrivateMatchScreenEvent);
 }
 
-const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer }) => {
+const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer , CurrentLevel = 0, TotalLosses = 0, TotalWins = 0}) => {
   rootScreenElement.innerHTML = '';
 
-   rendergameStatisticsEvent();
+   rendergameStatisticsEvent(); // the previous game statistics, game code, and profile button
 
   const roomCodeElement = document.querySelector('#room-code');
   roomCodeElement.innerText = roomCode;
 
   const roomPlayersElement = document.querySelector('#room-players');
   roomPlayersElement.append(`Player ${roomPlayer}`);
+
+  const CurrentLevelElement = document.querySelector('#current-level');
+  CurrentLevelElement.innerText = (`Current Level: ${CurrentLevel}`);
+
+  const TotalLossesElement = document.querySelector('#total-losses');
+  TotalLossesElement.innerText = (`Total Losses: ${TotalLosses}`);
+
+  const TotalWinsElement = document.querySelector('#total-wins');
+  TotalWinsElement.innerText = (`Total Wins: ${TotalWins}`);
 }
 
 const renderJoinPublicMatchScreenEvent = () => {
@@ -364,21 +373,59 @@ const rendergameStatisticsEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-  <div>
-    <h1>Game Room</h1>
-    <p id="room-code"></p>
-    <div id="room-players"></div>
-    <br>
-  </div>
+    <div id="game-room">
+      <h1>Game Room</h1>
+      <p id="room-code"></p>
+      <div id="room-players"></div>
+      <br>
+    </div>
 
     <div id="game-statistics">
       <h1>Statistics</h1>
-      <p id="current-level">current level: </p>
-      <p id="total-losses">total losses: </p>
-      <p id="total-wins">total wins: </p>
+      <p id="current-level"></p>
+      <p id="total-losses"></p>
+      <p id="total-wins"></p>
+    </div>
+
+    <div>
+      <button id="user-profile-button" type="button">View Profile</button>
     </div>
   `;
   rootScreenElement.innerHTML = html;
+
+  const UserProfileElement = document.querySelector('#user-profile-button');
+  UserProfileElement.style.display = 'block';
+  UserProfileElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderUserProfileScreenEvent();
+  });
+
+}
+
+const renderUserProfileScreenEvent = async () => {
+
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+  <div class="popup-container">
+    <div class="icon" id="close-user-profile">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </div>
+
+    <div class="popup-user-profile-container">
+      <h1 class="game-font">User Profile</h1>
+      <p id="current-email">Email: </p>
+      <p id="current-username">Username: </p>
+      <p id="current-character">Character chosen: </p>
+    </div>
+      <button id="reset-account-password-button" type="button">Reset Account Password</button>
+    </div>
+  </div>
+`;
+
+rootScreenElement.innerHTML = html;
 
 }
 
