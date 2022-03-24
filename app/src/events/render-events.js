@@ -73,12 +73,14 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer , CurrentLevel = 0, T
 
    rendergameStatisticsEvent(); // the previous game statistics, game code, and profile button
 
+  //game code var
   const roomCodeElement = document.querySelector('#room-code');
   roomCodeElement.innerText = roomCode;
 
   const roomPlayersElement = document.querySelector('#room-players');
   roomPlayersElement.append(`Player ${roomPlayer}`);
 
+  //game statistics var
   const CurrentLevelElement = document.querySelector('#current-level');
   CurrentLevelElement.innerText = (`Current Level: ${CurrentLevel}`);
 
@@ -87,6 +89,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer , CurrentLevel = 0, T
 
   const TotalWinsElement = document.querySelector('#total-wins');
   TotalWinsElement.innerText = (`Total Wins: ${TotalWins}`);
+
 }
 
 const renderJoinPublicMatchScreenEvent = () => {
@@ -387,11 +390,75 @@ const rendergameStatisticsEvent = async () => {
       <p id="total-losses"></p>
       <p id="total-wins"></p>
     </div>
-  `;
+
+    <div>
+    <button id="user-profile-button" type="button">View Profile</button>
+    </div>
+    `;
   rootScreenElement.innerHTML = html;
+
+  const UserProfileElement = document.querySelector('#user-profile-button');
+  UserProfileElement.style.display = 'block';
+  UserProfileElement.addEventListener('click', async (event) => {
+  event.preventDefault();
+  await renderUserProfileScreenEvent();
+  });
 
 }
 
+const renderUserProfileScreenEvent = async (CurrentEmail, CurrentUsername, CurrentCharacter, CurrentLevel = 0) => {
+
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+  <div class="popup-container-1">
+    <div class="icon" id="close-user-profile">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </div>
+
+    <div class="popup-user-profile-container">
+      <h1 class="game-font">User Profile</h1>
+      <br>
+      <p id="current-email"></p>
+      <p id="current-username"></p>
+      <p id="current-character"></p>
+      <p id="current-level"></p>
+      <br>
+      <button id="reset-account-password-button" type="button">Reset Password</button>
+      <img src="./character modelling/loraxcharacter.png" alt="Character Image" style="width:50px;height:60px;">
+    </div>
+
+  </div>
+`;
+  rootScreenElement.innerHTML = html;
+
+  //user profile screen var
+  const EmailElement = document.querySelector('#current-email');
+  EmailElement.innerText = (`Email: ${CurrentEmail}`);
+
+  const UsernameElement = document.querySelector('#current-username');
+  UsernameElement.innerText = (`Username: ${CurrentUsername}`);
+
+  const CharacterElement = document.querySelector('#current-character');
+  CharacterElement.innerText = (`Character: ${CurrentCharacter}`);
+
+  const CurrentLevelElement = document.querySelector('#current-level');
+  CurrentLevelElement.innerText = (`Current Level: ${CurrentLevel}`);
+
+  const closeUserProfileButtonElement = document.querySelector('#close-user-profile');
+  closeUserProfileButtonElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderGameLobbyScreenEvent();
+  });
+
+  const resetPasswordElement = document.querySelector('#reset-account-password-button');
+  resetPasswordElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderResetPasswordScreenEvent();
+  });
+}
 
 export {
   renderGameMenuScreenEvent,
@@ -402,4 +469,5 @@ export {
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,
   rendergameStatisticsEvent,
+  renderUserProfileScreenEvent,
 };
