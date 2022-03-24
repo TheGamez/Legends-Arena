@@ -131,12 +131,6 @@ input[type=text] {
   text-align: center;
 }
 
-#popup-user-profile-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -159,16 +153,6 @@ input[type=text] {
 #sign-up-button,
 #sign-out-button {
   display: none;
-}
-
-#user-profile-button {
-  background: relative;
-  position:absolute;
-  top:0; 
-  right:0;
-
-  margin:10px;
-
 }
 
 #join-public-match-form-container-1 {
