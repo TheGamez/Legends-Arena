@@ -372,6 +372,61 @@ const renderResetPasswordScreenEvent = async () => {
   });
 }
 
+const renderResetPasswordScreenEvent1 = async () => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <div class="popup-container">
+      <div class="icon" id="close-reset-password">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+
+      <div class="popup-head-container">
+        <h1>Reset Password</h1>
+        <p id="reset-password-message"></p>
+      </div>
+
+      <form id="reset-password-form-container">
+        <input
+          id="reset-password-email"
+          type="email"
+          placeholder="Email"
+          autocomplete="off"
+        />
+
+        <input
+          id="reset-password-new-password"
+          type="password"
+          placeholder="New Password"
+          autocomplete="off"
+        />
+
+        <input
+          id="reset-password-confirm-new-password"
+          type="password"
+          placeholder="Confirm New Password"
+          autocomplete="off"
+        />
+
+        <button id="reset-password-button" type="button">Confirm</button>
+      </form>
+    </div>
+  `;
+
+  rootScreenElement.innerHTML = html;
+
+  const resetPasswordButton = document.querySelector('#reset-password-button');
+  resetPasswordButton.addEventListener('click', AUTH_EVENTS.resetPasswordEvent);
+
+  const closeResetPasswordButtonElement = document.querySelector('#close-reset-password');
+  closeResetPasswordButtonElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderUserProfileScreenEvent();
+  });
+}
+
 const rendergameStatisticsEvent = async () => {
 
   rootScreenElement.innerHTML = '';
@@ -426,6 +481,7 @@ const renderUserProfileScreenEvent = async (CurrentEmail, CurrentUsername, Curre
       <p id="current-character"></p>
       <p id="current-level"></p>
       <br>
+      <br>
       <button id="reset-account-password-button" type="button">Reset Password</button>
       <img src="./character modelling/loraxcharacter.png" alt="Character Image" style="width:50px;height:60px;">
     </div>
@@ -456,7 +512,7 @@ const renderUserProfileScreenEvent = async (CurrentEmail, CurrentUsername, Curre
   const resetPasswordElement = document.querySelector('#reset-account-password-button');
   resetPasswordElement.addEventListener('click', async (event) => {
     event.preventDefault();
-    await renderResetPasswordScreenEvent();
+    await renderResetPasswordScreenEvent1();
   });
 }
 
