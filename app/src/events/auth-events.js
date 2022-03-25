@@ -22,7 +22,8 @@ const authenticateUserEvent = async () => {
 
     if (DEBUG) console.log(data);
 
-    GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
+    GLOBAL_STATE.user = data.user;
+
     await RENDER_EVENTS.renderGameMenuScreenEvent();
   } catch (error) {
     console.log(error);
@@ -51,8 +52,7 @@ const createAccountEvent = async (event) => {
 
     if (DEBUG) console.log(data);
 
-    if (data.isAccountCreated) {
-      GLOBAL_STATE.isAccountCreated = data.isAccountCreated;
+    if (data.isSuccessful) {
       await RENDER_EVENTS.renderLoginScreenEvent();
     } else {
       const createAccountMessageElement = document.querySelector('#create-account-message');
@@ -83,8 +83,8 @@ const signInEvent = async (event) => {
 
     if (DEBUG) console.log(data);
 
-    if (data.isAuthenticated) {
-      GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
+    if (data.user) {
+      GLOBAL_STATE.user = data.user;
       await RENDER_EVENTS.renderGameMenuScreenEvent();
     } else {
       const signInMessageElement = document.querySelector('#sign-in-message');
@@ -116,8 +116,7 @@ const resetPasswordEvent = async (event) => {
 
     if (DEBUG) console.log(data);
 
-    if (data.isPasswordReset) {
-      GLOBAL_STATE.isPasswordReset = data.isPasswordReset;
+    if (data.isSuccessful) {
       await RENDER_EVENTS.renderGameMenuScreenEvent();
     } else {
       const resetPasswordMessageElement = document.querySelector('#reset-password-message');
@@ -143,7 +142,8 @@ const signOutEvent = async (event) => {
 
     if (DEBUG) console.log(data);
 
-    GLOBAL_STATE.isAuthenticated = data.isAuthenticated;
+    GLOBAL_STATE.user = data.user;
+
     await RENDER_EVENTS.renderGameMenuScreenEvent();
   } catch (error) {
     console.log(error);

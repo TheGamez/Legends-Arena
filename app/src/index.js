@@ -14,11 +14,14 @@ import '../public/global.css';
 // GLOBAL_STATE.socket.on('gameState', GAME_EVENTS.setGameStateEvent);
 // GLOBAL_STATE.socket.on('gameOver', GAME_EVENTS.gameOverEvent);
 
+// GLOBAL_STATE.socket.on('roomPlayer', (message) => console.log(message));
+// GLOBAL_STATE.socket.on('roomPlayers', (message) => console.log(message));
 GLOBAL_STATE.socket.on('roomEmpty', GAME_EVENTS.roomStatusEvent);
 GLOBAL_STATE.socket.on('roomFull', GAME_EVENTS.roomStatusEvent);
 GLOBAL_STATE.socket.on('roomNotFound', GAME_EVENTS.roomStatusEvent);
 GLOBAL_STATE.socket.on('setOpenRooms', GAME_EVENTS.setOpenRoomsEvent);
-GLOBAL_STATE.socket.on('renderGameLobby', RENDER_EVENTS.renderGameLobbyScreenEvent);
+GLOBAL_STATE.socket.on('renderGameLobbyScreen', RENDER_EVENTS.renderGameLobbyScreenEvent);
+GLOBAL_STATE.socket.on('renderGameMenuScreen', RENDER_EVENTS.renderGameMenuScreenEvent);
 
 /* APP */
 
