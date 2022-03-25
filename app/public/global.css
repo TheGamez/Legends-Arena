@@ -92,14 +92,6 @@ input[type=text] {
   background: var(--color-grey-2);
 }
 
-#close-user-profile{
-  background: #7A6949;
-}
-
-#close-user-profile:hover {
-  background: #443C2B;
-}
-
 .text-center {
   text-align: center;
 }
@@ -139,32 +131,6 @@ input[type=text] {
   text-align: center;
 }
 
-.popup-container-1 {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-
-  position: relative;
-  top: 150px;
-  margin: auto;
-
-  background: #7A6949;
-
-  width: 400px;
-  padding: 20px;
-
-  border: 3px solid var(--color-black);
-  border-radius: 30px;
-}
-
-.popup-user-profile-container h1 {
-  text-align: center;
-}
-
-.popup-user-profile-container p {
-  text-align: left;
-}
-
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -185,26 +151,9 @@ input[type=text] {
 
 #log-in-button,
 #sign-up-button,
-#sign-out-button {
-  display: none;
-}
-
+#sign-out-button,
 #user-profile-button {
-  background: relative;
-  position:absolute;
-  top:0; 
-  right:0;
-
-  margin:10px;
-
-}
-
-#reset-account-password-button{
-  background: #7A6949;
-}
-
-#reset-account-password-button:hover {
-  background: #443C2B;
+  display: none;
 }
 
 #join-public-match-form-container-1 {
@@ -380,17 +329,8 @@ input[type=text] {
   background-color: yellow;
 }
 
-/* #game-statistics {
-  background-color: #E1B764;
-  border: solid 3px var(--color-black);
-  background: relative;
-  right:15px;
-
+.popup-layout {
   display: flex;
   flex-direction: column;
   gap: 20px;
-
-  width: 400px;
-  padding: 20px;
-  margin: 10px;
-} */
+}

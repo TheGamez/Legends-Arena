@@ -29,6 +29,7 @@ const renderGameMenuScreenEvent = async () => {
       <div id="main-menu-auth-container">
         <button type="button" id="log-in-button">Log In</button>
         <button type="button" id="sign-up-button">Sign Up</button>
+        <button type="button" id="user-profile-button">Profile</button>
         <button type="button" id="sign-out-button">Sign Out</button>
       </div>
     </div>
@@ -39,7 +40,14 @@ const renderGameMenuScreenEvent = async () => {
   if (GLOBAL_STATE.user) {
     const signOutButtonElement = document.querySelector('#sign-out-button');
     signOutButtonElement.style.display = 'block';
-    signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);    
+    signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);
+
+    const userProfileElement = document.querySelector('#user-profile-button');
+    userProfileElement.style.display = 'block';
+    userProfileElement.addEventListener('click', async (event) => {
+      event.preventDefault();
+      await renderUserProfileScreenEvent();
+    });
   } else {
     const logInButtonElement = document.querySelector('#log-in-button');
     logInButtonElement.style.display = 'block';
@@ -71,7 +79,17 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div>
+    <div class="popup-layout">
+      <div class="popup-container">
+        <div class="popup-head-container">
+          <h1>Statistics</h1>
+        </div>
+        <div>
+          <p id="current-level"></p>
+          <p id="total-wins"></p>
+          <p id="total-losses"></p>
+        </div>
+      </div>
       <div class="popup-container">
         <div class="popup-head-container">
           <h1>Game Room</h1>
@@ -84,26 +102,10 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
         <div id="room-players-container"></div>
         <button type="button" id="leave-room-button">Leave</button>
       </div>
-      <div class="popup-container">
-        <div id="popup-head-container">
-          <h1>Statistics</h1>
-          <p id="current-level"></p>
-          <p id="total-losses"></p>
-          <p id="total-wins"></p>
-        </div>
-        <button id="user-profile-button" type="button">View Profile</button>
-      </div>
     </div>
   `;
 
   rootScreenElement.innerHTML = html;
-
-  const userProfileElement = document.querySelector('#user-profile-button');
-  userProfileElement.style.display = 'block';
-  userProfileElement.addEventListener('click', async (event) => {
-    event.preventDefault();
-    await renderUserProfileScreenEvent();
-  });
 
   const currentLevel = 0;
   const totalWins = 0;
@@ -428,123 +430,47 @@ const renderResetPasswordScreenEvent = async () => {
   });
 }
 
-
-
-
-
-
-
-
-
-
-
-const renderResetPasswordScreenEvent1 = async () => {
+const renderUserProfileScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
     <div class="popup-container">
-      <div class="icon" id="close-reset-password">
+      <div class="icon" id="close-user-profile">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </div>
-
       <div class="popup-head-container">
-        <h1>Reset Password</h1>
-        <p id="reset-password-message"></p>
+        <h1 class="game-font">User Profile</h1>
       </div>
-
-      <form id="reset-password-form-container">
-        <input
-          id="reset-password-email"
-          type="email"
-          placeholder="Email"
-          autocomplete="off"
-        />
-
-        <input
-          id="reset-password-new-password"
-          type="password"
-          placeholder="New Password"
-          autocomplete="off"
-        />
-
-        <input
-          id="reset-password-confirm-new-password"
-          type="password"
-          placeholder="Confirm New Password"
-          autocomplete="off"
-        />
-
-        <button id="reset-password-button" type="button">Confirm</button>
-      </form>
+      <div>
+        <p id="current-email"></p>
+        <p id="current-username"></p>
+        <p id="current-character"></p>
+        <p id="current-level"></p>
+      </div>
     </div>
   `;
-
   rootScreenElement.innerHTML = html;
 
-  const resetPasswordButton = document.querySelector('#reset-password-button');
-  resetPasswordButton.addEventListener('click', AUTH_EVENTS.resetPasswordEvent);
-
-  const closeResetPasswordButtonElement = document.querySelector('#close-reset-password');
-  closeResetPasswordButtonElement.addEventListener('click', async (event) => {
-    event.preventDefault();
-    await renderUserProfileScreenEvent();
-  });
-}
-
-const renderUserProfileScreenEvent = async (CurrentEmail, CurrentUsername, CurrentCharacter, CurrentLevel = 0) => {
-
-  rootScreenElement.innerHTML = '';
-
-  const html = `
-  <div class="popup-container-1">
-    <div class="icon" id="close-user-profile">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </div>
-
-    <div class="popup-user-profile-container">
-      <h1 class="game-font">User Profile</h1>
-      <br>
-      <p id="current-email"></p>
-      <p id="current-username"></p>
-      <p id="current-character"></p>
-      <p id="current-level"></p>
-      <br>
-      <br>
-      <button id="reset-account-password-button" type="button">Reset Password</button>
-      <img src="./character modelling/loraxcharacter.png" alt="Character Image" style="width:50px;height:60px;">
-    </div>
-
-  </div>
-`;
-  rootScreenElement.innerHTML = html;
+  const currentEmail = GLOBAL_STATE.user.email;
+  const currentUsername = GLOBAL_STATE.user.username;
+  const currentLevel = 0;
 
   //user profile screen var
-  const EmailElement = document.querySelector('#current-email');
-  EmailElement.innerText = (`Email: ${CurrentEmail}`);
+  const emailElement = document.querySelector('#current-email');
+  emailElement.innerText = (`Email: ${currentEmail}`);
 
-  const UsernameElement = document.querySelector('#current-username');
-  UsernameElement.innerText = (`Username: ${CurrentUsername}`);
+  const usernameElement = document.querySelector('#current-username');
+  usernameElement.innerText = (`Username: ${currentUsername}`);
 
-  const CharacterElement = document.querySelector('#current-character');
-  CharacterElement.innerText = (`Character: ${CurrentCharacter}`);
-
-  const CurrentLevelElement = document.querySelector('#current-level');
-  CurrentLevelElement.innerText = (`Current Level: ${CurrentLevel}`);
+  const currentLevelElement = document.querySelector('#current-level');
+  currentLevelElement.innerText = (`Current Level: ${currentLevel}`);
 
   const closeUserProfileButtonElement = document.querySelector('#close-user-profile');
-  closeUserProfileButtonElement.addEventListener('click', async (event) => {
+  closeUserProfileButtonElement.addEventListener('click', (event) => {
     event.preventDefault();
-    await renderGameLobbyScreenEvent();
-  });
-
-  const resetPasswordElement = document.querySelector('#reset-account-password-button');
-  resetPasswordElement.addEventListener('click', async (event) => {
-    event.preventDefault();
-    await renderResetPasswordScreenEvent1();
+    renderGameMenuScreenEvent();
   });
 }
 
