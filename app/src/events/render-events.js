@@ -67,14 +67,20 @@ const renderGameMenuScreenEvent = async () => {
   joinPrivateMatchElement.addEventListener('click', renderJoinPrivateMatchScreenEvent);
 }
 
-const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer }) => {
+const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div>
-      <h1>Game Room</h1>
-      <p id="room-code"></p>
-      <div id="room-players"></div>
+    <div class="popup-container">
+      <div class="popup-head-container">
+        <h1>Game Room</h1>
+        <p id="copy-code-message"></p>
+      </div>
+      <div id="copy-code-container">
+        <p id="room-code" class="room-code"></p>
+        <button type="button" id="copy-code-button">Copy</button>
+      </div>
+      <div id="room-players-container"></div>
       <button type="button" id="leave-room-button">Leave</button>
     </div>
   `;
@@ -84,8 +90,26 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer }) => {
   const roomCodeElement = document.querySelector('#room-code');
   roomCodeElement.innerText = roomCode;
 
-  const roomPlayersElement = document.querySelector('#room-players');
-  roomPlayersElement.append(`Player ${roomPlayer}`);
+  const roomPlayersContainerElement = document.querySelector('#room-players-container');
+
+  roomPlayers.forEach(roomPlayer => {
+    const divElement = document.createElement('div');
+    divElement.innerText = roomPlayer.username;
+    if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+      divElement.className = 'room-player-highlight';
+    } else {
+      divElement.className = 'room-player';
+    }
+    roomPlayersContainerElement.append(divElement);
+  });
+  
+  const copyCodeButton = document.querySelector('#copy-code-button');
+  copyCodeButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    navigator.clipboard.writeText(roomCode);
+    const copyCodeMessage = document.querySelector('#copy-code-message');
+    copyCodeMessage.innerText = 'Copied room code!';
+  });
 
   const leaveRoomButton = document.querySelector('#leave-room-button');
   leaveRoomButton.addEventListener('click', (event) => GAME_EVENTS.leaveRoomEvent(event, roomCode, roomPlayer));
