@@ -36,7 +36,7 @@ const renderGameMenuScreenEvent = async () => {
 
   rootScreenElement.innerHTML = html;
 
-  if (GLOBAL_STATE.isAuthenticated) {
+  if (GLOBAL_STATE.user) {
     const signOutButtonElement = document.querySelector('#sign-out-button');
     signOutButtonElement.style.display = 'block';
     signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);    
@@ -67,29 +67,85 @@ const renderGameMenuScreenEvent = async () => {
   joinPrivateMatchElement.addEventListener('click', renderJoinPrivateMatchScreenEvent);
 }
 
-// temporarely made the currentlevel, totallosses, and totalwins all set to 0
-const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer , CurrentLevel = 0, TotalLosses = 0, TotalWins = 0}) => {
+const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   rootScreenElement.innerHTML = '';
 
-   rendergameStatisticsEvent(); // the previous game statistics, game code, and profile button
+  const html = `
+    <div>
+      <div class="popup-container">
+        <div class="popup-head-container">
+          <h1>Game Room</h1>
+          <p id="copy-code-message"></p>
+        </div>
+        <div id="copy-code-container">
+          <p id="room-code" class="room-code"></p>
+          <button type="button" id="copy-code-button">Copy</button>
+        </div>
+        <div id="room-players-container"></div>
+        <button type="button" id="leave-room-button">Leave</button>
+      </div>
+      <div class="popup-container">
+        <div id="popup-head-container">
+          <h1>Statistics</h1>
+          <p id="current-level"></p>
+          <p id="total-losses"></p>
+          <p id="total-wins"></p>
+        </div>
+        <button id="user-profile-button" type="button">View Profile</button>
+      </div>
+    </div>
+  `;
 
-  //game code var
+  rootScreenElement.innerHTML = html;
+
+  const userProfileElement = document.querySelector('#user-profile-button');
+  userProfileElement.style.display = 'block';
+  userProfileElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderUserProfileScreenEvent();
+  });
+
+  const currentLevel = 0;
+  const totalWins = 0;
+  const totalLosses = 0;
+
+  const currentLevelElement = document.querySelector('#current-level');
+  currentLevelElement.innerText = (`Current Level: ${currentLevel}`);
+
+  const totalWinsElement = document.querySelector('#total-wins');
+  totalWinsElement.innerText = (`Wins: ${totalWins}`);
+
+  const totalLossesElement = document.querySelector('#total-losses');
+  totalLossesElement.innerText = (`Losses: ${totalLosses}`);
+
   const roomCodeElement = document.querySelector('#room-code');
   roomCodeElement.innerText = roomCode;
 
-  const roomPlayersElement = document.querySelector('#room-players');
-  roomPlayersElement.append(`Player ${roomPlayer}`);
+  const roomPlayersContainerElement = document.querySelector('#room-players-container');
 
-  //game statistics var
-  const CurrentLevelElement = document.querySelector('#current-level');
-  CurrentLevelElement.innerText = (`Current Level: ${CurrentLevel}`);
+  roomPlayers.forEach(roomPlayer => {
+    const divElement = document.createElement('div');
+    divElement.innerText = roomPlayer.username;
+    if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+      divElement.className = 'room-player-highlight';
+    } else {
+      divElement.className = 'room-player';
+    }
+    roomPlayersContainerElement.append(divElement);
+  });
+  
+  const copyCodeButton = document.querySelector('#copy-code-button');
+  copyCodeButton.addEventListener('click', (event) => {
+    event.preventDefault();
 
-  const TotalLossesElement = document.querySelector('#total-losses');
-  TotalLossesElement.innerText = (`Total Losses: ${TotalLosses}`);
+    navigator.clipboard.writeText(roomCode);
 
-  const TotalWinsElement = document.querySelector('#total-wins');
-  TotalWinsElement.innerText = (`Total Wins: ${TotalWins}`);
+    const copyCodeMessage = document.querySelector('#copy-code-message');
+    copyCodeMessage.innerText = 'Copied room code!';
+  });
 
+  const leaveRoomButton = document.querySelector('#leave-room-button');
+  leaveRoomButton.addEventListener('click', (event) => GAME_EVENTS.leaveRoomEvent(event, roomCode, roomPlayer));
 }
 
 const renderJoinPublicMatchScreenEvent = () => {
@@ -372,6 +428,16 @@ const renderResetPasswordScreenEvent = async () => {
   });
 }
 
+
+
+
+
+
+
+
+
+
+
 const renderResetPasswordScreenEvent1 = async () => {
   rootScreenElement.innerHTML = '';
 
@@ -425,40 +491,6 @@ const renderResetPasswordScreenEvent1 = async () => {
     event.preventDefault();
     await renderUserProfileScreenEvent();
   });
-}
-
-const rendergameStatisticsEvent = async () => {
-
-  rootScreenElement.innerHTML = '';
-
-  const html = `
-    <div id="game-room">
-      <h1>Game Room</h1>
-      <p id="room-code"></p>
-      <div id="room-players"></div>
-      <br>
-    </div>
-
-    <div id="game-statistics">
-      <h1>Statistics</h1>
-      <p id="current-level"></p>
-      <p id="total-losses"></p>
-      <p id="total-wins"></p>
-    </div>
-
-    <div>
-    <button id="user-profile-button" type="button">View Profile</button>
-    </div>
-    `;
-  rootScreenElement.innerHTML = html;
-
-  const UserProfileElement = document.querySelector('#user-profile-button');
-  UserProfileElement.style.display = 'block';
-  UserProfileElement.addEventListener('click', async (event) => {
-  event.preventDefault();
-  await renderUserProfileScreenEvent();
-  });
-
 }
 
 const renderUserProfileScreenEvent = async (CurrentEmail, CurrentUsername, CurrentCharacter, CurrentLevel = 0) => {
@@ -524,6 +556,5 @@ export {
   renderLoginScreenEvent,
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,
-  rendergameStatisticsEvent,
   renderUserProfileScreenEvent,
 };

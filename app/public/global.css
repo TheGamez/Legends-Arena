@@ -327,7 +327,60 @@ input[type=text] {
   gap: 20px;
 }
 
-#game-statistics{
+.room-code {
+  font-size: 12px;
+  font-family: var(--font-secondary);
+  color: var(--color-grey-2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  border: solid 3px var(--color-black);
+  border-radius: 30px;
+}
+
+#copy-code-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+#copy-code-container > * {
+  flex-grow: 1;
+}
+
+#room-players-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.room-player,
+.room-player-highlight  {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-primary);
+
+  text-align: center;
+
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  border: solid 3px var(--color-black);
+  border-radius: 30px;
+}
+
+.room-player-highlight {
+  background-color: yellow;
+}
+
+/* #game-statistics {
   background-color: #E1B764;
   border: solid 3px var(--color-black);
   background: relative;
@@ -339,9 +392,5 @@ input[type=text] {
 
   width: 400px;
   padding: 20px;
-  margin:10px;
-}
-
-#game-room{
-  margin:10px;
-}
+  margin: 10px;
+} */

@@ -52,8 +52,9 @@ server.listen(PORT, () => console.log(`[SERVER] http://localhost:${PORT}`));
 // app - game
 io.on('connect', (socket) => {
   socket.on('disconnect', () => GAME_EVENTS.disconnectionEvent(socket));
-  socket.on('createRoom', (isPrivate) => GAME_EVENTS.createRoomEvent(socket, isPrivate));
-  socket.on('joinRoom', (roomCode) => GAME_EVENTS.joinRoomEvent(socket, roomCode));
+  socket.on('createRoom', ({ isRoomPrivate, user }) => GAME_EVENTS.createRoomEvent(socket, isRoomPrivate, user));
+  socket.on('joinRoom', ({ roomCode, user }) => GAME_EVENTS.joinRoomEvent(io, socket, roomCode, user));
+  socket.on('leaveRoom', ({ roomCode, roomPlayer }) => GAME_EVENTS.leaveRoomEvent(io, socket, roomCode, roomPlayer));
   socket.on('getOpenRooms', () => GAME_EVENTS.getOpenRoomsEvent(socket));
   // socket.on('keydown', (keyInputCode) => keyDownEvent(socket, keyInputCode));
 });
