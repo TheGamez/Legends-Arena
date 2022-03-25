@@ -151,7 +151,8 @@ input[type=text] {
 
 #log-in-button,
 #sign-up-button,
-#sign-out-button {
+#sign-out-button,
+#user-profile-button {
   display: none;
 }
 
@@ -326,4 +327,10 @@ input[type=text] {
 
 .room-player-highlight {
   background-color: yellow;
+}
+
+.popup-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }

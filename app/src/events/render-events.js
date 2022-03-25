@@ -29,6 +29,7 @@ const renderGameMenuScreenEvent = async () => {
       <div id="main-menu-auth-container">
         <button type="button" id="log-in-button">Log In</button>
         <button type="button" id="sign-up-button">Sign Up</button>
+        <button type="button" id="user-profile-button">Profile</button>
         <button type="button" id="sign-out-button">Sign Out</button>
       </div>
     </div>
@@ -39,7 +40,14 @@ const renderGameMenuScreenEvent = async () => {
   if (GLOBAL_STATE.user) {
     const signOutButtonElement = document.querySelector('#sign-out-button');
     signOutButtonElement.style.display = 'block';
-    signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);    
+    signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);
+
+    const userProfileElement = document.querySelector('#user-profile-button');
+    userProfileElement.style.display = 'block';
+    userProfileElement.addEventListener('click', async (event) => {
+      event.preventDefault();
+      await renderUserProfileScreenEvent();
+    });
   } else {
     const logInButtonElement = document.querySelector('#log-in-button');
     logInButtonElement.style.display = 'block';
@@ -71,21 +79,46 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-container">
-      <div class="popup-head-container">
-        <h1>Game Room</h1>
-        <p id="copy-code-message"></p>
+    <div class="popup-layout">
+      <div class="popup-container">
+        <div class="popup-head-container">
+          <h1>Statistics</h1>
+        </div>
+        <div>
+          <p id="current-level"></p>
+          <p id="total-wins"></p>
+          <p id="total-losses"></p>
+        </div>
       </div>
-      <div id="copy-code-container">
-        <p id="room-code" class="room-code"></p>
-        <button type="button" id="copy-code-button">Copy</button>
+      <div class="popup-container">
+        <div class="popup-head-container">
+          <h1>Game Room</h1>
+          <p id="copy-code-message"></p>
+        </div>
+        <div id="copy-code-container">
+          <p id="room-code" class="room-code"></p>
+          <button type="button" id="copy-code-button">Copy</button>
+        </div>
+        <div id="room-players-container"></div>
+        <button type="button" id="leave-room-button">Leave</button>
       </div>
-      <div id="room-players-container"></div>
-      <button type="button" id="leave-room-button">Leave</button>
     </div>
   `;
 
   rootScreenElement.innerHTML = html;
+
+  const currentLevel = 0;
+  const totalWins = 0;
+  const totalLosses = 0;
+
+  const currentLevelElement = document.querySelector('#current-level');
+  currentLevelElement.innerText = (`Current Level: ${currentLevel}`);
+
+  const totalWinsElement = document.querySelector('#total-wins');
+  totalWinsElement.innerText = (`Wins: ${totalWins}`);
+
+  const totalLossesElement = document.querySelector('#total-losses');
+  totalLossesElement.innerText = (`Losses: ${totalLosses}`);
 
   const roomCodeElement = document.querySelector('#room-code');
   roomCodeElement.innerText = roomCode;
@@ -106,7 +139,9 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   const copyCodeButton = document.querySelector('#copy-code-button');
   copyCodeButton.addEventListener('click', (event) => {
     event.preventDefault();
+
     navigator.clipboard.writeText(roomCode);
+
     const copyCodeMessage = document.querySelector('#copy-code-message');
     copyCodeMessage.innerText = 'Copied room code!';
   });
@@ -395,6 +430,50 @@ const renderResetPasswordScreenEvent = async () => {
   });
 }
 
+const renderUserProfileScreenEvent = async () => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <div class="popup-container">
+      <div class="icon" id="close-user-profile">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+      <div class="popup-head-container">
+        <h1 class="game-font">User Profile</h1>
+      </div>
+      <div>
+        <p id="current-email"></p>
+        <p id="current-username"></p>
+        <p id="current-character"></p>
+        <p id="current-level"></p>
+      </div>
+    </div>
+  `;
+  rootScreenElement.innerHTML = html;
+
+  const currentEmail = GLOBAL_STATE.user.email;
+  const currentUsername = GLOBAL_STATE.user.username;
+  const currentLevel = 0;
+
+  //user profile screen var
+  const emailElement = document.querySelector('#current-email');
+  emailElement.innerText = (`Email: ${currentEmail}`);
+
+  const usernameElement = document.querySelector('#current-username');
+  usernameElement.innerText = (`Username: ${currentUsername}`);
+
+  const currentLevelElement = document.querySelector('#current-level');
+  currentLevelElement.innerText = (`Current Level: ${currentLevel}`);
+
+  const closeUserProfileButtonElement = document.querySelector('#close-user-profile');
+  closeUserProfileButtonElement.addEventListener('click', (event) => {
+    event.preventDefault();
+    renderGameMenuScreenEvent();
+  });
+}
+
 export {
   renderGameMenuScreenEvent,
   renderGameLobbyScreenEvent,
@@ -403,4 +482,5 @@ export {
   renderLoginScreenEvent,
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,
+  renderUserProfileScreenEvent,
 };
