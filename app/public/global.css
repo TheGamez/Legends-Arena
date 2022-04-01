@@ -204,6 +204,15 @@ input[type=text] {
 
 }
 
+#user-game-settings{
+  background: relative;
+  position:absolute;
+  top:0; 
+  right:0;
+
+  margin:10px;
+}
+
 #reset-account-password-button{
   background: #7A6949;
 }
