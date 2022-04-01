@@ -69,6 +69,11 @@ input[type=text] {
   box-sizing: border-box;
 }
 
+#settings-container input{
+  width: 50%;
+  clear: both;
+}
+
 .divider {
   border: solid 2px var(--color-black);
   border-radius: 30px;

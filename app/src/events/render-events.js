@@ -32,6 +32,13 @@ const renderGameMenuScreenEvent = async () => {
         <button type="button" id="sign-out-button">Sign Out</button>
       </div>
     </div>
+
+    <div class="icon" id="game-settings">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </div>
   `;
 
   rootScreenElement.innerHTML = html;
@@ -56,6 +63,14 @@ const renderGameMenuScreenEvent = async () => {
     });
   }
 
+  // game settings icon / button
+  const SettingsIconElement = document.querySelector('#game-settings');
+  SettingsIconElement.style.display = 'block';
+  SettingsIconElement.addEventListener('click', async (event) => {
+  event.preventDefault();
+  await renderSettingsEvent();
+  });
+
   const createPublicMatchElement = document.querySelector('#create-public-match');
   const createPrivateMatchElement = document.querySelector('#create-private-match');
   const joinPublicMatchElement = document.querySelector('#join-public-match');
@@ -66,6 +81,7 @@ const renderGameMenuScreenEvent = async () => {
   createPrivateMatchElement.addEventListener('click', (event) => GAME_EVENTS.createRoomEvent(event, true));
   joinPrivateMatchElement.addEventListener('click', renderJoinPrivateMatchScreenEvent);
 }
+
 
 // temporarely made the currentlevel, totallosses, and totalwins all set to 0
 const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer , CurrentLevel = 0, TotalLosses = 0, TotalWins = 0}) => {
@@ -514,6 +530,91 @@ const renderUserProfileScreenEvent = async (CurrentEmail, CurrentUsername, Curre
     event.preventDefault();
     await renderResetPasswordScreenEvent1();
   });
+}
+
+const renderSettingsEvent = async () => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <div class="popup-container">
+      <div class="icon" id="close-settings">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+
+      <div class="popup-head-container">
+        <h1>Settings</h1>
+        <h2>Change controls:</h2>
+      </div>
+      
+      <form id="settings-container">
+        <p> Up key:
+        <input 
+          id="up-key"
+          type="text"
+          placeholder="up"
+          autocomplete="off"
+        />
+        </p>
+
+        <br>
+        <p> Down key:
+        <input
+          id="down-key"
+          type="text"
+          placeholder="down"
+          autocomplete="off"
+        />
+        </p>
+
+        <br>
+        <p> Left key:
+        <input
+        id="left-key"
+        type="text"
+        placeholder="left"
+        autocomplete="off"
+        />
+        </p>
+
+        <br>
+        <p> Right key:
+        <input
+        id="right-key"
+        type="text"
+        placeholder="right"
+        autocomplete="off"
+        />
+        </p>
+
+        <br>
+        <p> Jump key:
+        <input
+        id="jump-key"
+        type="text"
+        placeholder="jump"
+        autocomplete="off"
+        />
+        </p>
+
+        <br>
+        <p> Punch key:
+        <input
+        id="punch-key"
+        type="text"
+        placeholder="punch"
+        autocomplete="off"
+        />
+        </p>
+        <br>
+      </form>
+
+    </div>
+  `;
+  rootScreenElement.innerHTML = html;
+
+
 }
 
 export {
