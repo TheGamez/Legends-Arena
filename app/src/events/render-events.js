@@ -608,11 +608,16 @@ const renderSettingsEvent = async () => {
         />
         </p>
         <br>
+        <button id="reset-keys-button" type="button">Confirm</button>
+        
       </form>
 
     </div>
   `;
   rootScreenElement.innerHTML = html;
+
+  const ResetKeysButtonElement = document.querySelector('#reset-keys-button');
+  ResetKeysButtonElement.addEventListener('click', AUTH_EVENTS.ResetKeysEvent);
 
   const closeSettingsElement = document.querySelector('#close-settings');
   closeSettingsElement.addEventListener('click', async (event) => {
