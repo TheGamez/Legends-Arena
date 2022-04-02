@@ -2,6 +2,7 @@
 
 import * as GAME_EVENTS from './game-events.js';
 import * as AUTH_EVENTS from './auth-events.js';
+import * as GAME_RENDERER from '../config/game-renderer.js';
 import GLOBAL_STATE from '../global.js';
 
 /* ELEMENTS */
@@ -9,6 +10,20 @@ import GLOBAL_STATE from '../global.js';
 const rootScreenElement = document.querySelector('#root-screen');
 
 /* FUNCTIONS */
+
+const renderGameScreenEvent = () => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <div>
+      <canvas id="webgl-canvas"></canvas>
+    </div>
+  `;
+
+  rootScreenElement.innerHTML = html;
+
+  GAME_RENDERER.initializeGameRenderer();
+}
 
 const renderGameMenuScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
@@ -100,6 +115,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
           <button type="button" id="copy-code-button">Copy</button>
         </div>
         <div id="room-players-container"></div>
+        <button type="button" id="start-game-button">Start</button>
         <button type="button" id="leave-room-button">Leave</button>
       </div>
     </div>
@@ -148,6 +164,9 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
 
   const leaveRoomButton = document.querySelector('#leave-room-button');
   leaveRoomButton.addEventListener('click', (event) => GAME_EVENTS.leaveRoomEvent(event, roomCode, roomPlayer));
+
+  const startGameButton = document.querySelector('#start-game-button');
+  startGameButton.addEventListener('click', (event) => renderGameScreenEvent());
 }
 
 const renderJoinPublicMatchScreenEvent = () => {

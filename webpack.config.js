@@ -15,7 +15,15 @@ module.exports = {
           'style-loader',
           'css-loader',
         ],
-      }
+      },
+      {
+        test: /\.(glb|gltf)$/,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
     ],
   },
   plugins: [
