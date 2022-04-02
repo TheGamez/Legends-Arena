@@ -7,6 +7,13 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
 import { CharacterController } from './character-controller.js';
 
+/* MODELS */
+
+import monsterModel from './models/monster.glb';
+import robotModel from './models/robot.glb';
+import demonModel from './models/demon.glb';
+import mapModel from './models/map.glb';
+
 /* GAME RENDERER */
 
 const initializeGameRenderer = () => {
@@ -98,12 +105,15 @@ const initializeGameRenderer = () => {
 
   // --BEGIN: Models ------------------------------------------------------------------------------
   const dracoLoader = new DRACOLoader()
-  dracoLoader.setDecoderPath('./draco')
+  dracoLoader.setDecoderPath('./draco/')
 
   const gltfLoader = new GLTFLoader()
   gltfLoader.setDRACOLoader(dracoLoader)
 
-  gltfLoader.load('../../public/assets/models/monster.glb', (gltf) => {
+  gltfLoader.load(monsterModel, (gltf) => {
+
+    console.log('monsterModel:', gltf);
+
     let monster = gltf.scene
     monster = gltf.scene
     monster.position.x = 5
@@ -116,7 +126,10 @@ const initializeGameRenderer = () => {
     characterController = new CharacterController(monster, camera, controls)
   })
 
-  gltfLoader.load('../../public/assets/models/robot.glb', (gltf) => {
+  gltfLoader.load(robotModel, (gltf) => {
+
+    console.log('robotModel:', gltf);
+
     let robot = gltf.scene
     robot.position.x = -5
     robot.position.z = 10
@@ -124,15 +137,10 @@ const initializeGameRenderer = () => {
     scene.add(robot)
   })
 
-  gltfLoader.load('../../public/assets/models/robot.glb', (gltf) => {
-    let robot = gltf.scene
-    robot.position.x = -5
-    robot.position.z = 10
-    robot.position.y = -3
-    scene.add(robot)
-  })
+  gltfLoader.load(demonModel, (gltf) => {
 
-  gltfLoader.load('../../public/assets/models/demon.glb', (gltf) => {
+    console.log('demonModel:', gltf);
+
     let demon = gltf.scene
     demon.position.x = -8
     demon.position.z = 5
@@ -140,7 +148,10 @@ const initializeGameRenderer = () => {
     scene.add(demon)
   })
 
-  gltfLoader.load('../../public/assets/models/map.glb', (gltf) => {
+  gltfLoader.load(mapModel, (gltf) => {
+
+    console.log('mapModel:', gltf);
+
     let map = gltf.scene
     map.position.x = 0
     map.position.y = -13
