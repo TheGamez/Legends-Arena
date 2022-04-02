@@ -105,7 +105,9 @@ const initializeGameRenderer = () => {
 
   // --BEGIN: Models ------------------------------------------------------------------------------
   const dracoLoader = new DRACOLoader()
-  dracoLoader.setDecoderPath('./draco/')
+  // dracoLoader.setDecoderPath('https://github.com/mrdoob/three.js/tree/master/examples/js/libs/draco');
+  // dracoLoader.setDecoderPath('three/examples/js/libs/draco/');
+  dracoLoader.setDecoderPath('app/src/config/draco/');
 
   const gltfLoader = new GLTFLoader()
   gltfLoader.setDRACOLoader(dracoLoader)

@@ -17,7 +17,7 @@ module.exports = {
           },
           {
             loader: 'css-loader',
-          }
+          },
         ],
       },
       {
@@ -25,14 +25,14 @@ module.exports = {
         use: [
           {
             loader: 'file-loader',
-          }
+          },
         ],
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'app/public/index.html')
-    })
+      template: path.resolve(__dirname, 'app/public/index.html'),
+    }),
   ],
 }
