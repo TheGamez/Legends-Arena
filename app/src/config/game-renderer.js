@@ -7,13 +7,6 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
 import { CharacterController } from './character-controller.js';
 
-/* MODELS */
-
-import monsterModel from './models/monster.glb';
-import robotModel from './models/robot.glb';
-import demonModel from './models/demon.glb';
-import mapModel from './models/map.glb';
-
 /* GAME RENDERER */
 
 const initializeGameRenderer = () => {
@@ -105,17 +98,12 @@ const initializeGameRenderer = () => {
 
   // --BEGIN: Models ------------------------------------------------------------------------------
   const dracoLoader = new DRACOLoader()
-  // dracoLoader.setDecoderPath('https://github.com/mrdoob/three.js/tree/master/examples/js/libs/draco');
-  // dracoLoader.setDecoderPath('three/examples/js/libs/draco/');
-  dracoLoader.setDecoderPath('app/src/config/draco/');
+  dracoLoader.setDecoderPath('./draco/');
 
   const gltfLoader = new GLTFLoader()
   gltfLoader.setDRACOLoader(dracoLoader)
 
-  gltfLoader.load(monsterModel, (gltf) => {
-
-    console.log('monsterModel:', gltf);
-
+  gltfLoader.load('./models/monster.glb', (gltf) => {
     let monster = gltf.scene
     monster = gltf.scene
     monster.position.x = 5
@@ -128,10 +116,7 @@ const initializeGameRenderer = () => {
     characterController = new CharacterController(monster, camera, controls)
   })
 
-  gltfLoader.load(robotModel, (gltf) => {
-
-    console.log('robotModel:', gltf);
-
+  gltfLoader.load('./models/robot.glb', (gltf) => {
     let robot = gltf.scene
     robot.position.x = -5
     robot.position.z = 10
@@ -139,10 +124,7 @@ const initializeGameRenderer = () => {
     scene.add(robot)
   })
 
-  gltfLoader.load(demonModel, (gltf) => {
-
-    console.log('demonModel:', gltf);
-
+  gltfLoader.load('./models/demon.glb', (gltf) => {
     let demon = gltf.scene
     demon.position.x = -8
     demon.position.z = 5
@@ -150,10 +132,7 @@ const initializeGameRenderer = () => {
     scene.add(demon)
   })
 
-  gltfLoader.load(mapModel, (gltf) => {
-
-    console.log('mapModel:', gltf);
-
+  gltfLoader.load('./models/map.glb', (gltf) => {
     let map = gltf.scene
     map.position.x = 0
     map.position.y = -13
