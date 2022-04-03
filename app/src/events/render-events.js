@@ -46,7 +46,7 @@ const renderGameMenuScreenEvent = async () => {
   if (GLOBAL_STATE.isAuthenticated) {
     const signOutButtonElement = document.querySelector('#sign-out-button');
     signOutButtonElement.style.display = 'block';
-    signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);    
+    signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);
   } else {
     const logInButtonElement = document.querySelector('#log-in-button');
     logInButtonElement.style.display = 'block';
@@ -54,7 +54,7 @@ const renderGameMenuScreenEvent = async () => {
       event.preventDefault();
       await renderLoginScreenEvent();
     });
-    
+
     const signUpButtonElement = document.querySelector('#sign-up-button');
     signUpButtonElement.style.display = 'block';
     signUpButtonElement.addEventListener('click', async (event) => {
@@ -123,7 +123,7 @@ const renderJoinPublicMatchScreenEvent = () => {
         <h1>Join Public Match</h1>
         <p id="join-match-message"></p>
       </div>
-      
+
       <form id="join-public-match-form-container-1">
         <input
           id="room-code-input"
@@ -131,7 +131,7 @@ const renderJoinPublicMatchScreenEvent = () => {
           placeholder="Enter Room Code"
           autocomplete="off"
         />
-        
+
         <button id="public-room-code-button" type="button">Join</button>
       </form>
 
@@ -170,7 +170,7 @@ const renderJoinPrivateMatchScreenEvent = () => {
         <h1>Join Private Match</h1>
         <p id="join-match-message"></p>
       </div>
-      
+
       <form id="join-private-match-form-container">
         <input
           id="room-code-input"
@@ -178,7 +178,7 @@ const renderJoinPrivateMatchScreenEvent = () => {
           placeholder="Enter Room Code"
           autocomplete="off"
         />
-        
+
         <button id="private-room-code-button" type="button">Join</button>
       </form>
     </div>
@@ -211,7 +211,7 @@ const renderLoginScreenEvent = async () => {
         <h1>Log In</h1>
         <p id="sign-in-message"></p>
       </div>
-      
+
       <form id="log-in-form-container-1">
         <input
           id="sign-in-email"
@@ -226,7 +226,7 @@ const renderLoginScreenEvent = async () => {
           placeholder="Password"
           autocomplete="off"
         />
-        
+
         <button id="sign-in-button" type="button">Confirm</button>
       </form>
 
@@ -545,23 +545,92 @@ const renderSettingsEvent = async () => {
 
       <div class="popup-head-container">
         <h1>Settings</h1>
+
+        <br>
+        <fieldset id="volume-settings">
+        <label id="sound-label">Sound (on/off)</label>
         <div class="icon" id="volume-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="speaker-btn">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule=""></path>
+          <path stroke-linecap="" stroke-linejoin="" d=""></path>
+        </svg>
+
+        </div>
+
+        <div id='demo' style='display: block'>
+        <br>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="low-vol">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+        </svg>
+        <div id="vol-slider">
+        <input type="range" min="1" max="100" value="50" class="slider">
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="high-vol">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule=""></path>
+          <path stroke-linecap="" stroke-linejoin="" d=""></path>
         </svg>
         </div>
+        </fieldset>
+
 
       </div>
     </div>
   `;
   rootScreenElement.innerHTML = html;
+  //<input type="submit" placeholder=<%= rows[0].uid %>>
+
+/*
+<script>
+
+document.write('<path stroke-linecap="round" stroke-linejoin="round" d='+ d + 'clip-rule='+ clip-rule '/>');
+document.write(`<p>You can also do it this way: ${aNumberVariable} and ${aStringVariable}. Search for template literals.<p>`);
+</script>
+*/
+
+
+
 
   const closeSettingsElement = document.querySelector('#close-settings');
   closeSettingsElement.addEventListener('click', async (event) => {
     event.preventDefault();
     await renderGameMenuScreenEvent();
   });
-  
+
+  //document.getElementById("demo").style.display = "none";
+  const volumeButton = document.querySelector('#volume-icon');
+  volumeButton.addEventListener('click', async (event) => {
+
+    if (document.querySelector('#speaker-btn').innerHTML.includes("evenodd") == false) {
+      document.querySelector('#speaker-btn').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" /> <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />';
+      document.getElementById("demo").style.display = "none";
+      //unlink music
+    }
+    else {
+      document.querySelector('#speaker-btn').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="" /> <path stroke-linecap="" stroke-linejoin="" d="" />';
+      document.getElementById("demo").style.display = "block";
+      //link music back
+    }
+
+/*
+    if (document.getElementById("demo").style.display === "none") {
+      document.getElementById("demo").style.display = "block";
+    }
+    else {
+      document.getElementById("demo").style.display = "none";
+    }
+  }
+    */
+
+  });
+
+
+
+
+
+
+
 }
 
 export {

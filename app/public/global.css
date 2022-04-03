@@ -18,7 +18,7 @@ body {
   font-family: var(--font-primary);
   font-size: var(--font-size-primary);
 
-  background: url(/app/public/assets/images/menu-screen-sketch.jpg) no-repeat center center fixed; 
+  background: url(/app/public/assets/images/menu-screen-sketch.jpg) no-repeat center center fixed;
   background-size: cover;
 
   -webkit-background-size: cover;
@@ -73,6 +73,13 @@ input[type=text] {
   width: 50%;
   clear: both;
 }
+
+#on-off-btn {
+  position: relative;
+  bottom: 20px;
+}
+
+
 
 .divider {
   border: solid 2px var(--color-black);
@@ -197,21 +204,89 @@ input[type=text] {
 #user-profile-button {
   background: relative;
   position:absolute;
-  top:0; 
+  top:0;
   right:0;
 
   margin:10px;
 
 }
+
+
 
 #user-game-settings{
   background: relative;
   position:absolute;
-  top:0; 
+  top:0;
   right:0;
 
   margin:10px;
 }
+
+#volume-settings {
+  border: 3px solid black;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+#sound-label {
+  position: relative;
+  top: 10px;
+  font-size: 24px;
+}
+
+#volume-icon {
+  position: relative;
+  bottom: 25px;
+  width: 80px;
+  height:40px;
+}
+
+#speaker-btn {
+  width: 80px;
+  height:40px;
+}
+
+#vol-slider {
+  width: 100%;
+  text-align: center;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 70%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: var(--color-grey-2);
+  cursor: pointer;
+}
+
+#low-vol {
+  position: relative;
+  right: 5px;
+  top: 33.5px;
+  width: 60px;
+  height:30px;
+}
+
+#high-vol {
+  position: relative;
+  bottom: 33.5px;
+  left: 315px;
+  width: 60px;
+  height:30px;
+}
+
 
 #reset-account-password-button{
   background: #7A6949;
@@ -239,7 +314,7 @@ input[type=text] {
   max-height: 200px;
 
   padding-right: 20px;
-  
+
   box-sizing: border-box;
 
   overflow-y: scroll;
