@@ -12,15 +12,27 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          'style-loader',
-          'css-loader',
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
         ],
-      }
+      },
+      {
+        test: /\.(glb|gltf)$/,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'app/public/index.html')
-    })
+      template: path.resolve(__dirname, 'app/public/index.html'),
+    }),
   ],
 }
