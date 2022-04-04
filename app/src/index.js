@@ -25,6 +25,8 @@ GLOBAL_STATE.socket.on('renderGameMenuScreen', RENDER_EVENTS.renderGameMenuScree
 
 /* APP */
 
-(async function() {
-  await AUTH_EVENTS.authenticateUserEvent();
-})();
+if (!GLOBAL_STATE.isGameLive) {
+  (async function() {
+    await AUTH_EVENTS.authenticateUserEvent();
+  })();
+}

@@ -2,6 +2,7 @@
 
 import * as GAME_EVENTS from './game-events.js';
 import * as AUTH_EVENTS from './auth-events.js';
+import * as YOUTUBE_EVENTS from './youtube-events.js';
 import * as GAME_RENDERER from '../config/game-renderer.js';
 import GLOBAL_STATE from '../global.js';
 
@@ -105,6 +106,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
           <p id="total-losses"></p>
         </div>
       </div>
+
       <div class="popup-container">
         <div class="popup-head-container">
           <h1>Game Room</h1>
@@ -117,6 +119,20 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
         <div id="room-players-container"></div>
         <button type="button" id="start-game-button">Start</button>
         <button type="button" id="leave-room-button">Leave</button>
+      </div>
+
+      <div class="popup-container">
+        <div class="popup-head-container">
+          <h1>YouTube</h1>
+        </div>
+        <div id="youtube-player-container">
+          <iframe id="youtube-embedded" src="" title=""></iframe>
+          <div id="youtube-search-container">
+            <input id="youtube-search" type="text" placeholder="Search videos" />
+            <button type="button" id="youtube-search-button">Search</button>
+          </div>
+          <div id="youtube-videos-container"></div>
+        </div>
       </div>
     </div>
   `;
@@ -167,6 +183,34 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
 
   const startGameButton = document.querySelector('#start-game-button');
   startGameButton.addEventListener('click', (event) => renderGameScreenEvent());
+
+  const youtubeEmbeddedElement = document.querySelector('#youtube-embedded');
+  const youtubeSearchButtonElement = document.querySelector('#youtube-search-button');
+  const youtubeSearchElement = document.querySelector('#youtube-search');
+  const youtubeVideosContainerElement = document.querySelector('#youtube-videos-container');
+
+  youtubeSearchButtonElement.addEventListener('click', async (event) => {
+    const searchTerm = youtubeSearchElement.value;
+
+    const results = await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
+
+    if (results) {
+      youtubeVideosContainerElement.innerHTML = '';
+
+      results.items.forEach(item => {
+        const buttonElement = document.createElement('button');
+        buttonElement.type = 'button';
+        buttonElement.innerText = item.snippet.title;
+        buttonElement.addEventListener('click', (event) => {
+          event.preventDefault();
+          youtubeEmbeddedElement.src = `https://www.youtube.com/embed/${item.id.videoId}`;
+          youtubeEmbeddedElement.title = item.snippet.title;
+        });
+  
+        youtubeVideosContainerElement.append(buttonElement);
+      });
+    }
+  });
 }
 
 const renderJoinPublicMatchScreenEvent = () => {
@@ -470,6 +514,7 @@ const renderUserProfileScreenEvent = async () => {
       </div>
     </div>
   `;
+
   rootScreenElement.innerHTML = html;
 
   const currentEmail = GLOBAL_STATE.user.email;

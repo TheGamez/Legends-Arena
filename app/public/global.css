@@ -334,3 +334,33 @@ input[type=text] {
   flex-direction: column;
   gap: 20px;
 }
+
+#youtube-player-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#youtube-search-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+#youtube-videos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  max-height: 200px;
+  
+  overflow-y: scroll;
+
+  padding-right: 20px;
+  
+  box-sizing: border-box;
+}
+
+#youtube-videos-container > * {
+  flex-grow: 1;
+}
