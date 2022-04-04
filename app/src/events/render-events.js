@@ -197,14 +197,12 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   youtubeSearchButtonElement.addEventListener('click', async (event) => {
     const searchTerm = youtubeSearchElement.value;
 
-    await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
+    const results = await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
 
-    const youtubeSearchResults = GLOBAL_STATE.youtubeSearchResults;
-
-    if (youtubeSearchResults) {
+    if (results) {
       youtubeVideosContainerElement.innerHTML = '';
 
-      youtubeSearchResults.items.forEach(item => {
+      results.items.forEach(item => {
         const buttonElement = document.createElement('button');
         buttonElement.type = 'button';
         buttonElement.innerText = item.snippet.title;
@@ -215,11 +213,20 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
 
           const iframeElement = document.createElement('iframe');
 
-          iframeElement.src = `https://www.youtube.com/embed/${item.id.videoId}?autoplay=1`;
-          iframeElement.title = item.snippet.title;
+          const youtubeVideoId = item.id.videoId;
+          const youtubeSnippedTitle = item.snippet.title;
+          const youtubeAutoplay = '1';
+          const youtubeControls = '0';
+          const youtubeDisableKB = '1';
+          const youtubePlaylist=youtubeVideoId;
+          const youtubeLoop = 1;
+
+          iframeElement.src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=${youtubeAutoplay}&controls=${youtubeControls}&disablekb=${youtubeDisableKB}&playlist=${youtubePlaylist}&loop=${youtubeLoop}`;
+          iframeElement.title = youtubeSnippedTitle;
           iframeElement.height = '200px';
           iframeElement.allow = 'autoplay';
           iframeElement.style.border = 'none';
+          iframeElement.style.pointerEvents = 'none';
 
           youtubeVideoPlayerContainer.append(iframeElement);
         });
@@ -557,7 +564,7 @@ const renderUserProfileScreenEvent = async () => {
   });
 }
 
-const updateGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
+const updateGameLobbyScreenEvent = ({ roomPlayers }) => {
   const roomPlayersContainerElement = document.querySelector('#room-players-container');
 
   roomPlayersContainerElement.innerHTML = '';

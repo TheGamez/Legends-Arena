@@ -10,8 +10,6 @@ const GLOBAL_STATE = {
   MAX_PLAYERS: 4,
   socket: io(),
   user: undefined,
-  isGameLive: false,
-  youtubeSearchResults: undefined,
 };
 
 if (DEBUG) console.log('[GLOBAL_STATE]', GLOBAL_STATE);
