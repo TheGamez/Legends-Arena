@@ -329,7 +329,54 @@ input[type=text] {
   background-color: yellow;
 }
 
-.popup-layout {
+#youtube-video-player-container {
+  display: flex;
+}
+
+#youtube-video-player-container > * {
+  flex-grow: 1;
+}
+
+#youtube-player-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#youtube-search-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+#youtube-videos-container {
+  display: none;
+
+  flex-direction: column;
+  gap: 20px;
+
+  max-height: 150px;
+  
+  overflow-y: scroll;
+
+  padding-right: 20px;
+  
+  box-sizing: border-box;
+}
+
+#youtube-videos-container > * {
+  flex-grow: 1;
+}
+
+#game-lobby-outer-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+
+  justify-content: center;
+}
+
+#game-lobby-inner-layout {
   display: flex;
   flex-direction: column;
   gap: 20px;

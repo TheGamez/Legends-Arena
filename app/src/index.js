@@ -22,6 +22,7 @@ GLOBAL_STATE.socket.on('roomNotFound', GAME_EVENTS.roomStatusEvent);
 GLOBAL_STATE.socket.on('setOpenRooms', GAME_EVENTS.setOpenRoomsEvent);
 GLOBAL_STATE.socket.on('renderGameLobbyScreen', RENDER_EVENTS.renderGameLobbyScreenEvent);
 GLOBAL_STATE.socket.on('renderGameMenuScreen', RENDER_EVENTS.renderGameMenuScreenEvent);
+GLOBAL_STATE.socket.on('updateGameLobbyScreen', RENDER_EVENTS.updateGameLobbyScreenEvent);
 
 /* APP */
 

@@ -2,6 +2,7 @@
 
 import * as GAME_EVENTS from './game-events.js';
 import * as AUTH_EVENTS from './auth-events.js';
+import * as YOUTUBE_EVENTS from './youtube-events.js';
 import * as GAME_RENDERER from '../config/game-renderer.js';
 import GLOBAL_STATE from '../global.js';
 
@@ -94,29 +95,48 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-layout">
-      <div class="popup-container">
-        <div class="popup-head-container">
-          <h1>Statistics</h1>
+    <div id="game-lobby-outer-layout">
+      <div id="game-lobby-inner-layout">
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>Statistics</h1>
+          </div>
+          <div>
+            <p id="current-level"></p>
+            <p id="total-wins"></p>
+            <p id="total-losses"></p>
+          </div>
         </div>
-        <div>
-          <p id="current-level"></p>
-          <p id="total-wins"></p>
-          <p id="total-losses"></p>
+
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>Game Room</h1>
+            <p id="copy-code-message"></p>
+          </div>
+          <div id="copy-code-container">
+            <p id="room-code" class="room-code"></p>
+            <button type="button" id="copy-code-button">Copy</button>
+          </div>
+          <div id="room-players-container"></div>
+          <button type="button" id="start-game-button">Start</button>
+          <button type="button" id="leave-room-button">Leave</button>
         </div>
       </div>
-      <div class="popup-container">
-        <div class="popup-head-container">
-          <h1>Game Room</h1>
-          <p id="copy-code-message"></p>
+
+      <div>
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>YouTube</h1>
+          </div>
+          <div id="youtube-player-container">
+            <div id="youtube-video-player-container"></div>
+            <div id="youtube-search-container">
+              <input id="youtube-search" type="text" placeholder="Search videos" autocomplete="off" />
+              <button type="button" id="youtube-search-button">Search</button>
+            </div>
+            <div id="youtube-videos-container"></div>
+          </div>
         </div>
-        <div id="copy-code-container">
-          <p id="room-code" class="room-code"></p>
-          <button type="button" id="copy-code-button">Copy</button>
-        </div>
-        <div id="room-players-container"></div>
-        <button type="button" id="start-game-button">Start</button>
-        <button type="button" id="leave-room-button">Leave</button>
       </div>
     </div>
   `;
@@ -167,6 +187,56 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
 
   const startGameButton = document.querySelector('#start-game-button');
   startGameButton.addEventListener('click', (event) => renderGameScreenEvent());
+
+  const youtubeSearchButtonElement = document.querySelector('#youtube-search-button');
+  const youtubeSearchElement = document.querySelector('#youtube-search');
+  const youtubeVideosContainerElement = document.querySelector('#youtube-videos-container');
+
+  const youtubeVideoPlayerContainer = document.querySelector('#youtube-video-player-container');
+
+  youtubeSearchButtonElement.addEventListener('click', async (event) => {
+    const searchTerm = youtubeSearchElement.value;
+
+    const results = await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
+
+    if (results) {
+      youtubeVideosContainerElement.innerHTML = '';
+
+      results.items.forEach(item => {
+        const buttonElement = document.createElement('button');
+        buttonElement.type = 'button';
+        buttonElement.innerText = item.snippet.title;
+        buttonElement.addEventListener('click', (event) => {
+          event.preventDefault();
+          
+          youtubeVideoPlayerContainer.innerHTML = '';
+
+          const iframeElement = document.createElement('iframe');
+
+          const youtubeVideoId = item.id.videoId;
+          const youtubeSnippedTitle = item.snippet.title;
+          const youtubeAutoplay = '1';
+          const youtubeControls = '0';
+          const youtubeDisableKB = '1';
+          const youtubePlaylist=youtubeVideoId;
+          const youtubeLoop = 1;
+
+          iframeElement.src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=${youtubeAutoplay}&controls=${youtubeControls}&disablekb=${youtubeDisableKB}&playlist=${youtubePlaylist}&loop=${youtubeLoop}`;
+          iframeElement.title = youtubeSnippedTitle;
+          iframeElement.height = '200px';
+          iframeElement.allow = 'autoplay';
+          iframeElement.style.border = 'none';
+          iframeElement.style.pointerEvents = 'none';
+
+          youtubeVideoPlayerContainer.append(iframeElement);
+        });
+  
+        youtubeVideosContainerElement.append(buttonElement);
+      });
+
+      youtubeVideosContainerElement.style.display = 'flex';
+    }
+  });
 }
 
 const renderJoinPublicMatchScreenEvent = () => {
@@ -470,6 +540,7 @@ const renderUserProfileScreenEvent = async () => {
       </div>
     </div>
   `;
+
   rootScreenElement.innerHTML = html;
 
   const currentEmail = GLOBAL_STATE.user.email;
@@ -493,6 +564,23 @@ const renderUserProfileScreenEvent = async () => {
   });
 }
 
+const updateGameLobbyScreenEvent = ({ roomPlayers }) => {
+  const roomPlayersContainerElement = document.querySelector('#room-players-container');
+
+  roomPlayersContainerElement.innerHTML = '';
+
+  roomPlayers.forEach(roomPlayer => {
+    const divElement = document.createElement('div');
+    divElement.innerText = roomPlayer.username;
+    if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+      divElement.className = 'room-player-highlight';
+    } else {
+      divElement.className = 'room-player';
+    }
+    roomPlayersContainerElement.append(divElement);
+  });
+}
+
 export {
   renderGameMenuScreenEvent,
   renderGameLobbyScreenEvent,
@@ -502,4 +590,5 @@ export {
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,
   renderUserProfileScreenEvent,
+  updateGameLobbyScreenEvent,
 };
