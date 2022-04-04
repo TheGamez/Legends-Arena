@@ -11,6 +11,7 @@ const GLOBAL_STATE = {
   socket: io(),
   user: undefined,
   isGameLive: false,
+  youtubeSearchResults: undefined,
 };
 
 if (DEBUG) console.log('[GLOBAL_STATE]', GLOBAL_STATE);

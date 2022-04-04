@@ -95,43 +95,47 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-layout">
-      <div class="popup-container">
-        <div class="popup-head-container">
-          <h1>Statistics</h1>
-        </div>
-        <div>
-          <p id="current-level"></p>
-          <p id="total-wins"></p>
-          <p id="total-losses"></p>
-        </div>
-      </div>
-
-      <div class="popup-container">
-        <div class="popup-head-container">
-          <h1>Game Room</h1>
-          <p id="copy-code-message"></p>
-        </div>
-        <div id="copy-code-container">
-          <p id="room-code" class="room-code"></p>
-          <button type="button" id="copy-code-button">Copy</button>
-        </div>
-        <div id="room-players-container"></div>
-        <button type="button" id="start-game-button">Start</button>
-        <button type="button" id="leave-room-button">Leave</button>
-      </div>
-
-      <div class="popup-container">
-        <div class="popup-head-container">
-          <h1>YouTube</h1>
-        </div>
-        <div id="youtube-player-container">
-          <iframe id="youtube-embedded" src="" title=""></iframe>
-          <div id="youtube-search-container">
-            <input id="youtube-search" type="text" placeholder="Search videos" />
-            <button type="button" id="youtube-search-button">Search</button>
+    <div id="game-lobby-outer-layout">
+      <div id="game-lobby-inner-layout">
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>Statistics</h1>
           </div>
-          <div id="youtube-videos-container"></div>
+          <div>
+            <p id="current-level"></p>
+            <p id="total-wins"></p>
+            <p id="total-losses"></p>
+          </div>
+        </div>
+
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>Game Room</h1>
+            <p id="copy-code-message"></p>
+          </div>
+          <div id="copy-code-container">
+            <p id="room-code" class="room-code"></p>
+            <button type="button" id="copy-code-button">Copy</button>
+          </div>
+          <div id="room-players-container"></div>
+          <button type="button" id="start-game-button">Start</button>
+          <button type="button" id="leave-room-button">Leave</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>YouTube</h1>
+          </div>
+          <div id="youtube-player-container">
+            <div id="youtube-video-player-container"></div>
+            <div id="youtube-search-container">
+              <input id="youtube-search" type="text" placeholder="Search videos" autocomplete="off" />
+              <button type="button" id="youtube-search-button">Search</button>
+            </div>
+            <div id="youtube-videos-container"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -184,31 +188,46 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   const startGameButton = document.querySelector('#start-game-button');
   startGameButton.addEventListener('click', (event) => renderGameScreenEvent());
 
-  const youtubeEmbeddedElement = document.querySelector('#youtube-embedded');
   const youtubeSearchButtonElement = document.querySelector('#youtube-search-button');
   const youtubeSearchElement = document.querySelector('#youtube-search');
   const youtubeVideosContainerElement = document.querySelector('#youtube-videos-container');
 
+  const youtubeVideoPlayerContainer = document.querySelector('#youtube-video-player-container');
+
   youtubeSearchButtonElement.addEventListener('click', async (event) => {
     const searchTerm = youtubeSearchElement.value;
 
-    const results = await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
+    await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
 
-    if (results) {
+    const youtubeSearchResults = GLOBAL_STATE.youtubeSearchResults;
+
+    if (youtubeSearchResults) {
       youtubeVideosContainerElement.innerHTML = '';
 
-      results.items.forEach(item => {
+      youtubeSearchResults.items.forEach(item => {
         const buttonElement = document.createElement('button');
         buttonElement.type = 'button';
         buttonElement.innerText = item.snippet.title;
         buttonElement.addEventListener('click', (event) => {
           event.preventDefault();
-          youtubeEmbeddedElement.src = `https://www.youtube.com/embed/${item.id.videoId}`;
-          youtubeEmbeddedElement.title = item.snippet.title;
+          
+          youtubeVideoPlayerContainer.innerHTML = '';
+          
+          const iframeElement = document.createElement('iframe');
+
+          iframeElement.src = `https://www.youtube.com/embed/${item.id.videoId}?autoplay=1`;
+          iframeElement.title = item.snippet.title;
+          iframeElement.height = '200px';
+          iframeElement.allow = 'autoplay';
+          iframeElement.style.border = 'none';
+
+          youtubeVideoPlayerContainer.append(iframeElement);
         });
   
         youtubeVideosContainerElement.append(buttonElement);
       });
+
+      youtubeVideosContainerElement.style.display = 'flex';
     }
   });
 }

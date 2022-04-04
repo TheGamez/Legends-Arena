@@ -1,3 +1,7 @@
+/* MODULES */
+
+import GLOBAL_STATE from '../global';
+
 /* VARIABLES */
 
 const DEBUG = true;
@@ -27,7 +31,7 @@ const searchYoutubeEvent = async (searchTerm) => {
   
       if (DEBUG) console.log(data);
 
-      return data;
+      GLOBAL_STATE.youtubeSearchResults = data;
     } catch (error) {
       console.log(error);
     }
