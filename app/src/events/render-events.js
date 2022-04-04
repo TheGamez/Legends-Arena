@@ -212,7 +212,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
           event.preventDefault();
           
           youtubeVideoPlayerContainer.innerHTML = '';
-          
+
           const iframeElement = document.createElement('iframe');
 
           iframeElement.src = `https://www.youtube.com/embed/${item.id.videoId}?autoplay=1`;
@@ -557,6 +557,23 @@ const renderUserProfileScreenEvent = async () => {
   });
 }
 
+const updateGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
+  const roomPlayersContainerElement = document.querySelector('#room-players-container');
+
+  roomPlayersContainerElement.innerHTML = '';
+
+  roomPlayers.forEach(roomPlayer => {
+    const divElement = document.createElement('div');
+    divElement.innerText = roomPlayer.username;
+    if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+      divElement.className = 'room-player-highlight';
+    } else {
+      divElement.className = 'room-player';
+    }
+    roomPlayersContainerElement.append(divElement);
+  });
+}
+
 export {
   renderGameMenuScreenEvent,
   renderGameLobbyScreenEvent,
@@ -566,4 +583,5 @@ export {
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,
   renderUserProfileScreenEvent,
+  updateGameLobbyScreenEvent,
 };

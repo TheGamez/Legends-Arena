@@ -70,7 +70,9 @@ const joinRoomEvent = (io, socket, roomCode, user) => {
 
   // io.to(roomCode).emit('roomPlayer', `Player ${roomPlayer} joined the room.`);
   // io.to(roomCode).emit('roomPlayers', `Players: ${roomPlayers}`);
-  io.to(roomCode).emit('renderGameLobbyScreen', { roomCode, roomPlayer, roomPlayers });
+
+  socket.emit('renderGameLobbyScreen', { roomCode, roomPlayer, roomPlayers });
+  io.to(roomCode).emit('updateGameLobbyScreen', { roomPlayers });
 
   const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isRoomPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
   socket.broadcast.emit('setOpenRooms', openRooms);
@@ -92,7 +94,7 @@ const leaveRoomEvent = (io, socket, roomCode, roomPlayer) => {
 
   // io.to(roomCode).emit('roomPlayer', `Player ${roomPlayer} left the room.`);
   // io.to(roomCode).emit('roomPlayers', `Players: ${roomPlayers}`);
-  io.to(roomCode).emit('renderGameLobbyScreen', { roomCode, roomPlayer, roomPlayers });
+  io.to(roomCode).emit('updateGameLobbyScreen', { roomPlayers });
 
   const roomSocketsCount = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).length;
   if (roomSocketsCount === 0) delete GLOBAL_STATE._gameRooms[roomCode];
@@ -106,9 +108,23 @@ const getOpenRoomsEvent = (socket) => {
   socket.emit('setOpenRooms', openRooms);
 }
 
-const disconnectionEvent = (socket) => {
+const disconnectionEvent = (io, socket) => {
   const roomCode = GLOBAL_STATE._gameSockets[socket.id] ? GLOBAL_STATE._gameSockets[socket.id].roomCode : undefined;
-  if (roomCode) delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
+  
+  let roomPlayers = [];
+
+  if (roomCode) {
+    delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
+
+    roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socket => {
+      return {
+        socketId: socket,
+        username: GLOBAL_STATE._gameSockets[socket].roomPlayer
+      }
+    });
+
+    io.to(roomCode).emit('updateGameLobbyScreen', { roomPlayers });
+  }
 
   delete GLOBAL_STATE._gameSockets[socket.id];
 

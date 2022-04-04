@@ -4,7 +4,7 @@ import GLOBAL_STATE from '../global';
 
 /* VARIABLES */
 
-const DEBUG = true;
+const DEBUG = false;
 
 /* FUNCTIONS */
 
