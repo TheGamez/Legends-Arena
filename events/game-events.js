@@ -14,23 +14,22 @@ const createRoomEvent = (socket, isRoomPrivate, user) => {
   const sockets = {};
   sockets[socket.id] = roomCode;
 
-  GLOBAL_STATE._gameRooms[roomCode] = { isRoomPrivate, sockets };
+  GLOBAL_STATE._gameRooms[roomCode] = { isRoomPrivate, sockets, youtubeData: undefined };
 
-  let roomPlayer = '';
-  if (user) {
-    roomPlayer = user.username;
-  } else {
-    roomPlayer = `guest_${socket.id}`;
-  }
-  
-  GLOBAL_STATE._gameSockets[socket.id] = { roomCode, roomPlayer };
+  let roomPlayer = {
+    roomCode,
+    socketId: socket.id,
+    name: `guest_${socket.id}`,
+    isHost: true,
+  };
 
-  const roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socket => {
-    return {
-      socketId: socket,
-      username: GLOBAL_STATE._gameSockets[socket].roomPlayer
-    }
-  });
+  if (user) roomPlayer.name = user.username;
+
+  GLOBAL_STATE._gameSockets[socket.id] = roomPlayer;
+
+  const roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socketId => GLOBAL_STATE._gameSockets[socketId]);
+
+  // socket.emit('roomPlayers', roomPlayers);
 
   socket.join(roomCode);
   socket.emit('renderGameLobbyScreen', { roomCode, roomPlayer, roomPlayers });
@@ -52,26 +51,28 @@ const joinRoomEvent = (io, socket, roomCode, user) => {
 
   GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id] = roomCode;
 
-  let roomPlayer = '';
-  if (user) {
-    roomPlayer = user.username;
-  } else {
-    roomPlayer = `guest_${socket.id}`;
-  }
+  let roomPlayer = {
+    roomCode,
+    socketId: socket.id,
+    name: `guest_${socket.id}`,
+    isHost: false,
+  };
 
-  GLOBAL_STATE._gameSockets[socket.id] = { roomCode, roomPlayer };
+  if (user) roomPlayer.name = user.username;
 
-  const roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socket => {
-    return {
-      socketId: socket,
-      username: GLOBAL_STATE._gameSockets[socket].roomPlayer
-    }
-  });
+  GLOBAL_STATE._gameSockets[socket.id] = roomPlayer;
 
+  const roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socketId => GLOBAL_STATE._gameSockets[socketId]);
+
+  const youtubeData = GLOBAL_STATE._gameRooms[roomCode].youtubeData;
+
+  // socket.emit('roomPlayers', roomPlayers);
   // io.to(roomCode).emit('roomPlayer', `Player ${roomPlayer} joined the room.`);
   // io.to(roomCode).emit('roomPlayers', `Players: ${roomPlayers}`);
 
   socket.emit('renderGameLobbyScreen', { roomCode, roomPlayer, roomPlayers });
+  socket.emit('updateYouTubeVideoScreen', { youtubeData });
+
   io.to(roomCode).emit('updateGameLobbyScreen', { roomPlayers });
 
   const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isRoomPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
@@ -84,14 +85,23 @@ const leaveRoomEvent = (io, socket, roomCode, roomPlayer) => {
 
   delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
   GLOBAL_STATE._gameSockets[socket.id].roomCode = undefined;
+  
+  const isHost = GLOBAL_STATE._gameSockets[socket.id].isHost;
+  if (isHost) {
+    const gameRoomSocketIds = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets);
 
-  const roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socket => {
-    return {
-      socketId: socket,
-      username: GLOBAL_STATE._gameSockets[socket].roomPlayer
+    if (gameRoomSocketIds.length > 0) {
+      GLOBAL_STATE._gameSockets[gameRoomSocketIds[0]].isHost = true;
     }
-  });
 
+    GLOBAL_STATE._gameSockets[socket.id].isHost = undefined;
+
+    io.to(gameRoomSocketIds[0]).emit('updateYouTubeSearchScreen', { roomCode });
+  }
+
+  const roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socketId => GLOBAL_STATE._gameSockets[socketId]);
+
+  // socket.emit('roomPlayers', roomPlayers);
   // io.to(roomCode).emit('roomPlayer', `Player ${roomPlayer} left the room.`);
   // io.to(roomCode).emit('roomPlayers', `Players: ${roomPlayers}`);
   io.to(roomCode).emit('updateGameLobbyScreen', { roomPlayers });
@@ -103,11 +113,6 @@ const leaveRoomEvent = (io, socket, roomCode, roomPlayer) => {
   socket.broadcast.emit('setOpenRooms', openRooms);
 }
 
-const getOpenRoomsEvent = (socket) => {
-  const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isRoomPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
-  socket.emit('setOpenRooms', openRooms);
-}
-
 const disconnectionEvent = (io, socket) => {
   const roomCode = GLOBAL_STATE._gameSockets[socket.id] ? GLOBAL_STATE._gameSockets[socket.id].roomCode : undefined;
   
@@ -115,13 +120,24 @@ const disconnectionEvent = (io, socket) => {
 
   if (roomCode) {
     delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
+    GLOBAL_STATE._gameSockets[socket.id].roomCode = undefined;
 
-    roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socket => {
-      return {
-        socketId: socket,
-        username: GLOBAL_STATE._gameSockets[socket].roomPlayer
+    const isHost = GLOBAL_STATE._gameSockets[socket.id].isHost;
+    if (isHost) {
+      const gameRoomSocketIds = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets);
+
+      if (gameRoomSocketIds.length > 0) {
+        GLOBAL_STATE._gameSockets[gameRoomSocketIds[0]].isHost = true;
       }
-    });
+
+      GLOBAL_STATE._gameSockets[socket.id].isHost = undefined;
+
+      io.to(gameRoomSocketIds[0]).emit('updateYouTubeSearchScreen', { roomCode });
+    }
+
+    roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socketId => GLOBAL_STATE._gameSockets[socketId]);
+
+    // socket.emit('roomPlayers', roomPlayers);
 
     io.to(roomCode).emit('updateGameLobbyScreen', { roomPlayers });
   }
@@ -135,6 +151,19 @@ const disconnectionEvent = (io, socket) => {
 
   const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isRoomPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
   socket.broadcast.emit('setOpenRooms', openRooms);
+}
+
+const getOpenRoomsEvent = (socket) => {
+  const openRooms = Object.fromEntries(Object.entries(GLOBAL_STATE._gameRooms).filter(room => (room[1].isRoomPrivate === false) && (Object.values(room[1].sockets).length < GLOBAL_STATE.MAX_PLAYERS)));
+  socket.emit('setOpenRooms', openRooms);
+}
+
+const playYoutubeEvent = (io, socket, roomCode, youtubeData) => {
+  io.to(roomCode).emit('updateYouTubeVideoScreen', { youtubeData });
+}
+
+const youtubeDataEvent = (io, socket, roomCode, youtubeData) => {
+  GLOBAL_STATE._gameRooms[roomCode].youtubeData = youtubeData;
 }
 
 /* THIS CODE WILL BE REFACTORED AND USED IN ITERATION 3 */
@@ -323,4 +352,6 @@ module.exports = {
   joinRoomEvent,
   leaveRoomEvent,
   getOpenRoomsEvent,
+  playYoutubeEvent,
+  youtubeDataEvent,
 };

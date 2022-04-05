@@ -129,12 +129,9 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
             <h1>YouTube</h1>
           </div>
           <div id="youtube-player-container">
-            <div id="youtube-video-player-container"></div>
-            <div id="youtube-search-container">
-              <input id="youtube-search" type="text" placeholder="Search videos" autocomplete="off" />
-              <button type="button" id="youtube-search-button">Search</button>
+            <div id="youtube-video-player-container">
+              <iframe src="" title="" height="200px"></iframe>
             </div>
-            <div id="youtube-videos-container"></div>
           </div>
         </div>
       </div>
@@ -163,12 +160,14 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
 
   roomPlayers.forEach(roomPlayer => {
     const divElement = document.createElement('div');
-    divElement.innerText = roomPlayer.username;
+    divElement.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
+
     if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
       divElement.className = 'room-player-highlight';
     } else {
       divElement.className = 'room-player';
     }
+
     roomPlayersContainerElement.append(divElement);
   });
   
@@ -188,55 +187,69 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   const startGameButton = document.querySelector('#start-game-button');
   startGameButton.addEventListener('click', (event) => renderGameScreenEvent());
 
-  const youtubeSearchButtonElement = document.querySelector('#youtube-search-button');
-  const youtubeSearchElement = document.querySelector('#youtube-search');
-  const youtubeVideosContainerElement = document.querySelector('#youtube-videos-container');
+  if (roomPlayer.isHost) {
+    const youtubePlayerContainer = document.querySelector('#youtube-player-container');
 
-  const youtubeVideoPlayerContainer = document.querySelector('#youtube-video-player-container');
+    const divElement1 = document.createElement('div');
+    divElement1.id = 'youtube-search-container';
 
-  youtubeSearchButtonElement.addEventListener('click', async (event) => {
-    const searchTerm = youtubeSearchElement.value;
+    const divElement2 = document.createElement('div');
+    divElement2.id = 'youtube-videos-container';
 
-    const results = await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
+    const inputElement = document.createElement('input');
+    inputElement.id = 'youtube-search';
+    inputElement.type = 'text'; 
+    inputElement.placeholder = 'Search'; 
+    inputElement.autocomplete = 'off';
 
-    if (results) {
-      youtubeVideosContainerElement.innerHTML = '';
+    const buttonElement = document.createElement('button');
+    buttonElement.id = 'youtube-search-button'
+    buttonElement.type = 'button';
+    buttonElement.innerText = 'Search';
 
-      results.items.forEach(item => {
-        const buttonElement = document.createElement('button');
-        buttonElement.type = 'button';
-        buttonElement.innerText = item.snippet.title;
-        buttonElement.addEventListener('click', (event) => {
-          event.preventDefault();
-          
-          youtubeVideoPlayerContainer.innerHTML = '';
+    buttonElement.addEventListener('click', async (event) => {
+      event.preventDefault();
+  
+      const searchTerm = inputElement.value;
+  
+      const results = await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
+  
+      if (results) {
+        divElement2.innerHTML = '';
+  
+        results.items.forEach(item => {
+          const _buttonElement = document.createElement('button');
+          _buttonElement.id = item.id.videoId;
+          _buttonElement.type = 'button';
+          _buttonElement.innerText = item.snippet.title;
 
-          const iframeElement = document.createElement('iframe');
+          const youtubeData = {
+            youtubeVideoId: item.id.videoId,
+            youtubeSnippetTitle: item.snippet.title,
+            youtubePlaylist: item.id.videoId,
+            youtubeAutoplay: 1,
+            youtubeControls: 0,
+            youtubeDisableKB: 1,
+            youtubeLoop: 1,
+          };
 
-          const youtubeVideoId = item.id.videoId;
-          const youtubeSnippedTitle = item.snippet.title;
-          const youtubeAutoplay = '1';
-          const youtubeControls = '0';
-          const youtubeDisableKB = '1';
-          const youtubePlaylist=youtubeVideoId;
-          const youtubeLoop = 1;
+          _buttonElement.addEventListener('click', (event) => {
+            event.preventDefault();
+            
+            GLOBAL_STATE.socket.emit('youtubeData', { roomCode, youtubeData });
+            GLOBAL_STATE.socket.emit('playYoutube', { roomCode, youtubeData });
+          });
 
-          iframeElement.src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=${youtubeAutoplay}&controls=${youtubeControls}&disablekb=${youtubeDisableKB}&playlist=${youtubePlaylist}&loop=${youtubeLoop}`;
-          iframeElement.title = youtubeSnippedTitle;
-          iframeElement.height = '200px';
-          iframeElement.allow = 'autoplay';
-          iframeElement.style.border = 'none';
-          iframeElement.style.pointerEvents = 'none';
-
-          youtubeVideoPlayerContainer.append(iframeElement);
+          divElement2.append(_buttonElement);
         });
   
-        youtubeVideosContainerElement.append(buttonElement);
-      });
+        divElement2.style.display = 'flex';
+      }
+    });
 
-      youtubeVideosContainerElement.style.display = 'flex';
-    }
-  });
+    divElement1.append(inputElement, buttonElement);
+    youtubePlayerContainer.append(divElement1, divElement2);
+  }
 }
 
 const renderJoinPublicMatchScreenEvent = () => {
@@ -571,14 +584,97 @@ const updateGameLobbyScreenEvent = ({ roomPlayers }) => {
 
   roomPlayers.forEach(roomPlayer => {
     const divElement = document.createElement('div');
-    divElement.innerText = roomPlayer.username;
+    divElement.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
+
     if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
       divElement.className = 'room-player-highlight';
     } else {
       divElement.className = 'room-player';
     }
+
     roomPlayersContainerElement.append(divElement);
   });
+}
+
+const updateYouTubeVideoScreenEvent = ({ youtubeData }) => {
+  if (youtubeData) {
+    const youtubeVideoPlayerContainer = document.querySelector('#youtube-video-player-container');
+
+    youtubeVideoPlayerContainer.innerHTML = '';
+    
+    const iframeElement = document.createElement('iframe');
+  
+    iframeElement.src = `https://www.youtube.com/embed/${youtubeData.youtubeVideoId}?autoplay=${youtubeData.youtubeAutoplay}&controls=${youtubeData.youtubeControls}&disablekb=${youtubeData.youtubeDisableKB}&playlist=${youtubeData.youtubePlaylist}&loop=${youtubeData.youtubeLoop}`;
+    iframeElement.title = youtubeData.youtubeSnippetTitle;
+    iframeElement.height = '200px';
+    iframeElement.allow = 'autoplay';
+  
+    youtubeVideoPlayerContainer.append(iframeElement);
+  }
+}
+
+const updateYouTubeSearchScreenEvent = ({ roomCode }) => {
+  const youtubePlayerContainer = document.querySelector('#youtube-player-container');
+
+  const divElement1 = document.createElement('div');
+  divElement1.id = 'youtube-search-container';
+
+  const divElement2 = document.createElement('div');
+  divElement2.id = 'youtube-videos-container';
+
+  const inputElement = document.createElement('input');
+  inputElement.id = 'youtube-search';
+  inputElement.type = 'text'; 
+  inputElement.placeholder = 'Search'; 
+  inputElement.autocomplete = 'off';
+
+  const buttonElement = document.createElement('button');
+  buttonElement.id = 'youtube-search-button'
+  buttonElement.type = 'button';
+  buttonElement.innerText = 'Search';
+
+  buttonElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    const searchTerm = inputElement.value;
+
+    const results = await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
+
+    if (results) {
+      divElement2.innerHTML = '';
+
+      results.items.forEach(item => {
+        const _buttonElement = document.createElement('button');
+        _buttonElement.id = item.id.videoId;
+        _buttonElement.type = 'button';
+        _buttonElement.innerText = item.snippet.title;
+
+        const youtubeData = {
+          youtubeVideoId: item.id.videoId,
+          youtubeSnippetTitle: item.snippet.title,
+          youtubePlaylist: item.id.videoId,
+          youtubeAutoplay: 1,
+          youtubeControls: 0,
+          youtubeDisableKB: 1,
+          youtubeLoop: 1,
+        };
+
+        _buttonElement.addEventListener('click', (event) => {
+          event.preventDefault();
+          
+          GLOBAL_STATE.socket.emit('youtubeData', { roomCode, youtubeData });
+          GLOBAL_STATE.socket.emit('playYoutube', { roomCode, youtubeData });
+        });
+
+        divElement2.append(_buttonElement);
+      });
+
+      divElement2.style.display = 'flex';
+    }
+  });
+
+  divElement1.append(inputElement, buttonElement);
+  youtubePlayerContainer.append(divElement1, divElement2);
 }
 
 export {
@@ -591,4 +687,6 @@ export {
   renderResetPasswordScreenEvent,
   renderUserProfileScreenEvent,
   updateGameLobbyScreenEvent,
+  updateYouTubeVideoScreenEvent,
+  updateYouTubeSearchScreenEvent,
 };

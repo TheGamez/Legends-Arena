@@ -56,5 +56,7 @@ io.on('connect', (socket) => {
   socket.on('joinRoom', ({ roomCode, user }) => GAME_EVENTS.joinRoomEvent(io, socket, roomCode, user));
   socket.on('leaveRoom', ({ roomCode, roomPlayer }) => GAME_EVENTS.leaveRoomEvent(io, socket, roomCode, roomPlayer));
   socket.on('getOpenRooms', () => GAME_EVENTS.getOpenRoomsEvent(socket));
+  socket.on('playYoutube', ({ roomCode, youtubeData }) => GAME_EVENTS.playYoutubeEvent(io, socket, roomCode, youtubeData));
+  socket.on('youtubeData', ({ roomCode, youtubeData }) => GAME_EVENTS.youtubeDataEvent(io, socket, roomCode, youtubeData));
   // socket.on('keydown', (keyInputCode) => keyDownEvent(socket, keyInputCode));
 });
