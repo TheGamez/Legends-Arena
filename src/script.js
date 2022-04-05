@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
-import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
+import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js'
 
 import { CharacterController } from './CharacterController'
 
@@ -63,9 +63,6 @@ scene.add(directionalLight)
 
 
 // --BEGIN: Rendering ------------------------------------------------------------------------------
-var characterController
-var mixer
-
 // Sizes
 const sizes = {
     width: window.innerWidth,
@@ -74,7 +71,7 @@ const sizes = {
 
 // Camera
 const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.01, 10000)
-camera.position.set(0, 105, -101)
+camera.position.set(5, 5, -10) // 5, 5, -10
 scene.add(camera)
 
 // Controls
@@ -86,13 +83,15 @@ controls.enableZoom = true
 controls.enableRotate = false
 controls.enablePan = false
 
-//must enable panning first
-// controls.addEventListener('change', function() {
-//   this.target.y = 0
-//   camera.position.y = 105
-// })
-
 // --BEGIN: Models ------------------------------------------------------------------------------
+var monsterController
+var robotController
+var mixer
+var attackMixer
+var attackTimer = 0 
+var collisionBoxMonster = new THREE.Box3()
+var collisionBoxRobot = new THREE.Box3()
+
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('/draco/')
 
@@ -108,8 +107,15 @@ gltfLoader.load('/models/monster.glb', (gltf) => {
 
   mixer = new THREE.AnimationMixer(monster)
   mixer.clipAction(gltf.animations[1]).play()
+  
+  attackMixer = new THREE.AnimationMixer(monster)
+  attackMixer.clipAction(gltf.animations[0]).play()
+  attackTimer = gltf.animations[0].duration
 
-  characterController = new CharacterController(monster, camera, controls)
+  collisionBoxMonster.setFromObject(monster);
+  scene.add( new THREE.Box3Helper(collisionBoxMonster, 0xff0000));
+
+  monsterController = new CharacterController(monster, camera, controls, collisionBoxMonster)
 })
 
 gltfLoader.load('/models/robot.glb', (gltf) => {
@@ -118,14 +124,11 @@ gltfLoader.load('/models/robot.glb', (gltf) => {
   robot.position.z = 10
   robot.position.y = -3
   scene.add(robot)
-})
 
-gltfLoader.load('/models/robot.glb', (gltf) => {
-  let robot = gltf.scene
-  robot.position.x = -5
-  robot.position.z = 10
-  robot.position.y = -3
-  scene.add(robot)
+  collisionBoxRobot.setFromObject(robot);
+  scene.add( new THREE.Box3Helper(collisionBoxRobot, 0xff0000));
+
+  robotController = new CharacterController(robot, camera, controls, collisionBoxRobot)
 })
 
 gltfLoader.load('/models/demon.glb', (gltf) => {
@@ -146,9 +149,6 @@ gltfLoader.load('/models/map.glb', (gltf) => {
 
 
 // --END: Models ------------------------------------------------------------------------------
-
-
-
 // Renderer
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
@@ -223,13 +223,39 @@ document.addEventListener('keyup', (e) => {
   }
 })
 
+var attack = false
+document.addEventListener('mousedown', (e) => {
+  switch (e.button) {
+    case 0:
+      attack = true
+      break;
+  }
+})
+
+document.addEventListener('mouseup', (e) => {
+  switch (e.button) {
+    case 0:
+      attack = false
+      break;
+  }
+})
+
 const clock = new THREE.Clock();
 const tick = () => {
 
   let deltaTime = clock.getDelta();
-  if (characterController && (isPressedW || isPressedA || isPressedS || isPressedD)) {
-    characterController.update(deltaTime, key);
-    mixer.update(deltaTime);
+  
+  if (monsterController && (isPressedW || isPressedA || isPressedS || isPressedD)) {
+    monsterController.update(deltaTime, key)
+    mixer.update(deltaTime)
+  }
+
+  if (monsterController && attack) {
+    attackMixer.update(deltaTime)
+    
+    if (monsterController && monsterController.isIntersecting(collisionBoxRobot)) {
+      console.log('hit')
+    }
   }
 
   // Update controls

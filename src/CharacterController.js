@@ -1,14 +1,13 @@
 import * as THREE from 'three'
-import { Quaternion } from 'three'
-
 
 //class for character controller
 export class CharacterController {
 
-    constructor(model, camera, cameraControls) {
+    constructor(model, camera, cameraControls, collisionBox) {
         this.model = model
         this.camera = camera
         this.cameraControls = cameraControls
+        this.collisionBox = collisionBox
 
         this.walkDirection = new THREE.Vector3(0, 0, 0)
         this.rotateAngle = new THREE.Vector3(0, 1, 0)
@@ -19,12 +18,6 @@ export class CharacterController {
         this.updateCameraTarget(0,0)
 
     }
-
-    // setCameraRelativeToCharacter(cameraOffset) {
-    //     this.camera.position.x = this.model.position.x + cameraOffset.x
-    //     this.camera.position.y = this.model.position.y + cameraOffset.y
-    //     this.camera.position.z = this.model.position.z + cameraOffset.z
-    // }
 
     updateCameraTarget(x, z) {
         this.camera.position.x += x
@@ -57,6 +50,13 @@ export class CharacterController {
         this.model.position.z += moveZ
         this.updateCameraTarget(moveX, moveZ)
 
+        this.collisionBox.setFromObject(this.model)
+    }
+
+    isIntersecting(box) {
+        if (this.collisionBox.intersectsBox(box)) {
+            return true
+        }
     }
 
     move (keysPressed) {
