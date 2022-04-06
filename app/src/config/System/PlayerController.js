@@ -53,7 +53,7 @@ export default class PlayerController {
                     break
         
             }
-          })
+        })
           
           window.addEventListener('keyup', (e) => {
             e.preventDefault()
@@ -76,18 +76,18 @@ export default class PlayerController {
                     break
         
             }
-          })
+        })
     }
 
-    loadModel(modelFilePath) {
+    loadModel(modelFilePath, modelPostion, modelOpacity) {
         this.gltfLoader.load(modelFilePath, (gltf) => {
             this.gltfObject = gltf.scene
-            this.gltfObject.position.set(0, 0, 0)
+            this.gltfObject.position.set(modelPostion.x, modelPostion.y, modelPostion.z)
 
             this.gltfObject.traverse((child) => {
                 if (child.isMesh) {
                     child.material.transparent = true
-                    child.material.opacity = 0.5
+                    child.material.opacity = modelOpacity
                 }
             })
             

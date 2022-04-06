@@ -11,19 +11,11 @@ const initializeGameRenderer = () => {
   const experience = new Experience(canvas, scene)
 
   // load model like this
-  experience.controller.loadModel('./models/monster.glb')
-
-  // Testing -- BEGIN (can delete before release)
-  const geometry = new THREE.BoxGeometry(5, 5, 5)
-  const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-  const mesh = new THREE.Mesh(geometry, material)
-  mesh.position.set(0, 10, -10)
-  scene.add(mesh)
-
-  var gridHelper = new THREE.GridHelper( 100, 50 );
-  scene.add( gridHelper );
-  scene.add(new THREE.AxesHelper())
-  // Testing -- END
+  experience.controller.loadModel(
+    './models/monster.glb', 
+    new THREE.Vector3(0, 0, 0), 
+    0.5
+  )
 
   // Update Frames
   const clock = new THREE.Clock();
@@ -39,7 +31,6 @@ const initializeGameRenderer = () => {
   }
 
   tick()
-
 
   // --BEGIN: Models ------------------------------------------------------------------------------
   // const dracoLoader = new DRACOLoader()
