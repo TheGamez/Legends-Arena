@@ -43,7 +43,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button:hover:enabled {
   background-color: var(--color-grey-2);
 }
 
@@ -334,6 +334,16 @@ iframe {
   background-color: yellow;
 }
 
+.room-player-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.room-player-container > * {
+  flex-grow: 1;
+}
+
 #youtube-video-player-container {
   display: flex;
 }
@@ -379,10 +389,52 @@ iframe {
   gap: 20px;
 
   justify-content: center;
+  align-items: flex-start;
 }
 
 #game-lobby-inner-layout {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+#character-select-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.character-select {
+  display: flex;
+  flex-direction: column;
+  border-radius: 30px;
+
+  cursor: pointer;
+}
+
+.character-select:hover {
+  filter: brightness(60%);
+}
+
+.character-select-img {
+  border-radius: 30px;
+}
+
+.character-select-choice {
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  border-radius: 30px;
+}
+
+#character-select-buttons-container,
+#game-lobby-buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+#character-select-buttons-container > *,
+#game-lobby-buttons-container > * {
+  flex-grow: 1;
 }

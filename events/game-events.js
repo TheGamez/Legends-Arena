@@ -14,13 +14,15 @@ const createRoomEvent = (socket, isRoomPrivate, user) => {
   const sockets = {};
   sockets[socket.id] = roomCode;
 
-  GLOBAL_STATE._gameRooms[roomCode] = { isRoomPrivate, sockets, youtubeData: undefined };
+  GLOBAL_STATE._gameRooms[roomCode] = { isRoomPrivate, sockets, youtubeData: undefined, kickedSocketIds: [] };
 
   let roomPlayer = {
     roomCode,
     socketId: socket.id,
     name: `guest_${socket.id}`,
     isHost: true,
+    characterId: undefined,
+    isReady: false,
   };
 
   if (user) roomPlayer.name = user.username;
@@ -47,6 +49,10 @@ const joinRoomEvent = (io, socket, roomCode, user) => {
   if (roomSocketsCount === 0) return socket.emit('roomEmpty', 'Room is empty.');
   if (roomSocketsCount === GLOBAL_STATE.MAX_PLAYERS) return socket.emit('roomFull', 'Room is full.');
 
+  const isSocketKicked = GLOBAL_STATE._gameRooms[roomCode].kickedSocketIds.find(kickedSocketId => kickedSocketId === socket.id );
+
+  if (isSocketKicked) return socket.emit('roomKicked', 'You were kicked from this room.');
+
   socket.join(roomCode);
 
   GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id] = roomCode;
@@ -56,6 +62,8 @@ const joinRoomEvent = (io, socket, roomCode, user) => {
     socketId: socket.id,
     name: `guest_${socket.id}`,
     isHost: false,
+    characterId: undefined,
+    isReady: false,
   };
 
   if (user) roomPlayer.name = user.username;
@@ -85,6 +93,8 @@ const leaveRoomEvent = (io, socket, roomCode, roomPlayer) => {
 
   delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
   GLOBAL_STATE._gameSockets[socket.id].roomCode = undefined;
+  GLOBAL_STATE._gameSockets[socket.id].characterId = undefined;
+  GLOBAL_STATE._gameSockets[socket.id].isReady = false;
   
   const isHost = GLOBAL_STATE._gameSockets[socket.id].isHost;
   if (isHost) {
@@ -94,7 +104,7 @@ const leaveRoomEvent = (io, socket, roomCode, roomPlayer) => {
       GLOBAL_STATE._gameSockets[gameRoomSocketIds[0]].isHost = true;
     }
 
-    GLOBAL_STATE._gameSockets[socket.id].isHost = undefined;
+    GLOBAL_STATE._gameSockets[socket.id].isHost = false;
 
     io.to(gameRoomSocketIds[0]).emit('updateYouTubeSearchScreen', { roomCode });
   }
@@ -121,6 +131,8 @@ const disconnectionEvent = (io, socket) => {
   if (roomCode) {
     delete GLOBAL_STATE._gameRooms[roomCode].sockets[socket.id];
     GLOBAL_STATE._gameSockets[socket.id].roomCode = undefined;
+    GLOBAL_STATE._gameSockets[socket.id].characterId = undefined;
+    GLOBAL_STATE._gameSockets[socket.id].isReady = false;
 
     const isHost = GLOBAL_STATE._gameSockets[socket.id].isHost;
     if (isHost) {
@@ -130,7 +142,7 @@ const disconnectionEvent = (io, socket) => {
         GLOBAL_STATE._gameSockets[gameRoomSocketIds[0]].isHost = true;
       }
 
-      GLOBAL_STATE._gameSockets[socket.id].isHost = undefined;
+      GLOBAL_STATE._gameSockets[socket.id].isHost = false;
 
       io.to(gameRoomSocketIds[0]).emit('updateYouTubeSearchScreen', { roomCode });
     }
@@ -164,6 +176,41 @@ const playYoutubeEvent = (io, socket, roomCode, youtubeData) => {
 
 const youtubeDataEvent = (io, socket, roomCode, youtubeData) => {
   GLOBAL_STATE._gameRooms[roomCode].youtubeData = youtubeData;
+}
+
+const characterSelectEvent = (io, socket, roomCode, characterId) => {
+  GLOBAL_STATE._gameSockets[socket.id].characterId = characterId;
+  socket.emit('updateCharacterSelectScreen', { characterId });
+}
+
+const playerReadyEvent = (io, socket, roomPlayer) => {
+  GLOBAL_STATE._gameSockets[socket.id].isReady = true;
+
+  const roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomPlayer.roomCode].sockets).map(socketId => GLOBAL_STATE._gameSockets[socketId]);
+
+  io.to(roomPlayer.roomCode).emit('updateGameLobbyScreen', { roomPlayers });
+}
+
+const playerReadyCancelEvent = (io, socket, roomPlayer) => {
+  GLOBAL_STATE._gameSockets[socket.id].isReady = false;
+
+  const roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomPlayer.roomCode].sockets).map(socketId => GLOBAL_STATE._gameSockets[socketId]);
+
+  io.to(roomPlayer.roomCode).emit('updateGameLobbyScreen', { roomPlayers });
+}
+
+const kickPlayerEvent = (io, socket, roomCode, roomPlayer) => {
+  io.to(roomPlayer.socketId).emit('renderGameMenuScreen');
+
+  delete GLOBAL_STATE._gameRooms[roomCode].sockets[roomPlayer.socketId];
+  GLOBAL_STATE._gameSockets[roomPlayer.socketId].roomCode = undefined;
+  GLOBAL_STATE._gameSockets[roomPlayer.socketId].characterId = undefined;
+  GLOBAL_STATE._gameSockets[roomPlayer.socketId].isReady = false;
+
+  GLOBAL_STATE._gameRooms[roomCode].kickedSocketIds.push(roomPlayer.socketId);
+
+  const roomPlayers = Object.keys(GLOBAL_STATE._gameRooms[roomCode].sockets).map(socketId => GLOBAL_STATE._gameSockets[socketId]);
+  io.to(roomCode).emit('updateGameLobbyScreen', { roomPlayers });
 }
 
 /* THIS CODE WILL BE REFACTORED AND USED IN ITERATION 3 */
@@ -354,4 +401,8 @@ module.exports = {
   getOpenRoomsEvent,
   playYoutubeEvent,
   youtubeDataEvent,
+  characterSelectEvent,
+  playerReadyEvent,
+  playerReadyCancelEvent,
+  kickPlayerEvent,
 };

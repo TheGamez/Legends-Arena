@@ -118,12 +118,13 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
             <button type="button" id="copy-code-button">Copy</button>
           </div>
           <div id="room-players-container"></div>
-          <button type="button" id="start-game-button">Start</button>
-          <button type="button" id="leave-room-button">Leave</button>
+          <div id="game-lobby-buttons-container">
+            <button type="button" id="leave-room-button">Leave</button>
+          </div>
         </div>
       </div>
 
-      <div>
+      <div id="game-lobby-inner-layout">
         <div class="popup-container">
           <div class="popup-head-container">
             <h1>YouTube</h1>
@@ -132,6 +133,29 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
             <div id="youtube-video-player-container">
               <iframe src="" title="" height="200px"></iframe>
             </div>
+          </div>
+        </div>
+
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>Character</h1>
+          </div>
+
+          <div id="character-select-container">
+            <div id="character-select-monster" class="character-select">
+              <img id="monster-img" class="character-select-img" src="./images/monster.png" alt="monster" />
+            </div>
+            <div id="character-select-demon" class="character-select">
+              <img id="demon-img" class="character-select-img" src="./images/demon.png" alt="demon" />
+            </div>
+            <div id="character-select-robot" class="character-select">
+              <img id="robot-img" class="character-select-img" src="./images/robot.png" alt="robot" />
+            </div>
+          </div>
+
+          <div id="character-select-buttons-container">
+            <button type="button" id="player-ready-cancel" disabled>Cancel</button>
+            <button type="button" id="player-ready" disabled>Ready</button>
           </div>
         </div>
       </div>
@@ -158,18 +182,52 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
 
   const roomPlayersContainerElement = document.querySelector('#room-players-container');
 
-  roomPlayers.forEach(roomPlayer => {
-    const divElement = document.createElement('div');
-    divElement.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
+  if (roomPlayer.isHost) {
+    roomPlayers.forEach(roomPlayer => {
+      const divElement1 = document.createElement('div');
+      divElement1.className = 'room-player-container';
 
-    if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
-      divElement.className = 'room-player-highlight';
-    } else {
-      divElement.className = 'room-player';
-    }
+      const divElement2 = document.createElement('div');
+      divElement2.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
 
-    roomPlayersContainerElement.append(divElement);
-  });
+      if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+        divElement2.className = 'room-player-highlight';
+      } else {
+        divElement2.className = 'room-player';
+      }
+
+      const buttonElement = document.createElement('button');
+      buttonElement.type = 'button';
+      buttonElement.innerText = 'Kick';
+      buttonElement.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        GLOBAL_STATE.socket.emit('kickPlayer', { roomCode, roomPlayer });
+      });
+
+      if (roomPlayer.isHost) divElement1.append(divElement2);
+      if (!roomPlayer.isHost) divElement1.append(divElement2, buttonElement);
+
+      roomPlayersContainerElement.append(divElement1);
+    });
+  } else {
+    roomPlayers.forEach(roomPlayer => {
+      const divElement1 = document.createElement('div');
+      divElement1.className = 'room-player-container';
+
+      const divElement2 = document.createElement('div');
+      divElement2.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
+
+      if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+        divElement2.className = 'room-player-highlight';
+      } else {
+        divElement2.className = 'room-player';
+      }
+
+      divElement1.append(divElement2);
+      roomPlayersContainerElement.append(divElement1);
+    });
+  }
   
   const copyCodeButton = document.querySelector('#copy-code-button');
   copyCodeButton.addEventListener('click', (event) => {
@@ -182,12 +240,73 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   });
 
   const leaveRoomButton = document.querySelector('#leave-room-button');
+  const playerReadyButton = document.querySelector('#player-ready');
+  const playerReadyCancelButton = document.querySelector('#player-ready-cancel');
+
+  const characterSelectContainerElement = document.querySelector('#character-select-container');
+  const characterSelectMonsterElement = document.querySelector('#character-select-monster');
+  const characterSelectDemonElement = document.querySelector('#character-select-demon');
+  const characterSelectRobotElement = document.querySelector('#character-select-robot');
+
   leaveRoomButton.addEventListener('click', (event) => GAME_EVENTS.leaveRoomEvent(event, roomCode, roomPlayer));
 
-  const startGameButton = document.querySelector('#start-game-button');
-  startGameButton.addEventListener('click', (event) => renderGameScreenEvent());
+  characterSelectMonsterElement.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    if (playerReadyButton.disabled) playerReadyButton.disabled = false;
+
+    GLOBAL_STATE.socket.emit('characterSelect', { roomCode, characterId: 1 });
+  });
+
+  characterSelectDemonElement.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    if (playerReadyButton.disabled) playerReadyButton.disabled = false;
+
+    GLOBAL_STATE.socket.emit('characterSelect', { roomCode, characterId: 2 });
+  });
+
+  characterSelectRobotElement.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    if (playerReadyButton.disabled) playerReadyButton.disabled = false;
+
+    GLOBAL_STATE.socket.emit('characterSelect', { roomCode, characterId: 3 });
+  });
+
+  playerReadyButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    GLOBAL_STATE.socket.emit('playerReady', { roomPlayer });
+
+    playerReadyButton.disabled = true;
+    playerReadyCancelButton.disabled = false;
+
+    characterSelectContainerElement.style.pointerEvents = 'none';
+  });
+
+  playerReadyCancelButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    GLOBAL_STATE.socket.emit('playerReadyCancel', { roomPlayer });
+
+    playerReadyButton.disabled = false;
+    playerReadyCancelButton.disabled = true;
+
+    characterSelectContainerElement.style.pointerEvents = 'auto';
+  });
 
   if (roomPlayer.isHost) {
+    const newStartGameButtonElement = document.createElement('button');
+    newStartGameButtonElement.id = 'start-game-button';
+    newStartGameButtonElement.type = 'button';
+    newStartGameButtonElement.disabled = true;
+    newStartGameButtonElement.innerText = 'Start';
+    newStartGameButtonElement.addEventListener('click', (event) => renderGameScreenEvent());
+
+    const gameLobbyButtonsContainer = document.querySelector('#game-lobby-buttons-container');
+    gameLobbyButtonsContainer.append(newStartGameButtonElement);
+
     const youtubePlayerContainer = document.querySelector('#youtube-player-container');
 
     const divElement1 = document.createElement('div');
@@ -582,18 +701,86 @@ const updateGameLobbyScreenEvent = ({ roomPlayers }) => {
 
   roomPlayersContainerElement.innerHTML = '';
 
-  roomPlayers.forEach(roomPlayer => {
-    const divElement = document.createElement('div');
-    divElement.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
+  let disableStartGameButton = false; 
 
-    if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
-      divElement.className = 'room-player-highlight';
+  let hostPlayer = undefined;
+
+  const roomPlayer = roomPlayers.find(roomPlayer => roomPlayer.socketId === GLOBAL_STATE.socket.id);
+
+  if (roomPlayer.isHost) {
+    roomPlayers.forEach(roomPlayer => {
+      const divElement1 = document.createElement('div');
+      divElement1.className = 'room-player-container';
+  
+      let text = `${roomPlayer.name}`;
+  
+      if (roomPlayer.isHost) {
+        text = text.concat(' ', '(Host)');
+        hostPlayer = roomPlayer;
+      }
+      if (!roomPlayer.isHost) text = text.concat(' ', '(Member)');
+      if (roomPlayer.isReady) text = text.concat(' ', '(Ready)');
+      if (!roomPlayer.isReady) disableStartGameButton = true;
+  
+      const pElement = document.createElement('p');
+      pElement.innerText = text;
+  
+      if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+        pElement.className = 'room-player-highlight';
+      } else {
+        pElement.className = 'room-player';
+      }
+  
+      const buttonElement = document.createElement('button');
+      buttonElement.type = 'button';
+      buttonElement.innerText = 'Kick';
+      buttonElement.addEventListener('click', (event) => {
+        event.preventDefault();
+  
+        GLOBAL_STATE.socket.emit('kickPlayer', { roomCode: roomPlayer.roomCode, roomPlayer });
+      });
+  
+      if (roomPlayer.isHost) divElement1.append(pElement);
+      if (!roomPlayer.isHost) divElement1.append(pElement, buttonElement);
+      
+      roomPlayersContainerElement.append(divElement1);
+    });
+  } else {
+    roomPlayers.forEach(roomPlayer => {
+      const divElement1 = document.createElement('div');
+      divElement1.className = 'room-player-container';
+
+      const divElement2 = document.createElement('div');
+      divElement2.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
+
+      if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+        divElement2.className = 'room-player-highlight';
+      } else {
+        divElement2.className = 'room-player';
+      }
+
+      divElement1.append(divElement2);
+      roomPlayersContainerElement.append(divElement1);
+    });
+  }
+
+  if (hostPlayer.socketId === GLOBAL_STATE.socket.id) {
+    const startGameButton = document.querySelector('#start-game-button');
+
+    if (!startGameButton) {
+      const newStartGameButtonElement = document.createElement('button');
+      newStartGameButtonElement.id = 'start-game-button';
+      newStartGameButtonElement.type = 'button';
+      newStartGameButtonElement.disabled = disableStartGameButton;
+      newStartGameButtonElement.innerText = 'Start';
+      newStartGameButtonElement.addEventListener('click', (event) => renderGameScreenEvent());
+    
+      const gameLobbyButtonsContainer = document.querySelector('#game-lobby-buttons-container');
+      gameLobbyButtonsContainer.append(newStartGameButtonElement);
     } else {
-      divElement.className = 'room-player';
+      startGameButton.disabled = disableStartGameButton;
     }
-
-    roomPlayersContainerElement.append(divElement);
-  });
+  }
 }
 
 const updateYouTubeVideoScreenEvent = ({ youtubeData }) => {
@@ -677,6 +864,38 @@ const updateYouTubeSearchScreenEvent = ({ roomCode }) => {
   youtubePlayerContainer.append(divElement1, divElement2);
 }
 
+const updateCharacterSelectScreenEvent = ({ characterId }) => {
+  const characterSelectMonsterElement = document.querySelector('#character-select-monster');
+  const characterSelectDemonElement = document.querySelector('#character-select-demon');
+  const characterSelectRobotElement = document.querySelector('#character-select-robot');
+
+  characterSelectMonsterElement.className = 'character-select';
+  characterSelectDemonElement.className = 'character-select';
+  characterSelectRobotElement.className = 'character-select';
+
+  const monsterImgElement = document.querySelector('#monster-img');
+  const demonImgElement = document.querySelector('#demon-img');
+  const robotImgElement = document.querySelector('#robot-img');
+
+  monsterImgElement.style.filter = 'none';
+  demonImgElement.style.filter = 'none';
+  robotImgElement.style.filter = 'none';
+
+  if (characterId === 1) {
+    characterSelectMonsterElement.className = 'character-select-choice';
+
+    monsterImgElement.style.filter = 'brightness(60%)';
+  } else if (characterId === 2) {
+    characterSelectDemonElement.className = 'character-select-choice';
+
+    demonImgElement.style.filter = 'brightness(60%)';
+  } else if (characterId === 3) {
+    characterSelectRobotElement.className = 'character-select-choice';
+
+    robotImgElement.style.filter = 'brightness(60%)';
+  }
+}
+
 export {
   renderGameMenuScreenEvent,
   renderGameLobbyScreenEvent,
@@ -689,4 +908,5 @@ export {
   updateGameLobbyScreenEvent,
   updateYouTubeVideoScreenEvent,
   updateYouTubeSearchScreenEvent,
+  updateCharacterSelectScreenEvent,
 };

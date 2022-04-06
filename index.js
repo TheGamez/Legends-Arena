@@ -58,5 +58,9 @@ io.on('connect', (socket) => {
   socket.on('getOpenRooms', () => GAME_EVENTS.getOpenRoomsEvent(socket));
   socket.on('playYoutube', ({ roomCode, youtubeData }) => GAME_EVENTS.playYoutubeEvent(io, socket, roomCode, youtubeData));
   socket.on('youtubeData', ({ roomCode, youtubeData }) => GAME_EVENTS.youtubeDataEvent(io, socket, roomCode, youtubeData));
+  socket.on('characterSelect', ({ roomCode, characterId }) => GAME_EVENTS.characterSelectEvent(io, socket, roomCode, characterId));
+  socket.on('playerReady', ({ roomPlayer }) => GAME_EVENTS.playerReadyEvent(io, socket, roomPlayer));
+  socket.on('playerReadyCancel', ({ roomPlayer }) => GAME_EVENTS.playerReadyCancelEvent(io, socket, roomPlayer));
+  socket.on('kickPlayer', ({ roomCode, roomPlayer }) => GAME_EVENTS.kickPlayerEvent(io, socket, roomCode, roomPlayer));
   // socket.on('keydown', (keyInputCode) => keyDownEvent(socket, keyInputCode));
 });
