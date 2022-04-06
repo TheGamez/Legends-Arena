@@ -9,7 +9,8 @@
     "dev": "nodemon index.js",
     "start": "node index.js",
     "build": "webpack --config webpack.config.js",
-    "test": "jest --coverage"
+    "test:unit": "jest --watchAll --verbose --coverage",
+    "test:e2e": "cypress open"
   },
   "dependencies": {
     "connect-pg-simple": "^7.0.0",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "css-loader": "^6.7.1",
+    "cypress": "^9.5.3",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^27.5.1",
