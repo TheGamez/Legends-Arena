@@ -171,7 +171,7 @@ iframe {
 #public-room-code-button,
 #reset-password-button,
 #sign-in-button {
-  background: #0990f0;
+  background: #52b5fc;
 }
 
 #copy-code-button,
@@ -186,7 +186,7 @@ iframe {
 #public-room-code-button:hover,
 #reset-password-button:hover,
 #sign-in-button:hover {
-  background: #033d67;
+  background: #2e4f66;
 }
 
 #copy-code-button:hover,
@@ -223,12 +223,15 @@ iframe {
 
 #login-screen,
 #reset-password-screen,
-#sign-up-screen,
-#user-profile-screen {
-  background: #314c5d;
-  color: #b2c8d6;
+#sign-up-screen {
+  background: #88b4cf;
+  color: #527d97;
 }
 
+#user-profile-screen {
+  background: #88b4cf;
+  color: #354e5e;
+}
 #join-private-match-screen,
 #join-public-match-screen {
   background: #86bbd8;
@@ -250,7 +253,7 @@ iframe {
 #close-reset-password,
 #close-sign-up,
 #close-user-profile {
-  background: #314c5d;
+  background: #88b4cf;
 }
 
 #close-join-private-match,
