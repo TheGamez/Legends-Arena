@@ -152,13 +152,6 @@ iframe {
   background: var(--color-black);
 }
 
-#log-in-button,
-#sign-up-button,
-#sign-out-button,
-#user-profile-button {
-  display: none;
-}
-
 #create-private-match,
 #create-public-match,
 #join-private-match,
@@ -173,14 +166,64 @@ iframe {
   background: #ab7007;
 }
 
+#create-account-button,
+#reset-password-button,
+#sign-in-button {
+  background: #0990f0;
+}
+
+#create-account-button:hover,
+#reset-password-button:hover,
+#sign-in-button:hover {
+  background: #033d67;
+}
+
+#log-in-button,
 #sign-out-button,
+#sign-up-button,
 #user-profile-button {
+  display: none;
   background: #b2c8d6;
 }
 
+#sign-in-help-1,
+#sign-in-help-2,
+#sign-up-help {
+  background: #b2c8d6;
+}
+#log-in-button:hover,
 #sign-out-button:hover,
+#sign-up-button:hover,
 #user-profile-button:hover {
-  background: #83a6bd;
+  background: #5785a2;
+}
+
+#sign-in-help-1:hover,
+#sign-in-help-2:hover,
+#sign-up-help:hover {
+  background: #5785a2;
+}
+
+#login-screen,
+#reset-password-screen,
+#sign-up-screen,
+#user-profile-screen {
+  background: #2f4858;
+  color: #b2c8d6;
+}
+
+#close-log-in,
+#close-reset-password,
+#close-sign-up,
+#close-user-profile {
+  background: #2f4858;
+}
+
+#close-log-in:hover,
+#close-reset-password:hover,
+#close-sign-up:hover,
+#close-user-profile:hover {
+  background: #18262e;
 }
 
 #join-public-match-form-container-1 {
