@@ -156,14 +156,14 @@ iframe {
 #create-public-match,
 #join-private-match,
 #join-public-match {
-  background: #ef9d0a;
+  background: #e2d7f5;
 }
 
 #create-private-match:hover,
 #create-public-match:hover,
 #join-private-match:hover,
 #join-public-match:hover {
-  background: #ab7007;
+  background: #554d63;
 }
 
 #create-account-button,
@@ -225,7 +225,7 @@ iframe {
 #reset-password-screen,
 #sign-up-screen,
 #user-profile-screen {
-  background: #2f4858;
+  background: #314c5d;
   color: #b2c8d6;
 }
 
@@ -250,7 +250,7 @@ iframe {
 #close-reset-password,
 #close-sign-up,
 #close-user-profile {
-  background: #2f4858;
+  background: #314c5d;
 }
 
 #close-join-private-match,
@@ -354,7 +354,7 @@ iframe {
 
 #main-menu-container {
 
-  background-color: #f7b94a;
+  background-color: #C3B1E1;
   border: solid 3px var(--color-black);
   border-radius: 30px;
 
