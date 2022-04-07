@@ -167,6 +167,10 @@ iframe {
 }
 
 #create-account-button,
+#copy-code-button,
+#leave-room-button,
+#player-ready-cancel,
+#player-ready,
 #private-room-code-button,
 #public-room-code-button,
 #reset-password-button,
@@ -175,6 +179,8 @@ iframe {
 }
 
 #create-account-button:hover,
+#copy-code-button:hover,
+#leave-room-button:hover,
 #private-room-code-button:hover,
 #public-room-code-button:hover,
 #reset-password-button:hover,
@@ -222,6 +228,16 @@ iframe {
   background: #86bbd8;
   color: #2b6686;
 
+}
+
+#statistic-screen{
+  background: #f7b94a;
+}
+
+#character-screen,
+#game-room-screen,
+#youtube-screen {
+  background: #fb6767;
 }
 
 #close-log-in,
@@ -419,7 +435,7 @@ iframe {
 }
 
 .room-player-highlight {
-  background-color: yellow;
+  background-color: #FFFF8F;
 }
 
 .room-player-container {

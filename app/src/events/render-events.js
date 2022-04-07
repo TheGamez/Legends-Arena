@@ -97,7 +97,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   const html = `
     <div id="game-lobby-outer-layout">
       <div id="game-lobby-inner-layout">
-        <div class="popup-container">
+        <div class="popup-container" id="statistic-screen">
           <div class="popup-head-container">
             <h1>Statistics</h1>
           </div>
@@ -108,7 +108,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
           </div>
         </div>
 
-        <div class="popup-container">
+        <div class="popup-container" id="game-room-screen">
           <div class="popup-head-container">
             <h1>Game Room</h1>
             <p id="copy-code-message"></p>
@@ -125,7 +125,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
       </div>
 
       <div id="game-lobby-inner-layout">
-        <div class="popup-container">
+        <div class="popup-container" id="youtube-screen">
           <div class="popup-head-container">
             <h1>YouTube</h1>
           </div>
@@ -136,7 +136,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
           </div>
         </div>
 
-        <div class="popup-container">
+        <div class="popup-container" id="character-screen">
           <div class="popup-head-container">
             <h1>Character</h1>
           </div>
