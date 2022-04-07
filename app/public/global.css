@@ -18,7 +18,7 @@ body {
   font-family: var(--font-primary);
   font-size: var(--font-size-primary);
 
-  background: url(/app/public/assets/images/menu-screen-sketch.jpg) no-repeat center center fixed; 
+  background: url(/app/public/assets/images/menu_screen_sketch.jpg) no-repeat center center fixed; 
   background-size: cover;
 
   -webkit-background-size: cover;
@@ -29,8 +29,6 @@ body {
 button {
   font-family: var(--font-primary);
   font-size: var(--font-size-primary);
-
-  background: var(--color-grey-1);
 
   padding-top: 5px;
   padding-bottom: 5px;
@@ -161,6 +159,30 @@ iframe {
   display: none;
 }
 
+#create-private-match,
+#create-public-match,
+#join-private-match,
+#join-public-match {
+  background: #ef9d0a;
+}
+
+#create-private-match:hover,
+#create-public-match:hover,
+#join-private-match:hover,
+#join-public-match:hover {
+  background: #ab7007;
+}
+
+#sign-out-button,
+#user-profile-button {
+  background: #b2c8d6;
+}
+
+#sign-out-button:hover,
+#user-profile-button:hover {
+  background: #83a6bd;
+}
+
 #join-public-match-form-container-1 {
   display: flex;
   flex-direction: row;
@@ -244,7 +266,8 @@ iframe {
 }
 
 #main-menu-container {
-  background-color: var(--color-white);
+
+  background-color: #f7b94a;
   border: solid 3px var(--color-black);
   border-radius: 30px;
 
