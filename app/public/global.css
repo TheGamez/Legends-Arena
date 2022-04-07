@@ -167,12 +167,16 @@ iframe {
 }
 
 #create-account-button,
+#private-room-code-button,
+#public-room-code-button,
 #reset-password-button,
 #sign-in-button {
   background: #0990f0;
 }
 
 #create-account-button:hover,
+#private-room-code-button:hover,
+#public-room-code-button:hover,
 #reset-password-button:hover,
 #sign-in-button:hover {
   background: #033d67;
@@ -191,6 +195,7 @@ iframe {
 #sign-up-help {
   background: #b2c8d6;
 }
+
 #log-in-button:hover,
 #sign-out-button:hover,
 #sign-up-button:hover,
@@ -212,6 +217,13 @@ iframe {
   color: #b2c8d6;
 }
 
+#join-private-match-screen,
+#join-public-match-screen {
+  background: #86bbd8;
+  color: #2b6686;
+
+}
+
 #close-log-in,
 #close-reset-password,
 #close-sign-up,
@@ -219,11 +231,21 @@ iframe {
   background: #2f4858;
 }
 
+#close-join-private-match,
+#close-join-public-match {
+  background: #86bbd8;
+}
+
 #close-log-in:hover,
 #close-reset-password:hover,
 #close-sign-up:hover,
 #close-user-profile:hover {
   background: #18262e;
+}
+
+#close-join-private-match:hover,
+#close-join-public-match:hover {
+  background: #112935;
 }
 
 #join-public-match-form-container-1 {
