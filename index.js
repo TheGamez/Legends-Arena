@@ -62,5 +62,7 @@ io.on('connect', (socket) => {
   socket.on('playerReady', ({ roomPlayer }) => GAME_EVENTS.playerReadyEvent(io, socket, roomPlayer));
   socket.on('playerReadyCancel', ({ roomPlayer }) => GAME_EVENTS.playerReadyCancelEvent(io, socket, roomPlayer));
   socket.on('kickPlayer', ({ roomCode, roomPlayer }) => GAME_EVENTS.kickPlayerEvent(io, socket, roomCode, roomPlayer));
-  // socket.on('keydown', (keyInputCode) => keyDownEvent(socket, keyInputCode));
+  socket.on('startGame', ({ roomCode }) => GAME_EVENTS.startGameEvent(io, socket, roomCode));
+  socket.on('keydown', ({ keyInputCode }) => GAME_EVENTS.keyDownEvent(io, socket, keyInputCode));
+  socket.on('keyup', ({ keyInputCode }) => GAME_EVENTS.keyUpEvent(io, socket, keyInputCode));
 });

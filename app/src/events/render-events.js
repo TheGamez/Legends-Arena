@@ -12,7 +12,7 @@ const rootScreenElement = document.querySelector('#root-screen');
 
 /* FUNCTIONS */
 
-const renderGameScreenEvent = () => {
+const renderGameScreenEvent = ({ roomPlayers }) => {
   rootScreenElement.innerHTML = '';
 
   const html = `
@@ -23,7 +23,7 @@ const renderGameScreenEvent = () => {
 
   rootScreenElement.innerHTML = html;
 
-  GAME_RENDERER.initializeGameRenderer();
+  GAME_RENDERER.initializeGameRenderer(roomPlayers);
 }
 
 const renderGameMenuScreenEvent = async () => {
@@ -302,7 +302,10 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
     newStartGameButtonElement.type = 'button';
     newStartGameButtonElement.disabled = true;
     newStartGameButtonElement.innerText = 'Start';
-    newStartGameButtonElement.addEventListener('click', (event) => renderGameScreenEvent());
+    newStartGameButtonElement.addEventListener('click', (event) => {
+      event.preventDefault();
+      GLOBAL_STATE.socket.emit('startGame', { roomCode });
+    });
 
     const gameLobbyButtonsContainer = document.querySelector('#game-lobby-buttons-container');
     gameLobbyButtonsContainer.append(newStartGameButtonElement);
@@ -764,7 +767,7 @@ const updateGameLobbyScreenEvent = ({ roomPlayers }) => {
     });
   }
 
-  if (hostPlayer.socketId === GLOBAL_STATE.socket.id) {
+  if (hostPlayer && hostPlayer.socketId === GLOBAL_STATE.socket.id) {
     const startGameButton = document.querySelector('#start-game-button');
 
     if (!startGameButton) {
@@ -773,7 +776,10 @@ const updateGameLobbyScreenEvent = ({ roomPlayers }) => {
       newStartGameButtonElement.type = 'button';
       newStartGameButtonElement.disabled = disableStartGameButton;
       newStartGameButtonElement.innerText = 'Start';
-      newStartGameButtonElement.addEventListener('click', (event) => renderGameScreenEvent());
+      newStartGameButtonElement.addEventListener('click', (event) => {
+        event.preventDefault();
+        GLOBAL_STATE.socket.emit('startGame', { roomCode: hostPlayer.roomCode });
+      });
     
       const gameLobbyButtonsContainer = document.querySelector('#game-lobby-buttons-container');
       gameLobbyButtonsContainer.append(newStartGameButtonElement);
@@ -897,6 +903,7 @@ const updateCharacterSelectScreenEvent = ({ characterId }) => {
 }
 
 export {
+  renderGameScreenEvent,
   renderGameMenuScreenEvent,
   renderGameLobbyScreenEvent,
   renderJoinPublicMatchScreenEvent,

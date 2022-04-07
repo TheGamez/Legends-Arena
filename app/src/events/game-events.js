@@ -1,6 +1,7 @@
 /* MODULES */
 
 // import * as THREE_CONFIG from '../config/three-config.js';
+import * as GAME_RENDERER from '../config/game-renderer.js';
 import GLOBAL_STATE from '../global.js';
 
 /* FUNCTIONS */
@@ -78,37 +79,9 @@ const setOpenRoomsEvent = (openRooms) => {
   }
 }
 
-/* THIS CODE WILL BE REFACTORED AND USED IN ITERATION 3 */
-
-// const resetGameEvent = (message) => {
-//   const roomCodeInputElement = document.querySelector('#room-code-input');
-//   const roomCodeElement = document.querySelector('#room-code');
-
-//   GLOBAL_STATE.player = null;
-//   roomCodeInputElement.value = '';
-//   roomCodeElement.innerText = '';
-//   alert(message);
-// }
-
-// const gameOverEvent = (winner) => {
-//   if (!GLOBAL_STATE.isGameActive) return;
-
-//   if (winner === GLOBAL_STATE.player) {
-//     alert('You Win!');
-//   } else {
-//     alert('You Lose.');
-//   }
-
-//   GLOBAL_STATE.isGameActive = false;
-// }
-
-// const setGameStateEvent = (gameState) => {
-//   if (!GLOBAL_STATE.isGameActive) return;
-
-//   const _gameState = JSON.parse(gameState);
-
-//   requestAnimationFrame(() => THREE_CONFIG.animateGame(_gameState));
-// }
+const roomGameStateEvent = ({ roomPlayers }) => {
+  GAME_RENDERER.initializeGameRenderer(roomPlayers);
+}
 
 export {
   createRoomEvent,
@@ -117,4 +90,5 @@ export {
   roomStatusEvent,
   getOpenRoomsEvent,
   setOpenRoomsEvent,
+  roomGameStateEvent,
 };

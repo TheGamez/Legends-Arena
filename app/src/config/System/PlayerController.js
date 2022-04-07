@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import GLOBAL_STATE from '../../global'
 
 export default class PlayerController {
 
@@ -27,8 +28,11 @@ export default class PlayerController {
         this.gltfLoader = new GLTFLoader()
         this.gltfLoader.setDRACOLoader(this.dracoLoader)
 
-        window.addEventListener('keydown', (e) => {
-            e.preventDefault()
+        window.addEventListener('keydown', (event) => {
+            event.preventDefault()
+
+            // GLOBAL_STATE.socket.emit('keydown', { keyInputCode: event.code });
+
             switch ( event.code ) {
         
                 case 'KeyW':
@@ -47,16 +51,19 @@ export default class PlayerController {
                     this.moveRight = true
                     break
         
-                case 'Space':
-                    if ( this.canJump === true ) this.velocity.y += 250
-                    this.canJump = false
-                    break
+                // case 'Space':
+                //     if ( this.canJump === true ) this.velocity.y += 250
+                //     this.canJump = false
+                //     break
         
             }
         })
           
-          window.addEventListener('keyup', (e) => {
-            e.preventDefault()
+          window.addEventListener('keyup', (event) => {
+            event.preventDefault()
+
+            // GLOBAL_STATE.socket.emit('keyup', { keyInputCode: event.code });
+
             switch ( event.code ) {
         
                 case 'KeyW':
@@ -79,10 +86,11 @@ export default class PlayerController {
         })
     }
 
-    loadModel(modelFilePath, modelPostion, modelOpacity) {
+    loadModel(modelFilePath, modelPostion, modelOpacity, modelObjectName) {
         this.gltfLoader.load(modelFilePath, (gltf) => {
             this.gltfObject = gltf.scene
             this.gltfObject.position.set(modelPostion.x, modelPostion.y, modelPostion.z)
+            this.gltfObject.name = modelObjectName;
 
             this.gltfObject.traverse((child) => {
                 if (child.isMesh) {

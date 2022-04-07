@@ -11,12 +11,7 @@ import '../public/global.css';
 
 /* SOCKET EVENTS */
 
-// GLOBAL_STATE.socket.on('gameState', GAME_EVENTS.setGameStateEvent);
-// GLOBAL_STATE.socket.on('gameOver', GAME_EVENTS.gameOverEvent);
-
-// GLOBAL_STATE.socket.on('roomPlayer', (message) => console.log(message));
-// GLOBAL_STATE.socket.on('roomPlayers', (message) => console.log(message));
-
+GLOBAL_STATE.socket.on('roomGameState', GAME_EVENTS.roomGameStateEvent);
 GLOBAL_STATE.socket.on('roomEmpty', GAME_EVENTS.roomStatusEvent);
 GLOBAL_STATE.socket.on('roomFull', GAME_EVENTS.roomStatusEvent);
 GLOBAL_STATE.socket.on('roomKicked', GAME_EVENTS.roomStatusEvent)
@@ -28,6 +23,7 @@ GLOBAL_STATE.socket.on('updateGameLobbyScreen', RENDER_EVENTS.updateGameLobbyScr
 GLOBAL_STATE.socket.on('updateYouTubeVideoScreen', RENDER_EVENTS.updateYouTubeVideoScreenEvent);
 GLOBAL_STATE.socket.on('updateYouTubeSearchScreen', RENDER_EVENTS.updateYouTubeSearchScreenEvent);
 GLOBAL_STATE.socket.on('updateCharacterSelectScreen', RENDER_EVENTS.updateCharacterSelectScreenEvent);
+GLOBAL_STATE.socket.on('renderGameScreen', RENDER_EVENTS.renderGameScreenEvent);
 
 /* APP */
 
