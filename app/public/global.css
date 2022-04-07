@@ -177,7 +177,9 @@ iframe {
 #copy-code-button,
 #leave-room-button,
 #player-ready-cancel,
-#player-ready {
+#player-ready,
+#start-game-button,
+#youtube-search-button {
   background: #b2c8d6;
 }
 
@@ -190,7 +192,11 @@ iframe {
 }
 
 #copy-code-button:hover,
-#leave-room-button:hover {
+#leave-room-button:hover,
+#player-ready-cancel:hover,
+#player-ready:hover,
+#start-game-button:hover,
+#youtube-search-button:hover {
   background: #6c96b0;
 }
 
