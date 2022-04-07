@@ -167,10 +167,6 @@ iframe {
 }
 
 #create-account-button,
-#copy-code-button,
-#leave-room-button,
-#player-ready-cancel,
-#player-ready,
 #private-room-code-button,
 #public-room-code-button,
 #reset-password-button,
@@ -178,14 +174,24 @@ iframe {
   background: #0990f0;
 }
 
+#copy-code-button,
+#leave-room-button,
+#player-ready-cancel,
+#player-ready {
+  background: #b2c8d6;
+}
+
 #create-account-button:hover,
-#copy-code-button:hover,
-#leave-room-button:hover,
 #private-room-code-button:hover,
 #public-room-code-button:hover,
 #reset-password-button:hover,
 #sign-in-button:hover {
   background: #033d67;
+}
+
+#copy-code-button:hover,
+#leave-room-button:hover {
+  background: #6c96b0;
 }
 
 #log-in-button,
