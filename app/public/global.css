@@ -18,7 +18,7 @@ body {
   font-family: var(--font-primary);
   font-size: var(--font-size-primary);
 
-  background: url(/app/public/assets/images/menu-screen-sketch.jpg) no-repeat center center fixed;
+  background: url(/app/public/assets/images/menu_screen_sketch.jpg) no-repeat center center fixed; 
   background-size: cover;
 
   -webkit-background-size: cover;
@@ -29,8 +29,6 @@ body {
 button {
   font-family: var(--font-primary);
   font-size: var(--font-size-primary);
-
-  background: var(--color-grey-1);
 
   padding-top: 5px;
   padding-bottom: 5px;
@@ -53,7 +51,7 @@ input[type=text] {
   font-family: var(--font-secondary);
   font-size: var(--font-size-primary);
 
-  color: var(--color-grey-2);
+  color: var(--color-black);
 
   width: 100%;
   height: 100%;
@@ -182,6 +180,54 @@ iframe {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-black);
+}
+
+#create-private-match,
+#create-public-match,
+#join-private-match,
+#join-public-match {
+  background: #e2d7f5;
+}
+
+#create-private-match:hover,
+#create-public-match:hover,
+#join-private-match:hover,
+#join-public-match:hover {
+  background: #554d63;
+}
+
+#create-account-button,
+#private-room-code-button,
+#public-room-code-button,
+#reset-password-button,
+#sign-in-button {
+  background: #52b5fc;
+}
+
+#copy-code-button,
+#leave-room-button,
+#player-ready-cancel,
+#player-ready,
+#start-game-button,
+#youtube-search-button {
+  background: #b2c8d6;
+}
+
+#create-account-button:hover,
+#private-room-code-button:hover,
+#public-room-code-button:hover,
+#reset-password-button:hover,
+#sign-in-button:hover {
+  background: #2e4f66;
+}
+
+#copy-code-button:hover,
+#leave-room-button:hover,
+#player-ready-cancel:hover,
+#player-ready:hover,
+#start-game-button:hover,
+#youtube-search-button:hover {
+  background: #6c96b0;
 }
 
 #user-game-settings{
@@ -523,10 +569,79 @@ label {
 }
 
 #log-in-button,
-#sign-up-button,
 #sign-out-button,
+#sign-up-button,
 #user-profile-button {
   display: none;
+  background: #b2c8d6;
+}
+
+#sign-in-help-1,
+#sign-in-help-2,
+#sign-up-help {
+  background: #b2c8d6;
+}
+
+#log-in-button:hover,
+#sign-out-button:hover,
+#sign-up-button:hover,
+#user-profile-button:hover {
+  background: #5785a2;
+}
+
+#sign-in-help-1:hover,
+#sign-in-help-2:hover,
+#sign-up-help:hover {
+  background: #5785a2;
+}
+
+#settings-popup-container,
+#login-screen,
+#reset-password-screen,
+#sign-up-screen {
+  background: #88b4cf;
+}
+
+#user-profile-screen {
+  background: #88b4cf;
+}
+#join-private-match-screen,
+#join-public-match-screen {
+  background: #86bbd8;
+}
+
+#statistic-screen{
+  background: #f7b94a;
+}
+
+#character-screen,
+#game-room-screen,
+#youtube-screen {
+  background: #fb6767;
+}
+
+#close-log-in,
+#close-reset-password,
+#close-sign-up,
+#close-user-profile {
+  background: #88b4cf;
+}
+
+#close-join-private-match,
+#close-join-public-match {
+  background: #86bbd8;
+}
+
+#close-log-in:hover,
+#close-reset-password:hover,
+#close-sign-up:hover,
+#close-user-profile:hover {
+  background: #18262e;
+}
+
+#close-join-private-match:hover,
+#close-join-public-match:hover {
+  background: #112935;
 }
 
 #game-controls-apply-btn {
@@ -656,7 +771,8 @@ label {
 }
 
 #main-menu-container {
-  background-color: var(--color-white);
+
+  background-color: #C3B1E1;
   border: solid 3px var(--color-black);
   border-radius: 30px;
 
@@ -696,7 +812,7 @@ label {
 .room-code {
   font-size: 12px;
   font-family: var(--font-secondary);
-  color: var(--color-grey-2);
+  color: var(--color-black);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -743,7 +859,7 @@ label {
 }
 
 .room-player-highlight {
-  background-color: yellow;
+  background-color: #FFFF8F;
 }
 
 .room-player-container {

@@ -113,7 +113,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   const html = `
     <div id="game-lobby-outer-layout">
       <div id="game-lobby-inner-layout">
-        <div class="popup-container">
+        <div class="popup-container" id="statistic-screen">
           <div class="popup-head-container">
             <h1>Statistics</h1>
           </div>
@@ -124,7 +124,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
           </div>
         </div>
 
-        <div class="popup-container">
+        <div class="popup-container" id="game-room-screen">
           <div class="popup-head-container">
             <h1>Game Room</h1>
             <p id="copy-code-message"></p>
@@ -141,7 +141,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
       </div>
 
       <div id="game-lobby-inner-layout">
-        <div class="popup-container">
+        <div class="popup-container" id="youtube-screen">
           <div class="popup-head-container">
             <h1>YouTube</h1>
           </div>
@@ -152,7 +152,7 @@ const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
           </div>
         </div>
 
-        <div class="popup-container">
+        <div class="popup-container" id="character-screen">
           <div class="popup-head-container">
             <h1>Character</h1>
           </div>
@@ -391,7 +391,7 @@ const renderJoinPublicMatchScreenEvent = () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-container">
+    <div class="popup-container" id="join-public-match-screen">
       <div class="icon" id="close-join-public-match">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -438,7 +438,7 @@ const renderJoinPrivateMatchScreenEvent = () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-container">
+    <div class="popup-container" id="join-private-match-screen">
       <div class="icon" id="close-join-private-match">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -479,7 +479,7 @@ const renderLoginScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-container">
+    <div class="popup-container" id="login-screen">
       <div class="icon" id="close-log-in">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -544,7 +544,7 @@ const renderSignUpScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-container">
+    <div class="popup-container" id="sign-up-screen">
       <div class="icon" id="close-sign-up">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -616,7 +616,7 @@ const renderResetPasswordScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-container">
+    <div class="popup-container" id="reset-password-screen">
       <div class="icon" id="close-reset-password">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -671,7 +671,7 @@ const renderUserProfileScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-container">
+    <div class="popup-container" id="user-profile-screen">
       <div class="icon" id="close-user-profile">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
