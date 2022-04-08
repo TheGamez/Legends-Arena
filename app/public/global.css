@@ -18,7 +18,7 @@ body {
   font-family: var(--font-primary);
   font-size: var(--font-size-primary);
 
-  background: url(/app/public/assets/images/menu-screen-sketch.jpg) no-repeat center center fixed; 
+  background: url(/app/public/assets/images/menu-screen-sketch.jpg) no-repeat center center fixed;
   background-size: cover;
 
   -webkit-background-size: cover;
@@ -67,6 +67,16 @@ input[type=text] {
   border-radius: 30px;
 
   box-sizing: border-box;
+}
+
+#settings-container input{
+  width: 50%;
+  clear: both;
+}
+
+#on-off-btn {
+  position: relative;
+  bottom: 20px;
 }
 
 iframe {
@@ -120,6 +130,26 @@ iframe {
   border-radius: 30px;
 }
 
+#settings-popup-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  position: relative;
+  top: 150px;
+  margin: auto;
+
+  background: var(--color-white);
+
+  width: 700px;
+  height: 470px;
+
+  padding: 20px;
+
+  border: 3px solid var(--color-black);
+  border-radius: 30px;
+}
+
 .popup-head-container {
   display: flex;
   flex-direction: column;
@@ -154,11 +184,370 @@ iframe {
   background: var(--color-black);
 }
 
+#user-game-settings{
+  background: relative;
+  position:absolute;
+  top:0;
+  right:0;
+
+  margin:10px;
+}
+
+#volume-settings {
+  border: 3px solid black;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 0px;
+  border-radius: 20px;
+  width: 42%;
+}
+
+#language-settings {
+  border: 3px solid black;
+  padding: 10px;
+  border-radius: 20px;
+  width: 42%;
+  height: 158px;
+  text-align: left;
+}
+
+#languages {
+  position: relative;
+  width: 75%;
+  height: 40px;
+  top: 25px;
+  left: 1px;
+  right: 120px;
+  border-radius: 10px;
+  border: solid 3px black;
+  font-size: 18px;
+}
+
+
+#language-apply-btn {
+  position: relative;
+  top: 48px;
+
+  width: 80px;
+  height:40px;
+
+  background-color: var(--color-grey-1);
+
+  border: solid 3px var(--color-black);
+  border-radius: 30px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+#language-apply-btn:hover {
+  background: var(--color-grey-2);
+}
+
+
+
+#game-controls-settings {
+  position: absolute;
+
+  left: 359px;
+  top: 191px;
+  border: 3px solid black;
+  padding: 10px;
+  border-radius: 20px;
+  width: 45%;
+  height: 52.8%;
+}
+
+#sound-label {
+  position: relative;
+  top: 15px;
+  font-size: 24px;
+  width: 50px;
+  display: block;
+  vertical-align: middle;
+
+}
+
+#language-label {
+  font-size: 24px;
+}
+
+#game-controls-label {
+  font-size: 24px;
+}
+
+label {
+  font-size: 24px;
+}
+
+#volume-icon {
+  position: relative;
+  bottom: 22px;
+  width: 80px;
+  height:40px;
+}
+
+#speaker-btn {
+  width: 80px;
+  height:40px;
+}
+
+#vol-slider {
+  width: 100%;
+  margin: 0px;
+  padding-top: 0px;
+  text-align: center;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 70%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: var(--color-grey-2);
+  cursor: pointer;
+}
+
+#low-vol {
+  position: relative;
+  right: 10px;
+  top: 33.5px;
+  width: 60px;
+  height:30px;
+}
+
+#high-vol {
+  position: relative;
+  bottom: 33px;
+  left: 228px;
+  width: 60px;
+  height:30px;
+}
+
+
+.keys {
+  border-radius: 5px;
+  border-color: 1px solid darkgrey;
+  background-color: darkgrey;
+  width: 70px;
+  height: 70px;
+}
+
+#up-key {
+  position: relative;
+  top: 20px;
+  left: 130px;
+}
+
+#right-key {
+  position: absolute;
+  bottom: 118px;
+  left: 223px;
+}
+
+#left-key {
+  position: absolute;
+  top: 99.5px;
+  left: 57px;
+}
+
+#down-key {
+  position: absolute;
+  top: 142px;
+  left: 140px;
+}
+
+#right-key-box {
+  position: absolute;
+  bottom: 19px;
+  left: 21px;
+  width: 27px;
+  height: 30px;
+  text-align: center;
+
+  font-family: var(--font-secondary);
+  font-size: 20px;
+
+  color: black;
+
+
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+
+  border: solid 1px var(--color-black);
+  border-radius: 5px;
+
+
+}
+
+#left-key-box {
+  position: absolute;
+  bottom: 19px;
+  left: 21.5px;
+  width: 27px;
+  height: 30px;
+  text-align: center;
+
+  font-family: var(--font-secondary);
+  font-size: 20px;
+
+  color: black;
+
+
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+
+  border: solid 1px var(--color-black);
+  border-radius: 5px;
+
+}
+
+#up-key-box {
+  position: absolute;
+  bottom: 19px;
+  left: 21.5px;
+  width: 27px;
+  height: 30px;
+  text-align: center;
+
+  font-family: var(--font-secondary);
+  font-size: 20px;
+
+  color: black;
+
+
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+
+  border: solid 1px var(--color-black);
+  border-radius: 5px;
+
+}
+
+#down-key-box {
+  position: absolute;
+  bottom: 21px;
+  left: 21px;
+  width: 27px;
+  height: 30px;
+  text-align: center;
+
+  font-family: var(--font-secondary);
+  font-size: 20px;
+
+  color: black;
+
+
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+
+  border: solid 1px var(--color-black);
+  border-radius: 5px;
+
+}
+
+#down-key-value {
+  position: relative;
+  bottom: 2px;
+  right: 0.5px;
+}
+
+#right-key-value {
+  position: relative;
+  bottom: 0.5px;
+  right: 0.5px;
+}
+
+
+#right-arrow {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  bottom: 23.5px;
+  left: 53.5px;
+}
+#left-arrow {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  bottom: 13px;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+#up-arrow {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  left: 23px;
+  bottom: 47px;
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+#down-arrow {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  left: 32px;
+  top: 6px;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
 #log-in-button,
 #sign-up-button,
 #sign-out-button,
 #user-profile-button {
   display: none;
+}
+
+#game-controls-apply-btn {
+  position: relative;
+  top: 100px;
+
+
+  width: 100%;
+  height:40px;
+
+  background-color: var(--color-grey-1);
+
+  border: solid 3px var(--color-black);
+  border-radius: 30px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+#game-controls-apply-btn:hover {
+  background: var(--color-grey-2);
 }
 
 #join-public-match-form-container-1 {
@@ -179,7 +568,7 @@ iframe {
   max-height: 200px;
 
   padding-right: 20px;
-  
+
   box-sizing: border-box;
 
   overflow-y: scroll;
