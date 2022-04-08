@@ -18,7 +18,7 @@ export default class Environment {
 
 
     setEnvironmentLight() {
-        this.ambientLight = new THREE.AmbientLight(0xffffff, 3.0)
+        this.ambientLight = new THREE.AmbientLight(0xffffff, 2.0)
         this.scene.add(this.ambientLight)
 
         this.directionalLight = new THREE.DirectionalLight(0xffffff, 1.0)

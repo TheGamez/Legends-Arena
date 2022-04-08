@@ -2,6 +2,7 @@
 
 import * as THREE from 'three'
 import Experience from './Experience.js'
+import TempLoadGLTF from './TempLoadGLTF.js'
 
 /* GAME RENDERER */
 
@@ -10,7 +11,7 @@ const initializeGameRenderer = () => {
   const scene = new THREE.Scene()
   const experience = new Experience(canvas, scene)
 
-  // Example of load models
+  // Example of load player model
   experience.controller.loadModel('./models/monster.glb', new THREE.Vector3(0, 0, 0), 0.0)
 
   // Example of loading maps
@@ -21,22 +22,51 @@ const initializeGameRenderer = () => {
   // To get the file path working you must put the audio file in build folder (ie. app/build/audio.mp3)
   experience.camera.audio.initializeAudio('./popcorn.mp3')
 
+  const changeHealth = () => {
+    // Idk if this is the best way to do this
+    health -= 10 // this should be a random number
+    let html = `Health ` + health
+    document.querySelector('#root-screen').getElementsByClassName('heath-label').innerHTML = html
+  }
 
 
 
-  // Testing -- BEGIN (can delete before release) ----------------------------------------------------
-  const boxGeo = new THREE.BoxGeometry(5, 5, 5)
-  const boxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-  const mesh = new THREE.Mesh(boxGeo, boxMaterial)
-  mesh.position.set(0, 10, -10)
-  scene.add(mesh)
+  // Testing -- BEGIN ---------------------------------------------------------------------------------
+  const temp = new TempLoadGLTF(scene)
+  temp.loadModel('./models/monster.glb', new THREE.Vector3(0, 0, 0), 1.0)
 
-  var collisionBox = new THREE.Box3().setFromObject(mesh)
-  scene.add(new THREE.Box3Helper(collisionBox, 0x00ff00))
+  const temp2 = new TempLoadGLTF(scene)
+  temp2.loadModel('./models/demon.glb', new THREE.Vector3(40, -6, 0), 1.0)
 
-  var gridHelper = new THREE.GridHelper(100, 50)
-  scene.add( gridHelper )
-  scene.add(new THREE.AxesHelper())
+  const temp3 = new TempLoadGLTF(scene)
+  temp3.loadModel('./models/robot.glb', new THREE.Vector3(-40, 3, 0), 1.0)
+
+  const testCollsion = () => {
+    var impulse = experience.controller.forceImpulse()
+
+    if (experience.controller && experience.controller.isIntersecting(temp.getPlayerCollisionBox()) ) {
+      console.log('hit monster')
+      temp.getPlayerObject().position.x += impulse.x
+      temp.getPlayerObject().position.z += impulse.z
+    }
+
+    if (experience.controller && experience.controller.isIntersecting(temp2.getPlayerCollisionBox()) ) {
+      console.log('hit demon')
+      temp2.getPlayerObject().position.x += impulse.x
+      temp2.getPlayerObject().position.z += impulse.z
+    }
+
+    if (experience.controller && experience.controller.isIntersecting(temp3.getPlayerCollisionBox()) ) {
+      console.log('hit robot')
+      temp3.getPlayerObject().position.x += impulse.x
+      temp3.getPlayerObject().position.z += impulse.z
+    }
+
+    // Example of updating collsion box locRotScale for other Objects Collsion Boxes
+    temp.update()
+    temp2.update()
+    temp3.update()
+  }
   // Testing -- END -----------------------------------------------------------------------------------
 
 
@@ -48,22 +78,7 @@ const initializeGameRenderer = () => {
   const tick = () => {
     let deltaTime = clock.getDelta()
 
-    // Example of collision detection and Impulse for current player
-    if (experience.controller && experience.controller.isIntersecting(collisionBox)) {
-      console.log('hit')
-      var impulse = experience.controller.forceImpulse()
-      mesh.position.x += impulse.x
-      mesh.position.z += impulse.z
-
-      // Idk if this is the best way to do this
-      // health -= 10 // this should be a random number
-      // let html = `Health ` + health
-      // document.querySelector('#root-screen').getElementsByClassName('heath-label').innerHTML = html
-
-    }
-
-    // Example of updating collsion box locRotScale for other Objects Collsion Boxes
-    collisionBox.setFromObject(mesh)
+    testCollsion()
 
     experience.update()
     
