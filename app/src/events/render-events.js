@@ -536,7 +536,7 @@ const renderSettingsEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div class="popup-container">
+    <div class="popup-container" id="settings-popup-container">
       <div class="icon" id="close-settings">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -548,7 +548,7 @@ const renderSettingsEvent = async () => {
 
         <br>
         <fieldset id="volume-settings">
-        <label id="sound-label">Sound (on/off)</label>
+        <label id="sound-label">Sound</label>
         <div class="icon" id="volume-icon">
 
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="speaker-btn">
@@ -557,22 +557,68 @@ const renderSettingsEvent = async () => {
         </svg>
 
         </div>
+        </fieldset>
 
-        <div id='demo' style='display: block'>
+        <fieldset id="language-settings">
+        <label class="language-label">Language</label>
+        <select id="languages" name="languages">
+          <option>Select Language</option>
+          <option value="af">English</option>
+          <option value="af">Français</option>
+          <option value="af">Español</option>
+        </select>
+        <input id="language-apply-btn" type="submit" value="Apply">
+        </fieldset>
+
+        <div id="game-controls-settings">
+        <label id="game-controls-label">Game Controls</label>
         <br>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="low-vol">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-        </svg>
-        <div id="vol-slider">
-        <input type="range" min="1" max="100" value="50" class="slider">
-        </div>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="high-vol">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule=""></path>
-          <path stroke-linecap="" stroke-linejoin="" d=""></path>
+
+        <fieldset class="keys" id="up-key"><br>
+        <p id="up-key-value">E</p>
+        <input type="text" id="up-key-box" placeholder="" style="display: none;" maxlength="1">
+        <div id="up-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
         </svg>
         </div>
         </fieldset>
+
+        <fieldset class="keys" id="left-key"><br>
+        <p id="left-key-value">S</p>
+        <input type="text" id="left-key-box" placeholder="" style="display: none;" maxlength="1">
+        <div id="left-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        </div>
+        </fieldset>
+
+        <fieldset class="keys" id="down-key"><br>
+        <p id="down-key-value">D</p>
+        <input type="text" id="down-key-box" placeholder="" style="display: none;" maxlength="1">
+        <div id="down-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        </div>
+        </fieldset>
+
+        <fieldset class="keys" id="right-key"><br>
+        <p id="right-key-value">F</p>
+        <input type="text" id="right-key-box" placeholder="" style="display: none;" maxlength="1">
+        <div id="right-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        </div>
+        </fieldset>
+
+        <br>
+        <input id="game-controls-apply-btn" type="submit" value="Edit">
+
+        </div>
+
 
 
       </div>
@@ -604,24 +650,58 @@ document.write(`<p>You can also do it this way: ${aNumberVariable} and ${aString
 
     if (document.querySelector('#speaker-btn').innerHTML.includes("evenodd") == false) {
       document.querySelector('#speaker-btn').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" /> <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />';
-      document.getElementById("demo").style.display = "none";
       //unlink music
     }
     else {
       document.querySelector('#speaker-btn').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="" /> <path stroke-linecap="" stroke-linejoin="" d="" />';
-      document.getElementById("demo").style.display = "block";
       //link music back
     }
 
-/*
-    if (document.getElementById("demo").style.display === "none") {
-      document.getElementById("demo").style.display = "block";
+  });
+
+  const gcApplyButton = document.querySelector('#game-controls-apply-btn');
+  gcApplyButton.addEventListener('click', async (event) => {
+    if (gcApplyButton.value == "Edit") {
+      gcApplyButton.value = "Apply";
+    } else {
+      gcApplyButton.value = "Edit";
     }
-    else {
-      document.getElementById("demo").style.display = "none";
+
+    var text1 = document.querySelector('#left-key-box');
+    if (text1.style.display === "none") {
+      text1.style.display = "block";
+      text1.value = document.querySelector('#left-key-value').innerHTML;
+    } else {
+      text1.style.display = "none";
+      document.querySelector('#left-key-value').innerHTML = text1.value;
     }
-  }
-    */
+
+    var text2 = document.querySelector('#right-key-box');
+    if (text2.style.display === "none") {
+      text2.style.display = "block";
+      text2.value = document.querySelector('#right-key-value').innerHTML;
+    } else {
+      text2.style.display = "none";
+      document.querySelector('#right-key-value').innerHTML = text2.value;
+    }
+
+    var text3 = document.querySelector('#up-key-box');
+    if (text3.style.display === "none") {
+      text3.style.display = "block";
+      text3.value = document.querySelector('#up-key-value').innerHTML;
+    } else {
+      text3.style.display = "none";
+      document.querySelector('#up-key-value').innerHTML = text3.value;
+    }
+
+    var text4 = document.querySelector('#down-key-box');
+    if (text4.style.display === "none") {
+      text4.style.display = "block";
+      text4.value = document.querySelector('#down-key-value').innerHTML;
+    } else {
+      text4.style.display = "none";
+      document.querySelector('#down-key-value').innerHTML = text4.value;
+    }
 
   });
 
