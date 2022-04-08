@@ -2,6 +2,8 @@
 
 import * as GAME_EVENTS from './game-events.js';
 import * as AUTH_EVENTS from './auth-events.js';
+import * as YOUTUBE_EVENTS from './youtube-events.js';
+import * as GAME_RENDERER from '../config/game-renderer.js';
 import GLOBAL_STATE from '../global.js';
 
 /* ELEMENTS */
@@ -9,6 +11,21 @@ import GLOBAL_STATE from '../global.js';
 const rootScreenElement = document.querySelector('#root-screen');
 
 /* FUNCTIONS */
+
+const renderGameScreenEvent = () => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <canvas id="webgl-canvas"></canvas>
+    <div class="health-point">
+      <div class="heath-label">Health 100</div>
+    </div>
+  `;
+
+  rootScreenElement.innerHTML = html;
+
+  GAME_RENDERER.initializeGameRenderer();
+}
 
 const renderGameMenuScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
@@ -29,6 +46,7 @@ const renderGameMenuScreenEvent = async () => {
       <div id="main-menu-auth-container">
         <button type="button" id="log-in-button">Log In</button>
         <button type="button" id="sign-up-button">Sign Up</button>
+        <button type="button" id="user-profile-button">Profile</button>
         <button type="button" id="sign-out-button">Sign Out</button>
       </div>
     </div>
@@ -43,10 +61,17 @@ const renderGameMenuScreenEvent = async () => {
 
   rootScreenElement.innerHTML = html;
 
-  if (GLOBAL_STATE.isAuthenticated) {
+  if (GLOBAL_STATE.user) {
     const signOutButtonElement = document.querySelector('#sign-out-button');
     signOutButtonElement.style.display = 'block';
     signOutButtonElement.addEventListener('click', AUTH_EVENTS.signOutEvent);
+
+    const userProfileElement = document.querySelector('#user-profile-button');
+    userProfileElement.style.display = 'block';
+    userProfileElement.addEventListener('click', async (event) => {
+      event.preventDefault();
+      await renderUserProfileScreenEvent();
+    });
   } else {
     const logInButtonElement = document.querySelector('#log-in-button');
     logInButtonElement.style.display = 'block';
@@ -82,30 +107,284 @@ const renderGameMenuScreenEvent = async () => {
   joinPrivateMatchElement.addEventListener('click', renderJoinPrivateMatchScreenEvent);
 }
 
-
-// temporarely made the currentlevel, totallosses, and totalwins all set to 0
-const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer , CurrentLevel = 0, TotalLosses = 0, TotalWins = 0}) => {
+const renderGameLobbyScreenEvent = ({ roomCode, roomPlayer, roomPlayers }) => {
   rootScreenElement.innerHTML = '';
 
-   rendergameStatisticsEvent(); // the previous game statistics, game code, and profile button
+  const html = `
+    <div id="game-lobby-outer-layout">
+      <div id="game-lobby-inner-layout">
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>Statistics</h1>
+          </div>
+          <div>
+            <p id="current-level"></p>
+            <p id="total-wins"></p>
+            <p id="total-losses"></p>
+          </div>
+        </div>
 
-  //game code var
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>Game Room</h1>
+            <p id="copy-code-message"></p>
+          </div>
+          <div id="copy-code-container">
+            <p id="room-code" class="room-code"></p>
+            <button type="button" id="copy-code-button">Copy</button>
+          </div>
+          <div id="room-players-container"></div>
+          <div id="game-lobby-buttons-container">
+            <button type="button" id="leave-room-button">Leave</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="game-lobby-inner-layout">
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>YouTube</h1>
+          </div>
+          <div id="youtube-player-container">
+            <div id="youtube-video-player-container">
+              <iframe src="" title="" height="200px"></iframe>
+            </div>
+          </div>
+        </div>
+
+        <div class="popup-container">
+          <div class="popup-head-container">
+            <h1>Character</h1>
+          </div>
+
+          <div id="character-select-container">
+            <div id="character-select-monster" class="character-select">
+              <img id="monster-img" class="character-select-img" src="./images/monster.png" alt="monster" />
+            </div>
+            <div id="character-select-demon" class="character-select">
+              <img id="demon-img" class="character-select-img" src="./images/demon.png" alt="demon" />
+            </div>
+            <div id="character-select-robot" class="character-select">
+              <img id="robot-img" class="character-select-img" src="./images/robot.png" alt="robot" />
+            </div>
+          </div>
+
+          <div id="character-select-buttons-container">
+            <button type="button" id="player-ready-cancel" disabled>Cancel</button>
+            <button type="button" id="player-ready" disabled>Ready</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  rootScreenElement.innerHTML = html;
+
+  const currentLevel = 0;
+  const totalWins = 0;
+  const totalLosses = 0;
+
+  const currentLevelElement = document.querySelector('#current-level');
+  currentLevelElement.innerText = (`Current Level: ${currentLevel}`);
+
+  const totalWinsElement = document.querySelector('#total-wins');
+  totalWinsElement.innerText = (`Wins: ${totalWins}`);
+
+  const totalLossesElement = document.querySelector('#total-losses');
+  totalLossesElement.innerText = (`Losses: ${totalLosses}`);
+
   const roomCodeElement = document.querySelector('#room-code');
   roomCodeElement.innerText = roomCode;
 
-  const roomPlayersElement = document.querySelector('#room-players');
-  roomPlayersElement.append(`Player ${roomPlayer}`);
+  const roomPlayersContainerElement = document.querySelector('#room-players-container');
 
-  //game statistics var
-  const CurrentLevelElement = document.querySelector('#current-level');
-  CurrentLevelElement.innerText = (`Current Level: ${CurrentLevel}`);
+  if (roomPlayer.isHost) {
+    roomPlayers.forEach(roomPlayer => {
+      const divElement1 = document.createElement('div');
+      divElement1.className = 'room-player-container';
 
-  const TotalLossesElement = document.querySelector('#total-losses');
-  TotalLossesElement.innerText = (`Total Losses: ${TotalLosses}`);
+      const divElement2 = document.createElement('div');
+      divElement2.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
 
-  const TotalWinsElement = document.querySelector('#total-wins');
-  TotalWinsElement.innerText = (`Total Wins: ${TotalWins}`);
+      if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+        divElement2.className = 'room-player-highlight';
+      } else {
+        divElement2.className = 'room-player';
+      }
 
+      const buttonElement = document.createElement('button');
+      buttonElement.type = 'button';
+      buttonElement.innerText = 'Kick';
+      buttonElement.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        GLOBAL_STATE.socket.emit('kickPlayer', { roomCode, roomPlayer });
+      });
+
+      if (roomPlayer.isHost) divElement1.append(divElement2);
+      if (!roomPlayer.isHost) divElement1.append(divElement2, buttonElement);
+
+      roomPlayersContainerElement.append(divElement1);
+    });
+  } else {
+    roomPlayers.forEach(roomPlayer => {
+      const divElement1 = document.createElement('div');
+      divElement1.className = 'room-player-container';
+
+      const divElement2 = document.createElement('div');
+      divElement2.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
+
+      if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+        divElement2.className = 'room-player-highlight';
+      } else {
+        divElement2.className = 'room-player';
+      }
+
+      divElement1.append(divElement2);
+      roomPlayersContainerElement.append(divElement1);
+    });
+  }
+  
+  const copyCodeButton = document.querySelector('#copy-code-button');
+  copyCodeButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    navigator.clipboard.writeText(roomCode);
+
+    const copyCodeMessage = document.querySelector('#copy-code-message');
+    copyCodeMessage.innerText = 'Copied room code!';
+  });
+
+  const leaveRoomButton = document.querySelector('#leave-room-button');
+  const playerReadyButton = document.querySelector('#player-ready');
+  const playerReadyCancelButton = document.querySelector('#player-ready-cancel');
+
+  const characterSelectContainerElement = document.querySelector('#character-select-container');
+  const characterSelectMonsterElement = document.querySelector('#character-select-monster');
+  const characterSelectDemonElement = document.querySelector('#character-select-demon');
+  const characterSelectRobotElement = document.querySelector('#character-select-robot');
+
+  leaveRoomButton.addEventListener('click', (event) => GAME_EVENTS.leaveRoomEvent(event, roomCode, roomPlayer));
+
+  characterSelectMonsterElement.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    if (playerReadyButton.disabled) playerReadyButton.disabled = false;
+
+    GLOBAL_STATE.socket.emit('characterSelect', { roomCode, characterId: 1 });
+  });
+
+  characterSelectDemonElement.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    if (playerReadyButton.disabled) playerReadyButton.disabled = false;
+
+    GLOBAL_STATE.socket.emit('characterSelect', { roomCode, characterId: 2 });
+  });
+
+  characterSelectRobotElement.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    if (playerReadyButton.disabled) playerReadyButton.disabled = false;
+
+    GLOBAL_STATE.socket.emit('characterSelect', { roomCode, characterId: 3 });
+  });
+
+  playerReadyButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    GLOBAL_STATE.socket.emit('playerReady', { roomPlayer });
+
+    playerReadyButton.disabled = true;
+    playerReadyCancelButton.disabled = false;
+
+    characterSelectContainerElement.style.pointerEvents = 'none';
+  });
+
+  playerReadyCancelButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    GLOBAL_STATE.socket.emit('playerReadyCancel', { roomPlayer });
+
+    playerReadyButton.disabled = false;
+    playerReadyCancelButton.disabled = true;
+
+    characterSelectContainerElement.style.pointerEvents = 'auto';
+  });
+
+  if (roomPlayer.isHost) {
+    const newStartGameButtonElement = document.createElement('button');
+    newStartGameButtonElement.id = 'start-game-button';
+    newStartGameButtonElement.type = 'button';
+    newStartGameButtonElement.disabled = true;
+    newStartGameButtonElement.innerText = 'Start';
+    newStartGameButtonElement.addEventListener('click', (event) => renderGameScreenEvent());
+
+    const gameLobbyButtonsContainer = document.querySelector('#game-lobby-buttons-container');
+    gameLobbyButtonsContainer.append(newStartGameButtonElement);
+
+    const youtubePlayerContainer = document.querySelector('#youtube-player-container');
+
+    const divElement1 = document.createElement('div');
+    divElement1.id = 'youtube-search-container';
+
+    const divElement2 = document.createElement('div');
+    divElement2.id = 'youtube-videos-container';
+
+    const inputElement = document.createElement('input');
+    inputElement.id = 'youtube-search';
+    inputElement.type = 'text'; 
+    inputElement.placeholder = 'Search'; 
+    inputElement.autocomplete = 'off';
+
+    const buttonElement = document.createElement('button');
+    buttonElement.id = 'youtube-search-button'
+    buttonElement.type = 'button';
+    buttonElement.innerText = 'Search';
+
+    buttonElement.addEventListener('click', async (event) => {
+      event.preventDefault();
+  
+      const searchTerm = inputElement.value;
+  
+      const results = await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
+  
+      if (results) {
+        divElement2.innerHTML = '';
+  
+        results.items.forEach(item => {
+          const _buttonElement = document.createElement('button');
+          _buttonElement.id = item.id.videoId;
+          _buttonElement.type = 'button';
+          _buttonElement.innerText = item.snippet.title;
+
+          const youtubeData = {
+            youtubeVideoId: item.id.videoId,
+            youtubeSnippetTitle: item.snippet.title,
+            youtubePlaylist: item.id.videoId,
+            youtubeAutoplay: 1,
+            youtubeControls: 0,
+            youtubeDisableKB: 1,
+            youtubeLoop: 1,
+          };
+
+          _buttonElement.addEventListener('click', (event) => {
+            event.preventDefault();
+            
+            GLOBAL_STATE.socket.emit('youtubeData', { roomCode, youtubeData });
+            GLOBAL_STATE.socket.emit('playYoutube', { roomCode, youtubeData });
+          });
+
+          divElement2.append(_buttonElement);
+        });
+  
+        divElement2.style.display = 'flex';
+      }
+    });
+
+    divElement1.append(inputElement, buttonElement);
+    youtubePlayerContainer.append(divElement1, divElement2);
+  }
 }
 
 const renderJoinPublicMatchScreenEvent = () => {
@@ -388,148 +667,249 @@ const renderResetPasswordScreenEvent = async () => {
   });
 }
 
-const renderResetPasswordScreenEvent1 = async () => {
+const renderUserProfileScreenEvent = async () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
     <div class="popup-container">
-      <div class="icon" id="close-reset-password">
+      <div class="icon" id="close-user-profile">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </div>
-
       <div class="popup-head-container">
-        <h1>Reset Password</h1>
-        <p id="reset-password-message"></p>
+        <h1 class="game-font">User Profile</h1>
       </div>
-
-      <form id="reset-password-form-container">
-        <input
-          id="reset-password-email"
-          type="email"
-          placeholder="Email"
-          autocomplete="off"
-        />
-
-        <input
-          id="reset-password-new-password"
-          type="password"
-          placeholder="New Password"
-          autocomplete="off"
-        />
-
-        <input
-          id="reset-password-confirm-new-password"
-          type="password"
-          placeholder="Confirm New Password"
-          autocomplete="off"
-        />
-
-        <button id="reset-password-button" type="button">Confirm</button>
-      </form>
+      <div>
+        <p id="current-email"></p>
+        <p id="current-username"></p>
+        <p id="current-character"></p>
+        <p id="current-level"></p>
+      </div>
     </div>
   `;
 
   rootScreenElement.innerHTML = html;
 
-  const resetPasswordButton = document.querySelector('#reset-password-button');
-  resetPasswordButton.addEventListener('click', AUTH_EVENTS.resetPasswordEvent);
-
-  const closeResetPasswordButtonElement = document.querySelector('#close-reset-password');
-  closeResetPasswordButtonElement.addEventListener('click', async (event) => {
-    event.preventDefault();
-    await renderUserProfileScreenEvent();
-  });
-}
-
-const rendergameStatisticsEvent = async () => {
-
-  rootScreenElement.innerHTML = '';
-
-  const html = `
-    <div id="game-room">
-      <h1>Game Room</h1>
-      <p id="room-code"></p>
-      <div id="room-players"></div>
-      <br>
-    </div>
-
-    <div id="game-statistics">
-      <h1>Statistics</h1>
-      <p id="current-level"></p>
-      <p id="total-losses"></p>
-      <p id="total-wins"></p>
-    </div>
-
-    <div>
-    <button id="user-profile-button" type="button">View Profile</button>
-    </div>
-    `;
-  rootScreenElement.innerHTML = html;
-
-  const UserProfileElement = document.querySelector('#user-profile-button');
-  UserProfileElement.style.display = 'block';
-  UserProfileElement.addEventListener('click', async (event) => {
-  event.preventDefault();
-  await renderUserProfileScreenEvent();
-  });
-
-}
-
-const renderUserProfileScreenEvent = async (CurrentEmail, CurrentUsername, CurrentCharacter, CurrentLevel = 0) => {
-
-  rootScreenElement.innerHTML = '';
-
-  const html = `
-  <div class="popup-container-1">
-    <div class="icon" id="close-user-profile">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </div>
-
-    <div class="popup-user-profile-container">
-      <h1 class="game-font">User Profile</h1>
-      <br>
-      <p id="current-email"></p>
-      <p id="current-username"></p>
-      <p id="current-character"></p>
-      <p id="current-level"></p>
-      <br>
-      <br>
-      <button id="reset-account-password-button" type="button">Reset Password</button>
-      <img src="./character modelling/loraxcharacter.png" alt="Character Image" style="width:50px;height:60px;">
-    </div>
-
-  </div>
-`;
-  rootScreenElement.innerHTML = html;
+  const currentEmail = GLOBAL_STATE.user.email;
+  const currentUsername = GLOBAL_STATE.user.username;
+  const currentLevel = 0;
 
   //user profile screen var
-  const EmailElement = document.querySelector('#current-email');
-  EmailElement.innerText = (`Email: ${CurrentEmail}`);
+  const emailElement = document.querySelector('#current-email');
+  emailElement.innerText = (`Email: ${currentEmail}`);
 
-  const UsernameElement = document.querySelector('#current-username');
-  UsernameElement.innerText = (`Username: ${CurrentUsername}`);
+  const usernameElement = document.querySelector('#current-username');
+  usernameElement.innerText = (`Username: ${currentUsername}`);
 
-  const CharacterElement = document.querySelector('#current-character');
-  CharacterElement.innerText = (`Character: ${CurrentCharacter}`);
-
-  const CurrentLevelElement = document.querySelector('#current-level');
-  CurrentLevelElement.innerText = (`Current Level: ${CurrentLevel}`);
+  const currentLevelElement = document.querySelector('#current-level');
+  currentLevelElement.innerText = (`Current Level: ${currentLevel}`);
 
   const closeUserProfileButtonElement = document.querySelector('#close-user-profile');
-  closeUserProfileButtonElement.addEventListener('click', async (event) => {
+  closeUserProfileButtonElement.addEventListener('click', (event) => {
     event.preventDefault();
-    await renderGameLobbyScreenEvent();
+    renderGameMenuScreenEvent();
+  });
+}
+
+const updateGameLobbyScreenEvent = ({ roomPlayers }) => {
+  const roomPlayersContainerElement = document.querySelector('#room-players-container');
+
+  roomPlayersContainerElement.innerHTML = '';
+
+  let disableStartGameButton = false; 
+
+  let hostPlayer = undefined;
+
+  const roomPlayer = roomPlayers.find(roomPlayer => roomPlayer.socketId === GLOBAL_STATE.socket.id);
+
+  if (roomPlayer.isHost) {
+    roomPlayers.forEach(roomPlayer => {
+      const divElement1 = document.createElement('div');
+      divElement1.className = 'room-player-container';
+  
+      let text = `${roomPlayer.name}`;
+  
+      if (roomPlayer.isHost) {
+        text = text.concat(' ', '(Host)');
+        hostPlayer = roomPlayer;
+      }
+      if (!roomPlayer.isHost) text = text.concat(' ', '(Member)');
+      if (roomPlayer.isReady) text = text.concat(' ', '(Ready)');
+      if (!roomPlayer.isReady) disableStartGameButton = true;
+  
+      const pElement = document.createElement('p');
+      pElement.innerText = text;
+  
+      if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+        pElement.className = 'room-player-highlight';
+      } else {
+        pElement.className = 'room-player';
+      }
+  
+      const buttonElement = document.createElement('button');
+      buttonElement.type = 'button';
+      buttonElement.innerText = 'Kick';
+      buttonElement.addEventListener('click', (event) => {
+        event.preventDefault();
+  
+        GLOBAL_STATE.socket.emit('kickPlayer', { roomCode: roomPlayer.roomCode, roomPlayer });
+      });
+  
+      if (roomPlayer.isHost) divElement1.append(pElement);
+      if (!roomPlayer.isHost) divElement1.append(pElement, buttonElement);
+      
+      roomPlayersContainerElement.append(divElement1);
+    });
+  } else {
+    roomPlayers.forEach(roomPlayer => {
+      const divElement1 = document.createElement('div');
+      divElement1.className = 'room-player-container';
+
+      const divElement2 = document.createElement('div');
+      divElement2.innerText = roomPlayer.isHost ? `${roomPlayer.name} (Host)` : `${roomPlayer.name} (Member)`;
+
+      if (roomPlayer.socketId === GLOBAL_STATE.socket.id) {
+        divElement2.className = 'room-player-highlight';
+      } else {
+        divElement2.className = 'room-player';
+      }
+
+      divElement1.append(divElement2);
+      roomPlayersContainerElement.append(divElement1);
+    });
+  }
+
+  if (hostPlayer.socketId === GLOBAL_STATE.socket.id) {
+    const startGameButton = document.querySelector('#start-game-button');
+
+    if (!startGameButton) {
+      const newStartGameButtonElement = document.createElement('button');
+      newStartGameButtonElement.id = 'start-game-button';
+      newStartGameButtonElement.type = 'button';
+      newStartGameButtonElement.disabled = disableStartGameButton;
+      newStartGameButtonElement.innerText = 'Start';
+      newStartGameButtonElement.addEventListener('click', (event) => renderGameScreenEvent());
+    
+      const gameLobbyButtonsContainer = document.querySelector('#game-lobby-buttons-container');
+      gameLobbyButtonsContainer.append(newStartGameButtonElement);
+    } else {
+      startGameButton.disabled = disableStartGameButton;
+    }
+  }
+}
+
+const updateYouTubeVideoScreenEvent = ({ youtubeData }) => {
+  if (youtubeData) {
+    const youtubeVideoPlayerContainer = document.querySelector('#youtube-video-player-container');
+
+    youtubeVideoPlayerContainer.innerHTML = '';
+    
+    const iframeElement = document.createElement('iframe');
+  
+    iframeElement.src = `https://www.youtube.com/embed/${youtubeData.youtubeVideoId}?autoplay=${youtubeData.youtubeAutoplay}&controls=${youtubeData.youtubeControls}&disablekb=${youtubeData.youtubeDisableKB}&playlist=${youtubeData.youtubePlaylist}&loop=${youtubeData.youtubeLoop}`;
+    iframeElement.title = youtubeData.youtubeSnippetTitle;
+    iframeElement.height = '200px';
+    iframeElement.allow = 'autoplay';
+  
+    youtubeVideoPlayerContainer.append(iframeElement);
+  }
+}
+
+const updateYouTubeSearchScreenEvent = ({ roomCode }) => {
+  const youtubePlayerContainer = document.querySelector('#youtube-player-container');
+
+  const divElement1 = document.createElement('div');
+  divElement1.id = 'youtube-search-container';
+
+  const divElement2 = document.createElement('div');
+  divElement2.id = 'youtube-videos-container';
+
+  const inputElement = document.createElement('input');
+  inputElement.id = 'youtube-search';
+  inputElement.type = 'text'; 
+  inputElement.placeholder = 'Search'; 
+  inputElement.autocomplete = 'off';
+
+  const buttonElement = document.createElement('button');
+  buttonElement.id = 'youtube-search-button'
+  buttonElement.type = 'button';
+  buttonElement.innerText = 'Search';
+
+  buttonElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    const searchTerm = inputElement.value;
+
+    const results = await YOUTUBE_EVENTS.searchYoutubeEvent(searchTerm);
+
+    if (results) {
+      divElement2.innerHTML = '';
+
+      results.items.forEach(item => {
+        const _buttonElement = document.createElement('button');
+        _buttonElement.id = item.id.videoId;
+        _buttonElement.type = 'button';
+        _buttonElement.innerText = item.snippet.title;
+
+        const youtubeData = {
+          youtubeVideoId: item.id.videoId,
+          youtubeSnippetTitle: item.snippet.title,
+          youtubePlaylist: item.id.videoId,
+          youtubeAutoplay: 1,
+          youtubeControls: 0,
+          youtubeDisableKB: 1,
+          youtubeLoop: 1,
+        };
+
+        _buttonElement.addEventListener('click', (event) => {
+          event.preventDefault();
+          
+          GLOBAL_STATE.socket.emit('youtubeData', { roomCode, youtubeData });
+          GLOBAL_STATE.socket.emit('playYoutube', { roomCode, youtubeData });
+        });
+
+        divElement2.append(_buttonElement);
+      });
+
+      divElement2.style.display = 'flex';
+    }
   });
 
-  const resetPasswordElement = document.querySelector('#reset-account-password-button');
-  resetPasswordElement.addEventListener('click', async (event) => {
-    event.preventDefault();
-    await renderResetPasswordScreenEvent1();
-  });
+  divElement1.append(inputElement, buttonElement);
+  youtubePlayerContainer.append(divElement1, divElement2);
+}
+
+const updateCharacterSelectScreenEvent = ({ characterId }) => {
+  const characterSelectMonsterElement = document.querySelector('#character-select-monster');
+  const characterSelectDemonElement = document.querySelector('#character-select-demon');
+  const characterSelectRobotElement = document.querySelector('#character-select-robot');
+
+  characterSelectMonsterElement.className = 'character-select';
+  characterSelectDemonElement.className = 'character-select';
+  characterSelectRobotElement.className = 'character-select';
+
+  const monsterImgElement = document.querySelector('#monster-img');
+  const demonImgElement = document.querySelector('#demon-img');
+  const robotImgElement = document.querySelector('#robot-img');
+
+  monsterImgElement.style.filter = 'none';
+  demonImgElement.style.filter = 'none';
+  robotImgElement.style.filter = 'none';
+
+  if (characterId === 1) {
+    characterSelectMonsterElement.className = 'character-select-choice';
+
+    monsterImgElement.style.filter = 'brightness(60%)';
+  } else if (characterId === 2) {
+    characterSelectDemonElement.className = 'character-select-choice';
+
+    demonImgElement.style.filter = 'brightness(60%)';
+  } else if (characterId === 3) {
+    characterSelectRobotElement.className = 'character-select-choice';
+
+    robotImgElement.style.filter = 'brightness(60%)';
+  }
 }
 
 const renderSettingsEvent = async () => {
@@ -721,7 +1101,10 @@ export {
   renderLoginScreenEvent,
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,
-  rendergameStatisticsEvent,
   renderUserProfileScreenEvent,
   renderSettingsEvent,
+  updateGameLobbyScreenEvent,
+  updateYouTubeVideoScreenEvent,
+  updateYouTubeSearchScreenEvent,
+  updateCharacterSelectScreenEvent,
 };

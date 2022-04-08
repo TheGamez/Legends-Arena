@@ -5,13 +5,10 @@ import GLOBAL_STATE from '../global.js';
 
 /* FUNCTIONS */
 
-const createRoomEvent = (event, isPrivate) => {
+const createRoomEvent = (event, isRoomPrivate) => {
   event.preventDefault();
 
-  GLOBAL_STATE.socket.emit('createRoom', isPrivate);
-
-  // THREE_CONFIG.initializeGame();
-  // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
+  GLOBAL_STATE.socket.emit('createRoom', { isRoomPrivate, user: GLOBAL_STATE.user });
 }
 
 const joinRoomEvent = (event, roomCode) => {
@@ -24,10 +21,13 @@ const joinRoomEvent = (event, roomCode) => {
     _roomCode = roomCodeInputElement.value;
   }
 
-  GLOBAL_STATE.socket.emit('joinRoom', _roomCode);
+  GLOBAL_STATE.socket.emit('joinRoom', { roomCode: _roomCode, user: GLOBAL_STATE.user });
+}
 
-  // THREE_CONFIG.initializeGame();
-  // document.addEventListener('keydown', (event) => GLOBAL_STATE.socket.emit('keydown', event.code));
+const leaveRoomEvent = (event, roomCode, roomPlayer) => {
+  event.preventDefault();
+
+  GLOBAL_STATE.socket.emit('leaveRoom', { roomCode, roomPlayer });
 }
 
 const roomStatusEvent = (message) => {
@@ -60,7 +60,7 @@ const setOpenRoomsEvent = (openRooms) => {
       pElement1.innerText = 'Free For All';
   
       const pElement2 = document.createElement('p');
-      pElement2.innerText = `Players [${playerCount} / ${GLOBAL_STATE.maxPlayerCount}]`;
+      pElement2.innerText = `Players [${playerCount} / ${GLOBAL_STATE.MAX_PLAYERS}]`;
   
       const buttonElement = document.createElement('button');
       buttonElement.type = 'button';
@@ -77,6 +77,8 @@ const setOpenRoomsEvent = (openRooms) => {
     });
   }
 }
+
+/* THIS CODE WILL BE REFACTORED AND USED IN ITERATION 3 */
 
 // const resetGameEvent = (message) => {
 //   const roomCodeInputElement = document.querySelector('#room-code-input');
@@ -109,11 +111,9 @@ const setOpenRoomsEvent = (openRooms) => {
 // }
 
 export {
-  // resetGameEvent,
-  // gameOverEvent,
-  // setGameStateEvent,
   createRoomEvent,
   joinRoomEvent,
+  leaveRoomEvent,
   roomStatusEvent,
   getOpenRoomsEvent,
   setOpenRoomsEvent,

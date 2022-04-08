@@ -9,18 +9,38 @@ module.exports = {
   },
   module: {
     rules: [
+      // Shader support
+      {
+        test: /\.(glsl|vs|fs|vert|frag)$/,
+        exclude: /node_modules/,
+        use: [
+            `raw-loader`
+        ]
+      },
       {
         test: /\.css$/,
         use: [
-          'style-loader',
-          'css-loader',
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
         ],
-      }
+      },
+      {
+        test: /\.(glb|gltf)$/,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template:  path.resolve(__dirname, 'app/public/index.html')
-    })
+      template: path.resolve(__dirname, 'app/public/index.html'),
+    }),
   ],
 }
