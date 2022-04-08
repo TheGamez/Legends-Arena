@@ -1,6 +1,6 @@
 /* MODULES */
 
-import * as THREE from 'three';
+import * as THREE from 'three'
 import Experience from './Experience.js'
 
 /* GAME RENDERER */
@@ -10,25 +10,60 @@ const initializeGameRenderer = () => {
   const scene = new THREE.Scene()
   const experience = new Experience(canvas, scene)
 
-  // load model like this
-  experience.controller.loadModel('./models/monster.glb')
+  // Example of load models
+  experience.controller.loadModel('./models/monster.glb', new THREE.Vector3(0, 0, 0), 0.0)
 
-  // Testing -- BEGIN (can delete before release)
-  const geometry = new THREE.BoxGeometry(5, 5, 5)
-  const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-  const mesh = new THREE.Mesh(geometry, material)
+  // Example of loading maps
+  experience.environment.loadEnvironmentMap('./models/map.glb')
+
+  // Example of loading in audio and playing it (will auto play after 2 seconds)
+  // To stop playing the audio, go into the GameAudio.js file and comment out the this.audio.play() line
+  // To get the file path working you must put the audio file in build folder (ie. app/build/audio.mp3)
+  experience.camera.audio.initializeAudio('./popcorn.mp3')
+
+
+
+
+  // Testing -- BEGIN (can delete before release) ----------------------------------------------------
+  const boxGeo = new THREE.BoxGeometry(5, 5, 5)
+  const boxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+  const mesh = new THREE.Mesh(boxGeo, boxMaterial)
   mesh.position.set(0, 10, -10)
   scene.add(mesh)
 
-  var gridHelper = new THREE.GridHelper( 100, 50 );
-  scene.add( gridHelper );
+  var collisionBox = new THREE.Box3().setFromObject(mesh)
+  scene.add(new THREE.Box3Helper(collisionBox, 0x00ff00))
+
+  var gridHelper = new THREE.GridHelper(100, 50)
+  scene.add( gridHelper )
   scene.add(new THREE.AxesHelper())
-  // Testing -- END
+  // Testing -- END -----------------------------------------------------------------------------------
+
+
+
 
   // Update Frames
-  const clock = new THREE.Clock();
+  const clock = new THREE.Clock()
+  var health = 100
   const tick = () => {
-    let deltaTime = clock.getDelta();
+    let deltaTime = clock.getDelta()
+
+    // Example of collision detection and Impulse for current player
+    if (experience.controller && experience.controller.isIntersecting(collisionBox)) {
+      console.log('hit')
+      var impulse = experience.controller.forceImpulse()
+      mesh.position.x += impulse.x
+      mesh.position.z += impulse.z
+
+      // Idk if this is the best way to do this
+      // health -= 10 // this should be a random number
+      // let html = `Health ` + health
+      // document.querySelector('#root-screen').getElementsByClassName('heath-label').innerHTML = html
+
+    }
+
+    // Example of updating collsion box locRotScale for other Objects Collsion Boxes
+    collisionBox.setFromObject(mesh)
 
     experience.update()
     
@@ -39,100 +74,9 @@ const initializeGameRenderer = () => {
   }
 
   tick()
-
-
-  // --BEGIN: Models ------------------------------------------------------------------------------
-  // const dracoLoader = new DRACOLoader()
-  // dracoLoader.setDecoderPath('./draco/');
-
-  // const gltfLoader = new GLTFLoader()
-  // gltfLoader.setDRACOLoader(dracoLoader)
-
-  // gltfLoader.load('./models/monster.glb', (gltf) => {
-  //   let monster = gltf.scene
-  //   monster = gltf.scene
-  //   monster.position.x = 5
-  //   monster.position.z = -10
-  //   scene.add(monster)
-
-  //   mixer = new THREE.AnimationMixer(monster)
-  //   mixer.clipAction(gltf.animations[1]).play()
-    
-  //   attackMixer = new THREE.AnimationMixer(monster)
-  //   attackMixer.clipAction(gltf.animations[0]).play()
-  //   attackTimer = gltf.animations[0].duration
-
-  //   collisionBoxMonster.setFromObject(monster);
-  //   scene.add( new THREE.Box3Helper(collisionBoxMonster, 0xff0000));
-
-  //   monsterController = new CharacterController(monster, camera, controls, collisionBoxMonster)
-  // })
-
-  // gltfLoader.load('./models/robot.glb', (gltf) => {
-  //   let robot = gltf.scene
-  //   robot.position.x = -5
-  //   robot.position.z = 10
-  //   robot.position.y = -3
-  //   scene.add(robot)
-
-  //   collisionBoxRobot.setFromObject(robot);
-  //   scene.add( new THREE.Box3Helper(collisionBoxRobot, 0xff0000));
-  
-  //   robotController = new CharacterController(robot, camera, controls, collisionBoxRobot)
-  // })
-
-  // gltfLoader.load('./models/demon.glb', (gltf) => {
-  //   let demon = gltf.scene
-  //   demon.position.x = -8
-  //   demon.position.z = 5
-  //   demon.position.y = -6
-  //   scene.add(demon)
-  // })
-
-  // gltfLoader.load('./models/map.glb', (gltf) => {
-  //   let map = gltf.scene
-  //   map.position.x = 0
-  //   map.position.y = -13
-  //   map.position.z = 0
-  //   scene.add(map)
-  // })
-
-
-
-  // var attack = false
-  // document.addEventListener('mousedown', (e) => {
-  //   switch (e.button) {
-  //     case 0:
-  //       attack = true
-  //       break;
-  //   }
-  // })
-
-  // document.addEventListener('mouseup', (e) => {
-  //   switch (e.button) {
-  //     case 0:
-  //       attack = false
-  //       break;
-  //   }
-  // })
-
-  // const clock = new THREE.Clock();
-  // const tick = () => {
-
-  //   if (monsterController && attack) {
-  //     attackMixer.update(deltaTime)
-  //     console.log('attack')
-      
-  //     if (monsterController && monsterController.isIntersecting(collisionBoxRobot)) {
-  //       console.log('hit')
-  //     }
-  //   }
-  // }
-  // tick()
-
-  // --END: Rendering ------------------------------------------------------------------------------
 }
 
 export {
   initializeGameRenderer,
 };
+

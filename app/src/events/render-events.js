@@ -16,8 +16,9 @@ const renderGameScreenEvent = () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div>
-      <canvas id="webgl-canvas"></canvas>
+    <canvas id="webgl-canvas"></canvas>
+    <div class="health-point">
+      <div class="heath-label">Health 100</div>
     </div>
   `;
 

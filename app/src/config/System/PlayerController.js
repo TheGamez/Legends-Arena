@@ -8,9 +8,13 @@ export default class PlayerController {
         this.scene = _scene
         this.camera = _camera
         this.playerModel
+        this.impulseForce
+        this.attack = false
 
         this.cameraLook = new THREE.Vector3(0, 0, 0)
         this.cameraPosition = new THREE.Vector3()
+
+        this.collisionBox = new THREE.Box3()
 
         this.canJump = false
         this.moveForward = false
@@ -47,13 +51,13 @@ export default class PlayerController {
                     this.moveRight = true
                     break
         
-                case 'Space':
-                    if ( this.canJump === true ) this.velocity.y += 250
-                    this.canJump = false
-                    break
+                // case 'Space':
+                //     if ( this.canJump === true ) this.velocity.y += 250
+                //     this.canJump = false
+                //     break
         
             }
-          })
+        })
           
           window.addEventListener('keyup', (e) => {
             e.preventDefault()
@@ -76,23 +80,58 @@ export default class PlayerController {
                     break
         
             }
-          })
+        })
+
+        document.addEventListener('mousedown', (e) => {
+          switch (e.button) {
+            case 0:
+                this.attack = true
+              break;
+          }
+        })
+
+        document.addEventListener('mouseup', (e) => {
+          switch (e.button) {
+            case 0:
+                this.attack = false
+              break;
+          }
+        })
     }
 
-    loadModel(modelFilePath) {
+    isIntersecting(box) {
+        if (this.collisionBox.intersectsBox(box) && this.attack) {
+            return true
+        }
+    }
+
+    forceImpulse() {
+        return this.impulseForce
+    }
+
+    /**
+     * 
+     * @param {*} modelFilePath model file path
+     * @param {*} modelPostion position of the model
+     * @param {*} modelOpacity opacity of the model
+     */
+    loadModel(modelFilePath, modelPostion, modelOpacity) {
         this.gltfLoader.load(modelFilePath, (gltf) => {
             this.gltfObject = gltf.scene
-            this.gltfObject.position.set(0, 0, 0)
+            this.gltfObject.position.set(modelPostion.x, modelPostion.y, modelPostion.z)
 
             this.gltfObject.traverse((child) => {
                 if (child.isMesh) {
                     child.material.transparent = true
-                    child.material.opacity = 0.5
+                    child.material.opacity = modelOpacity
                 }
             })
             
             this.scene.add(this.gltfObject)
             this.playerModel = new gltfObject(this.gltfObject)
+
+            this.collisionBox.setFromObject(this.gltfObject)
+            //this.scene.add(new THREE.Box3Helper(this.collisionBox, 0xff0000))
         })
     }
 
@@ -118,31 +157,29 @@ export default class PlayerController {
         controls.moveForward( - this.velocity.z * deltaTime )
     
         controls.getObject().position.y += ( this.velocity.y * deltaTime ) // new behavior
-        
+
         this.cameraInstance = this.camera.getCameraInstance()
         this.cameraInstance.getWorldDirection(this.cameraLook)
         this.cameraInstance.getWorldPosition(this.cameraPosition)
-
-        this.playerCameraControls = this.camera.getControls()
-
+        
+        this.cameraForwardVector = this.cameraLook.multiplyScalar(100).normalize()
+        this.impulseForce = new THREE.Vector3(this.cameraForwardVector.x, 0, this.cameraForwardVector.z)
 
        if (this.playerModel) {
-            this.playerModelPosition = this.playerModel.getGltfObject().position
+            this.playerModelObject = this.playerModel.getGltfObject()
 
-            //this.playerModelPosition.x = (this.cameraPosition.x + this.cameraPosition.z - 15) * Math.cos(this.cameraLook.x + this.cameraLook.z)
-            //this.playerModelPosition.z = (this.cameraPosition.x + this.cameraPosition.z - 15) * Math.cos(this.cameraLook.x + this.cameraLook.z)
+            this.collisionBox.setFromObject(this.playerModelObject)
 
-            this.playerModelPosition.x = this.cameraPosition.x
-            this.playerModelPosition.z = this.cameraPosition.z
+            this.playerModelObject.position.x = this.cameraPosition.x
+            this.playerModelObject.position.z = this.cameraPosition.z
 
             this.cameraLook.add(new THREE.Vector3(
-                this.playerModelPosition.x, 0, this.playerModelPosition.z)
+                this.playerModelObject.position.x, 0, this.playerModelObject.position.z)
             )
 
             this.playerModel.getGltfObject().lookAt(new THREE.Vector3(
                 this.cameraLook.x, 0, this.cameraLook.z)
             )
-
        }
     
         if ( controls.getObject().position.y < 10 ) {
