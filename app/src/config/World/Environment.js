@@ -1,37 +1,38 @@
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
 export default class Environment {
     
     constructor(_scene) {
         this.scene = _scene
 
+        this.dracoLoader = new DRACOLoader()
+        this.dracoLoader.setDecoderPath('./draco/')
+
+        this.gltfLoader = new GLTFLoader()
+        this.gltfLoader.setDRACOLoader(this.dracoLoader)
+
         this.setEnvironmentLight()
-        this.setEnvironmentMap()
     }
 
+
     setEnvironmentLight() {
-        // const light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75)
-        // light.position.set(0.5, 1, 0.75)
-        // scene.add(light)
-        
-        this.ambientLight = new THREE.AmbientLight(0xffffff, 3.0)
+        this.ambientLight = new THREE.AmbientLight(0xffffff, 2.0)
         this.scene.add(this.ambientLight)
 
-        this.directionalLight = new THREE.DirectionalLight(0xffffff, 0.6)
-        this.directionalLight.castShadow = false
-        this.directionalLight.shadow.mapSize.set(1024, 1024)
-        this.directionalLight.shadow.camera.far = 15
-        this.directionalLight.shadow.camera.left = - 7
-        this.directionalLight.shadow.camera.top = 7
-        this.directionalLight.shadow.camera.right = 7
-        this.directionalLight.shadow.camera.bottom = - 7
+        this.directionalLight = new THREE.DirectionalLight(0xffffff, 1.0)
         this.directionalLight.position.set(5, 5, 5)
         this.scene.add(this.directionalLight)
 
-        this.scene.background = new THREE.Color( 0xffffff );
+        this.scene.background = new THREE.Color( 0x060E1A );
     }
 
-    setEnvironmentMap() {
-
+    loadEnvironmentMap(modelFilePath) {
+        this.gltfLoader.load(modelFilePath, (gltf) => { 
+            this.environmentMap = gltf.scene
+            this.environmentMap.position.set(0, 200, 0)
+            this.scene.add(this.environmentMap)
+        })
     }
 }

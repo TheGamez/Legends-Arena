@@ -16,8 +16,9 @@ const renderGameScreenEvent = () => {
   rootScreenElement.innerHTML = '';
 
   const html = `
-    <div>
-      <canvas id="webgl-canvas"></canvas>
+    <canvas id="webgl-canvas"></canvas>
+    <div class="health-point">
+      <div class="heath-label">Health 100</div>
     </div>
   `;
 
@@ -49,6 +50,13 @@ const renderGameMenuScreenEvent = async () => {
         <button type="button" id="sign-out-button">Sign Out</button>
       </div>
     </div>
+
+    <div class="icon" id="user-game-settings">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </div>
   `;
 
   rootScreenElement.innerHTML = html;
@@ -71,7 +79,7 @@ const renderGameMenuScreenEvent = async () => {
       event.preventDefault();
       await renderLoginScreenEvent();
     });
-    
+
     const signUpButtonElement = document.querySelector('#sign-up-button');
     signUpButtonElement.style.display = 'block';
     signUpButtonElement.addEventListener('click', async (event) => {
@@ -79,6 +87,14 @@ const renderGameMenuScreenEvent = async () => {
       await renderSignUpScreenEvent();
     });
   }
+
+  // game settings icon / button
+  const SettingsIconElement = document.querySelector('#user-game-settings');
+  SettingsIconElement.style.display = 'block';
+  SettingsIconElement.addEventListener('click', async (event) => {
+  event.preventDefault();
+  await renderSettingsEvent();
+  });
 
   const createPublicMatchElement = document.querySelector('#create-public-match');
   const createPrivateMatchElement = document.querySelector('#create-private-match');
@@ -386,7 +402,7 @@ const renderJoinPublicMatchScreenEvent = () => {
         <h1>Join Public Match</h1>
         <p id="join-match-message"></p>
       </div>
-      
+
       <form id="join-public-match-form-container-1">
         <input
           id="room-code-input"
@@ -394,7 +410,7 @@ const renderJoinPublicMatchScreenEvent = () => {
           placeholder="Enter Room Code"
           autocomplete="off"
         />
-        
+
         <button id="public-room-code-button" type="button">Join</button>
       </form>
 
@@ -433,7 +449,7 @@ const renderJoinPrivateMatchScreenEvent = () => {
         <h1>Join Private Match</h1>
         <p id="join-match-message"></p>
       </div>
-      
+
       <form id="join-private-match-form-container">
         <input
           id="room-code-input"
@@ -441,7 +457,7 @@ const renderJoinPrivateMatchScreenEvent = () => {
           placeholder="Enter Room Code"
           autocomplete="off"
         />
-        
+
         <button id="private-room-code-button" type="button">Join</button>
       </form>
     </div>
@@ -474,7 +490,7 @@ const renderLoginScreenEvent = async () => {
         <h1>Log In</h1>
         <p id="sign-in-message"></p>
       </div>
-      
+
       <form id="log-in-form-container-1">
         <input
           id="sign-in-email"
@@ -489,7 +505,7 @@ const renderLoginScreenEvent = async () => {
           placeholder="Password"
           autocomplete="off"
         />
-        
+
         <button id="sign-in-button" type="button">Confirm</button>
       </form>
 
@@ -896,6 +912,187 @@ const updateCharacterSelectScreenEvent = ({ characterId }) => {
   }
 }
 
+const renderSettingsEvent = async () => {
+  rootScreenElement.innerHTML = '';
+
+  const html = `
+    <div class="popup-container" id="settings-popup-container">
+      <div class="icon" id="close-settings">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+
+      <div class="popup-head-container">
+        <h1>Settings</h1>
+
+        <br>
+        <fieldset id="volume-settings">
+        <label id="sound-label">Sound</label>
+        <div class="icon" id="volume-icon">
+
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="speaker-btn">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule=""></path>
+          <path stroke-linecap="" stroke-linejoin="" d=""></path>
+        </svg>
+
+        </div>
+        </fieldset>
+
+        <fieldset id="language-settings">
+        <label class="language-label">Language</label>
+        <select id="languages" name="languages">
+          <option>Select Language</option>
+          <option value="af">English</option>
+          <option value="af">Français</option>
+          <option value="af">Español</option>
+        </select>
+        <input id="language-apply-btn" type="submit" value="Apply">
+        </fieldset>
+
+        <div id="game-controls-settings">
+        <label id="game-controls-label">Game Controls</label>
+        <br>
+
+        <fieldset class="keys" id="up-key"><br>
+        <p id="up-key-value">E</p>
+        <input type="text" id="up-key-box" placeholder="" style="display: none;" maxlength="1">
+        <div id="up-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        </div>
+        </fieldset>
+
+        <fieldset class="keys" id="left-key"><br>
+        <p id="left-key-value">S</p>
+        <input type="text" id="left-key-box" placeholder="" style="display: none;" maxlength="1">
+        <div id="left-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        </div>
+        </fieldset>
+
+        <fieldset class="keys" id="down-key"><br>
+        <p id="down-key-value">D</p>
+        <input type="text" id="down-key-box" placeholder="" style="display: none;" maxlength="1">
+        <div id="down-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        </div>
+        </fieldset>
+
+        <fieldset class="keys" id="right-key"><br>
+        <p id="right-key-value">F</p>
+        <input type="text" id="right-key-box" placeholder="" style="display: none;" maxlength="1">
+        <div id="right-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+        </div>
+        </fieldset>
+
+        <br>
+        <input id="game-controls-apply-btn" type="submit" value="Edit">
+
+        </div>
+
+
+
+      </div>
+    </div>
+  `;
+  rootScreenElement.innerHTML = html;
+  //<input type="submit" placeholder=<%= rows[0].uid %>>
+
+/*
+<script>
+
+document.write('<path stroke-linecap="round" stroke-linejoin="round" d='+ d + 'clip-rule='+ clip-rule '/>');
+document.write(`<p>You can also do it this way: ${aNumberVariable} and ${aStringVariable}. Search for template literals.<p>`);
+</script>
+*/
+
+
+
+
+  const closeSettingsElement = document.querySelector('#close-settings');
+  closeSettingsElement.addEventListener('click', async (event) => {
+    event.preventDefault();
+    await renderGameMenuScreenEvent();
+  });
+
+  //document.getElementById("demo").style.display = "none";
+  const volumeButton = document.querySelector('#volume-icon');
+  volumeButton.addEventListener('click', async (event) => {
+
+    if (document.querySelector('#speaker-btn').innerHTML.includes("evenodd") == false) {
+      document.querySelector('#speaker-btn').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" /> <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />';
+      //unlink music
+    }
+    else {
+      document.querySelector('#speaker-btn').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="" /> <path stroke-linecap="" stroke-linejoin="" d="" />';
+      //link music back
+    }
+
+  });
+
+  const gcApplyButton = document.querySelector('#game-controls-apply-btn');
+  gcApplyButton.addEventListener('click', async (event) => {
+    if (gcApplyButton.value == "Edit") {
+      gcApplyButton.value = "Apply";
+    } else {
+      gcApplyButton.value = "Edit";
+    }
+
+    var text1 = document.querySelector('#left-key-box');
+    if (text1.style.display === "none") {
+      text1.style.display = "block";
+      text1.value = document.querySelector('#left-key-value').innerHTML;
+    } else {
+      text1.style.display = "none";
+      document.querySelector('#left-key-value').innerHTML = text1.value;
+    }
+
+    var text2 = document.querySelector('#right-key-box');
+    if (text2.style.display === "none") {
+      text2.style.display = "block";
+      text2.value = document.querySelector('#right-key-value').innerHTML;
+    } else {
+      text2.style.display = "none";
+      document.querySelector('#right-key-value').innerHTML = text2.value;
+    }
+
+    var text3 = document.querySelector('#up-key-box');
+    if (text3.style.display === "none") {
+      text3.style.display = "block";
+      text3.value = document.querySelector('#up-key-value').innerHTML;
+    } else {
+      text3.style.display = "none";
+      document.querySelector('#up-key-value').innerHTML = text3.value;
+    }
+
+    var text4 = document.querySelector('#down-key-box');
+    if (text4.style.display === "none") {
+      text4.style.display = "block";
+      text4.value = document.querySelector('#down-key-value').innerHTML;
+    } else {
+      text4.style.display = "none";
+      document.querySelector('#down-key-value').innerHTML = text4.value;
+    }
+
+  });
+
+
+
+
+
+
+
+}
+
 export {
   renderGameMenuScreenEvent,
   renderGameLobbyScreenEvent,
@@ -905,6 +1102,7 @@ export {
   renderSignUpScreenEvent,
   renderResetPasswordScreenEvent,
   renderUserProfileScreenEvent,
+  renderSettingsEvent,
   updateGameLobbyScreenEvent,
   updateYouTubeVideoScreenEvent,
   updateYouTubeSearchScreenEvent,

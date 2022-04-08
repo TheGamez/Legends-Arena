@@ -5,6 +5,7 @@ import Renderer from './System/Renderer.js'
 import Sizes from './Utils/Sizes.js'
 import EventEmitter from './Utils/EventEmitter.js'
 import Environment from './World/Environment.js'
+import WaveShader from './System/WaveShader.js'
 
 let instance = null
 
@@ -27,6 +28,7 @@ export default class Experience {
         this.emitter = new EventEmitter()
         this.controller = new PlayerController(this.scene, this.camera)
         this.environment = new Environment(this.scene)
+        this.wave = new WaveShader(this.scene)
 
         // Resize event
         this.sizes.on('resize', () => {
@@ -41,6 +43,7 @@ export default class Experience {
 
     update() {
         this.renderer.update()
+        this.wave.update()
     }
 
     destroy() {
